@@ -33,7 +33,12 @@ class BuildExt(build_ext):
 
 def main():
     cpu_count = os.cpu_count() or 8
-    version = "20251103"
+
+    # Read version from VERSION file
+    version_file = os.path.join(os.path.dirname(__file__), "hummingbot", "VERSION")
+    with open(version_file, "r") as f:
+        version = f.read().strip()
+
     all_packages = find_packages(include=["hummingbot", "hummingbot.*"], )
     excluded_paths = [
         "hummingbot.connector.gateway.clob_spot.data_sources.injective",
@@ -47,6 +52,8 @@ def main():
             "templates/*TEMPLATE.yml"
         ],
     }
+
+    # Dependencies are now in pyproject.toml, but keep for backward compatibility
     install_requires = [
         "aiohttp>=3.8.5",
         "asyncssh>=2.13.2",
@@ -119,6 +126,22 @@ def main():
     if len(sys.argv) > 1 and sys.argv[1] == "build_ext" and is_posix:
         sys.argv.append(f"--parallel={cpu_count}")
 
+    # Check if .pyx files exist before trying to cythonize
+    import glob
+    pyx_files = glob.glob("hummingbot/**/*.pyx", recursive=True)
+
+    if pyx_files:
+        # Cython files found, compile them
+        ext_modules = cythonize(cython_sources, compiler_directives=compiler_directives, **cython_kwargs)
+        include_dirs = [np.get_include()]
+        cmdclass = {"build_ext": BuildExt}
+    else:
+        # No Cython files found, skip compilation (pure Python mode)
+        print("Warning: No .pyx files found, building without Cython extensions")
+        ext_modules = []
+        include_dirs = []
+        cmdclass = {}
+
     setup(name="hummingbot",
           version=version,
           description="Hummingbot",
@@ -129,14 +152,12 @@ def main():
           packages=packages,
           package_data=package_data,
           install_requires=install_requires,
-          ext_modules=cythonize(cython_sources, compiler_directives=compiler_directives, **cython_kwargs),
-          include_dirs=[
-              np.get_include()
-          ],
+          ext_modules=ext_modules,
+          include_dirs=include_dirs,
           scripts=[
               "bin/hummingbot_quickstart.py"
           ],
-          cmdclass={"build_ext": BuildExt},
+          cmdclass=cmdclass,
           )
 
 
