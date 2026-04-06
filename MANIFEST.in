@@ -1,4 +1,0 @@
-include hummingbot/VERSION
-recursive-include hummingbot *.pyx *.pxd *.h *.cpp
-include bin/hummingbot_quickstart.py
-
