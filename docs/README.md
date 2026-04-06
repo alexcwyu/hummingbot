@@ -1,5 +1,8 @@
 # Hummingbot Documentation
 
+> **Last Updated**: 2026-04-06T16:25:30Z  \
+> **Git Hash**: `e6fe7d717`
+
 **Version**: 2.10.0
 **License**: Apache-2.0
 **Language**: Python 3.12, Cython
