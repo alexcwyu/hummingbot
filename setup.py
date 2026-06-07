@@ -20,7 +20,7 @@ class BuildExt(build_ext):
 
 def main():
     cpu_count = os.cpu_count() or 8
-    version = "2.10.0"
+    version = "20260421"
     all_packages = find_packages(where="src", include=["hummingbot", "hummingbot.*"])
     excluded_paths = [
         "hummingbot.connector.gateway.clob_spot.data_sources.injective",
@@ -99,6 +99,7 @@ def main():
         author="Hummingbot Foundation",
         author_email="dev@hummingbot.org",
         license="Apache 2.0",
+        python_requires=">=3.10.12",
         packages=packages,
         package_dir={"": "src"},
         ext_modules=extensions,

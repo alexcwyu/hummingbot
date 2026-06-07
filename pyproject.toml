@@ -29,12 +29,15 @@ dependencies = [
     "aioprocessing>=2.0.1",
     "aioresponses>=0.7.4",
     "aiounittest>=1.4.2",
+    "aptos-sdk>=0.8.0",
     "async-timeout>=4.0.2,<5",
+    "base58>=2.1.1",
     "bidict>=0.22.1",
     "bip-utils",
     "cachetools>=5.3.1",
     "commlib-py>=0.11",
     "cryptography>=46.0.3",
+    "decibel-python-sdk==0.2.1",
     "eth-account>=0.13.0",
     "msgpack-python",
     "numba>=0.62.1",
@@ -53,6 +56,7 @@ dependencies = [
     "scalecodec",
     "scipy>=1.16.3",
     "six>=1.16.0",
+    "solders>=0.19.0",
     "sqlalchemy>=2.0.44",
     "tabulate>=0.9.0",
     "TA-Lib>=0.6.4",
@@ -66,7 +70,7 @@ dependencies = [
 
 [project.optional-dependencies]
 injective = [
-    "injective-py",
+    "injective-py>=1.13",
 ]
 
 [project.urls]
