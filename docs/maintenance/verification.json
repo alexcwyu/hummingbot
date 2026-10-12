@@ -1,0 +1,2284 @@
+[
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_exchange.py::CoinbaseAdvancedTradeExchangeTests::test_lost_order_included_in_order_fills_update_and_not_in_order_status_update",
+      "test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_exchange.py::CoinbaseAdvancedTradeExchangeTests::test_update_order_status_when_canceled",
+      "test/hummingbot/connector/derivative/grvt_perpetual/test_grvt_perpetual_derivative.py::GrvtPerpetualDerivativeUnitTests",
+      "test/hummingbot/connector/test_time_synchronizer.py",
+      "--tb=short"
+    ],
+    "exit_code": 0,
+    "seconds": 2.6,
+    "label": "async-fixture-focused-tests-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-async-fixture-focused-tests-2.log",
+    "log_sha256": "3b187bfcbcd46526901944a4422944b41b81768455ac311e3a787d25eb06405c",
+    "log_bytes": 702,
+    "outcome_lines": [
+      "23 passed in 1.79s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_exchange.py::CoinbaseAdvancedTradeExchangeTests::test_lost_order_included_in_order_fills_update_and_not_in_order_status_update",
+      "test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_exchange.py::CoinbaseAdvancedTradeExchangeTests::test_update_order_status_when_canceled",
+      "test/hummingbot/connector/derivative/grvt_perpetual/test_grvt_perpetual_derivative.py::GrvtPerpetualDerivativeUnitTests",
+      "--tb=short"
+    ],
+    "exit_code": 1,
+    "seconds": 2.9,
+    "label": "async-fixture-focused-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-async-fixture-focused-tests.log",
+    "log_sha256": "6e765886a6571df7e76ab6672aeb75a5ed34300cd9de5848072d071d04fb4a52",
+    "log_bytes": 5499,
+    "outcome_lines": [
+      "1 failed, 19 passed in 1.99s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/test_connector_base.py",
+      "test/hummingbot/connector/exchange/derive/test_derive_auth.py",
+      "test/hummingbot/connector/exchange/foxbit/test_foxbit_user_stream_data_source.py",
+      "test/hummingbot/connector/exchange/ndax/test_ndax_auth.py",
+      "test/hummingbot/strategy/spot_perpetual_arbitrage/test_spot_perpetual_arbitrage_start.py",
+      "test/hummingbot/strategy/avellaneda_market_making/test_avellaneda_market_making_start.py",
+      "test/hummingbot/connector/derivative/kucoin_perpetual/test_kucoin_perpetual_derivative.py",
+      "test/hummingbot/connector/exchange/xrpl/test_xrpl_transaction_pipeline.py",
+      "test/hummingbot/connector/exchange/xrpl/test_xrpl_utils.py",
+      "--tb=short"
+    ],
+    "exit_code": 1,
+    "seconds": 21.86,
+    "label": "async-interface-focused-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-async-interface-focused-tests.log",
+    "log_sha256": "4bbfb878da951d97f6d76984b4d510be9754792e440a815c890927d7e3d4b47c",
+    "log_bytes": 3089,
+    "outcome_lines": [
+      "2 failed, 199 passed in 19.76s"
+    ]
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.14"
+    ],
+    "exit_code": 1,
+    "seconds": 6.06,
+    "label": "build-dependency-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-build-dependency-sync.log",
+    "log_sha256": "43cf298b683ce774365de853874d536beeee60bd008cab0b8ac7111b58a939ce",
+    "log_bytes": 1995,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "build",
+      "--python",
+      "3.13"
+    ],
+    "exit_code": 0,
+    "seconds": 12.99,
+    "label": "build",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-build.log",
+    "log_sha256": "c838f001a100f4e1ce006e14397f1f83cb6f22176e8dd9a97d65eaa7994b6093",
+    "log_bytes": 170316,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/exchange/binance/test_binance_exchange.py::BinanceExchangeTests::test_cancel_two_orders_with_cancel_all_and_one_fails",
+      "test/hummingbot/connector/derivative/architect_perpetual/test_architect_perpetual_derivative.py::ArchitectPerpetualDerivativeUnitTest::test_cancel_two_orders_with_cancel_all_and_one_fails",
+      "--tb=short"
+    ],
+    "exit_code": 0,
+    "seconds": 3.3,
+    "label": "cancel-order-focused-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-cancel-order-focused-tests.log",
+    "log_sha256": "d7bb0ba4ccfb8b1f108a0c192752bed8160b68adf3bfee96f102198356bd225f",
+    "log_bytes": 470,
+    "outcome_lines": [
+      "2 passed in 2.06s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/data_feed/candles_feed/btc_markets_spot_candles",
+      "--tb=short"
+    ],
+    "exit_code": 1,
+    "seconds": 20.75,
+    "label": "candles-poll-existing-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-candles-poll-existing-tests.log",
+    "log_sha256": "5af5a38d7dc4ef47ac7015960f21dc182fa744bc3c093de2a75174f64e2fd8d3",
+    "log_bytes": 6788,
+    "outcome_lines": [
+      "1 failed, 102 passed in 16.63s"
+    ]
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.14"
+    ],
+    "exit_code": 0,
+    "seconds": 508.03,
+    "label": "compatible-sync-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-compatible-sync-2.log",
+    "log_sha256": "7a751b769e4ad6a373345230799e004742f07a95789ff5df8af2903c277774a4",
+    "log_bytes": 830,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.14"
+    ],
+    "exit_code": 0,
+    "seconds": 415.73,
+    "label": "compatible-sync-3",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-compatible-sync-3.log",
+    "log_sha256": "ce8cc31791a253b8ce597e495c1d561877c9def8cad25693f668c2ec81d0efc8",
+    "log_bytes": 995,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "<workspace>/hummingbot/.venv/bin/python",
+      "-m",
+      "compileall",
+      "-q",
+      "src"
+    ],
+    "exit_code": 0,
+    "seconds": 0.93,
+    "label": "compile",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-compile.log",
+    "log_sha256": "d837b8e38fdbbd1a35a98c564f0c143c403fd70ae4be9cf0e75c4a31cbb03432",
+    "log_bytes": 82,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/data_feed/candles_feed/btc_markets_spot_candles",
+      "test/test_isolated_asyncio_wrapper_test_case.py",
+      "test/test_logger_mixin_for_test.py",
+      "test/hummingbot/connector/derivative/bitmart_perpetual",
+      "test/hummingbot/connector/derivative/evedex_perpetual",
+      "--tb=short"
+    ],
+    "exit_code": 0,
+    "seconds": 43.48,
+    "label": "conservative-ownership-focused-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-conservative-ownership-focused-tests.log",
+    "log_sha256": "4d62a75b97f4d1d14ecb7ba73c07bd7d617e699dfe01a9f3e4a390cb833940c7",
+    "log_bytes": 797,
+    "outcome_lines": [
+      "392 passed in 37.65s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/core",
+      "test/hummingbot/strategy"
+    ],
+    "exit_code": 1,
+    "seconds": 34.23,
+    "label": "core315-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-core315-tests.log",
+    "log_sha256": "a8837bbba7039c58469174a73da372deba811cfe92f9f19220f0f67a78a37332",
+    "log_bytes": 594515,
+    "outcome_lines": [
+      "90 failed, 627 passed, 35 errors in 33.10s"
+    ]
+  },
+  {
+    "command": [
+      "env",
+      "PYTHONTRACEMALLOC=15",
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_exchange.py::CoinbaseAdvancedTradeExchangeTests::test_lost_order_included_in_order_fills_update_and_not_in_order_status_update",
+      "test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_exchange.py::CoinbaseAdvancedTradeExchangeTests::test_update_order_status_when_canceled",
+      "test/hummingbot/connector/derivative/grvt_perpetual/test_grvt_perpetual_derivative.py",
+      "--tb=short"
+    ],
+    "exit_code": 1,
+    "seconds": 71.36,
+    "label": "coroutine-allocation-diagnostic-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-coroutine-allocation-diagnostic-tests.log",
+    "log_sha256": "21b6d05dc7b4176efed6aab7f5eee92c4d2e5192b7236e2b9e8551a72a6e7e37",
+    "log_bytes": 12527,
+    "outcome_lines": [
+      "3 failed, 68 passed in 56.15s"
+    ]
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.14"
+    ],
+    "exit_code": 1,
+    "seconds": 2.25,
+    "label": "corrected-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-corrected-sync.log",
+    "log_sha256": "0297dd5f79dc44489d6d46b3506b40adc345a5c46f5ba9a5db783bb5c95ee856",
+    "log_bytes": 1042,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/derivative/dydx_v4_perpetual",
+      "test/hummingbot/connector/exchange/injective_v2",
+      "test/hummingbot/connector/exchange/foxbit/test_foxbit_user_stream_data_source.py",
+      "test/hummingbot/connector/exchange/foxbit/test_foxbit_utils.py",
+      "test/hummingbot/client/command/test_config_command.py",
+      "--tb=short"
+    ],
+    "exit_code": 1,
+    "seconds": 34.48,
+    "label": "current-api-final-focused-tests-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-current-api-final-focused-tests-2.log",
+    "log_sha256": "37f602ba6dd64664b183e53c4d9b2f8f35fae082881dae8d90693e0df35dcbe5",
+    "log_bytes": 2959,
+    "outcome_lines": [
+      "1 failed, 184 passed in 32.00s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/derivative/dydx_v4_perpetual",
+      "test/hummingbot/connector/exchange/foxbit/test_foxbit_user_stream_data_source.py",
+      "test/hummingbot/client/command/test_config_command.py",
+      "--tb=short"
+    ],
+    "exit_code": 1,
+    "seconds": 18.91,
+    "label": "current-api-final-focused-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-current-api-final-focused-tests.log",
+    "log_sha256": "c257c01f013ad976fdba46caac4d350a9b2bc33afdbeefe79dd48b37e3d6b256",
+    "log_bytes": 2740,
+    "outcome_lines": [
+      "1 failed, 90 passed in 17.21s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/core/test_trading_core.py",
+      "test/hummingbot/core/utils/test_tracking_nonce.py",
+      "test/hummingbot/core/utils/test_estimate_fee.py",
+      "test/hummingbot/connector/derivative/lighter_perpetual/test_lighter_perpetual_derivative.py",
+      "test/hummingbot/connector/exchange/gemini/test_gemini_exchange.py"
+    ],
+    "exit_code": 1,
+    "seconds": 27.51,
+    "label": "current-api-focused-tests-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-current-api-focused-tests-2.log",
+    "log_sha256": "cc873308e1f90936bef7f432e98f1af11c3cf40deb6d0ce0899c0114a728ff46",
+    "log_bytes": 5366,
+    "outcome_lines": [
+      "1 failed, 273 passed in 25.68s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/core/test_trading_core.py",
+      "test/hummingbot/core/utils/test_tracking_nonce.py",
+      "test/hummingbot/core/utils/test_estimate_fee.py",
+      "test/hummingbot/connector/derivative/lighter_perpetual/test_lighter_perpetual_derivative.py",
+      "test/hummingbot/connector/exchange/gemini/test_gemini_exchange.py"
+    ],
+    "exit_code": 0,
+    "seconds": 51.14,
+    "label": "current-api-focused-tests-3",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-current-api-focused-tests-3.log",
+    "log_sha256": "2575d0323f157340ed0bd143f53ccdcaef93a19e40df9abf87b7ed91d448a358",
+    "log_bytes": 668,
+    "outcome_lines": [
+      "274 passed in 49.48s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/core/test_trading_core.py",
+      "test/hummingbot/core/utils/test_tracking_nonce.py",
+      "test/hummingbot/core/utils/test_estimate_fee.py",
+      "test/hummingbot/connector/derivative/lighter_perpetual/test_lighter_perpetual_derivative.py"
+    ],
+    "exit_code": 1,
+    "seconds": 22.13,
+    "label": "current-api-focused-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-current-api-focused-tests.log",
+    "log_sha256": "15bcbb9ca87e481c26e0c9d1f7ab126e69b4f25ba26e7da48cd695a04ca4fe6c",
+    "log_bytes": 3447,
+    "outcome_lines": [
+      "2 failed, 108 passed in 18.92s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test",
+      "--continue-on-collection-errors"
+    ],
+    "exit_code": 1,
+    "seconds": 951.07,
+    "label": "current-full-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-current-full-tests.log",
+    "log_sha256": "273e6c0b915d60b71bd7a660c900c02a7ffbec1dd0f20ff265f03597b8c3b25e",
+    "log_bytes": 383290,
+    "outcome_lines": [
+      "46 failed, 8666 passed, 1 skipped, 14 errors, 2 subtests passed in 935.39s (0:15:35)"
+    ]
+  },
+  {
+    "command": [
+      "uv",
+      "build",
+      "--python",
+      "3.15"
+    ],
+    "exit_code": 0,
+    "seconds": 129.47,
+    "label": "current-native-build-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-current-native-build-2.log",
+    "log_sha256": "f43229edacad84bd40adba47bf12b1b55d05f96980c3aa0fb850cf7eb8b30a31",
+    "log_bytes": 782016,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--frozen",
+      "--python",
+      "3.15",
+      "--reinstall-package",
+      "hummingbot"
+    ],
+    "exit_code": 0,
+    "seconds": 139.36,
+    "label": "current-native-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-current-native-sync.log",
+    "log_sha256": "b40c6bdeea5edbe939318918be4d056d1395c969cbfc233b2b888e1db127d96c",
+    "log_bytes": 388,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.14"
+    ],
+    "exit_code": 0,
+    "seconds": 146.87,
+    "label": "current-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-current-sync.log",
+    "log_sha256": "e4ebc78b9d6c47330e2a859b6694dca3bca5692a86a37e9b50eb135f5e2f6604",
+    "log_bytes": 503,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/cli",
+      "test/hummingbot/client/test_runner.py",
+      "test/hummingbot/client/ui",
+      "--tb=short"
+    ],
+    "exit_code": 0,
+    "seconds": 8.77,
+    "label": "default-loop-resource-focused-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-default-loop-resource-focused-tests.log",
+    "log_sha256": "81735aad3c8bf16631838cbd23ae239234d9eef19fb4e0f1c2a42fff34d32fdc",
+    "log_bytes": 901,
+    "outcome_lines": [
+      "422 passed, 1 skipped in 6.79s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test",
+      "--continue-on-collection-errors"
+    ],
+    "exit_code": 1,
+    "seconds": 675.13,
+    "label": "final-current-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-current-tests.log",
+    "log_sha256": "f3f32afd7e7af4c600446eb3a5ac733db9365981903912a825c683dbdb2388cf",
+    "log_bytes": 1039333,
+    "outcome_lines": [
+      "117 failed, 8538 passed, 1 skipped, 18 errors, 2 subtests passed in 663.08s (0:11:03)"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test",
+      "--continue-on-collection-errors",
+      "--tb=short",
+      "-o",
+      "faulthandler_timeout=60"
+    ],
+    "exit_code": -15,
+    "seconds": 655.48,
+    "label": "final-existing-full-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-existing-full-tests.log",
+    "log_sha256": "fb58e44c54d725027fb19915d368b750ae679e7967e35d7a9fc8b4bed980a4b5",
+    "log_bytes": 6012,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--frozen",
+      "--python",
+      "3.14.8"
+    ],
+    "exit_code": 0,
+    "seconds": 96.0,
+    "label": "final-fallback-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-fallback-sync.log",
+    "log_sha256": "f1e845c26af83578483aa73b7c4fffd8c223f3e3808f130ccbaf7b5f48b314a7",
+    "log_bytes": 3746,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "lock",
+      "--upgrade"
+    ],
+    "exit_code": 0,
+    "seconds": 1.95,
+    "label": "final-lock",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-lock.log",
+    "log_sha256": "2c150f88cdc3fa1a11149b96d4d0f3814f4a03ff47ce8bad91ab0074bd57a3f9",
+    "log_bytes": 51,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "build"
+    ],
+    "exit_code": 0,
+    "seconds": 97.7,
+    "label": "final-native-build-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-native-build-2.log",
+    "log_sha256": "12fdc6cf47e0595bea06d8a978e3e532efb50242df8907dce7b721502ee7ac33",
+    "log_bytes": 782002,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "build",
+      "--python",
+      "3.15.0"
+    ],
+    "exit_code": 0,
+    "seconds": 98.55,
+    "label": "final-native-build",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-native-build.log",
+    "log_sha256": "c4e2942436d804da03afba937a9cd0b51ccf84aa128aba3939d1ff8c7d758804",
+    "log_bytes": 782018,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/core/test_pubsub.py",
+      "test/hummingbot/core/data_type/test_order_book.py",
+      "test/hummingbot/core/test_clock.py"
+    ],
+    "exit_code": 0,
+    "seconds": 4.3,
+    "label": "final-native-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-native-tests.log",
+    "log_sha256": "0d024e1f3945e539faf8ebcc79750592c0c7958f312a345117e6d4df8eb72553",
+    "log_bytes": 249,
+    "outcome_lines": [
+      "21 passed in 3.49s"
+    ]
+  },
+  {
+    "command": [
+      "env",
+      "BOTS_REPO=hummingbot",
+      ".venv/bin/python",
+      "-c",
+      "import sys,pytest;sys.path.insert(0,'/tmp');raise SystemExit(pytest.main(['test','--continue-on-collection-errors','--tb=short','-p','bots_test_observer','-o','faulthandler_timeout=60']))"
+    ],
+    "exit_code": -15,
+    "seconds": 243.9,
+    "label": "final-observed-existing-tests-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-observed-existing-tests-2.log",
+    "log_sha256": "fb455d0e32fe71c10bed0c82928f67bf87d4504b42ade2e5df96cf058822b9ef",
+    "log_bytes": 15170,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "env",
+      "BOTS_REPO=hummingbot",
+      ".venv/bin/python",
+      "-c",
+      "import sys,pytest;sys.path.insert(0,'/tmp');raise SystemExit(pytest.main(['test','--continue-on-collection-errors','--tb=short','-p','bots_test_observer','-o','faulthandler_timeout=60']))"
+    ],
+    "exit_code": 1,
+    "seconds": 950.24,
+    "label": "final-observed-existing-tests-3",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-observed-existing-tests-3.log",
+    "log_sha256": "6482f776e5c1ccf3fa244c4cacd25d2a37d1270e9199b149b023faef3f68a1c4",
+    "log_bytes": 39995,
+    "outcome_lines": [
+      "1 failed, 8801 passed, 1 skipped, 2 subtests passed in 933.30s (0:15:33)"
+    ]
+  },
+  {
+    "command": [
+      "env",
+      "BOTS_REPO=hummingbot",
+      ".venv/bin/python",
+      "-c",
+      "import sys,pytest;sys.path.insert(0,'/tmp');raise SystemExit(pytest.main(['test','--continue-on-collection-errors','--tb=short','-p','bots_test_observer','-o','faulthandler_timeout=60']))"
+    ],
+    "exit_code": 1,
+    "seconds": 926.86,
+    "label": "final-observed-existing-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-observed-existing-tests.log",
+    "log_sha256": "ec6a1951fe4c39c31b7ac3fe99322785e3250f806bdad7d87725595052ca1fb9",
+    "log_bytes": 166695,
+    "outcome_lines": [
+      "8 failed, 8794 passed, 1 skipped, 2 subtests passed in 914.17s (0:15:14)"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/cli",
+      "test/hummingbot/client/ui",
+      "test/hummingbot/client/test_runner.py",
+      "test/hummingbot/connector/derivative/gate_io_perpetual",
+      "test/hummingbot/connector/derivative/grvt_perpetual",
+      "test/hummingbot/connector/exchange/coinbase_advanced_trade",
+      "test/hummingbot/connector/exchange/gemini",
+      "test/hummingbot/connector/test_time_synchronizer.py",
+      "--tb=short"
+    ],
+    "exit_code": 0,
+    "seconds": 89.35,
+    "label": "final-resource-contract-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-resource-contract-tests.log",
+    "log_sha256": "49c05da49f5ff097110fdacc065740a9b273361cb5da8bca38beee4367161618",
+    "log_bytes": 1812,
+    "outcome_lines": [
+      "968 passed, 1 skipped in 87.48s (0:01:27)"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/exchange/foxbit",
+      "test/hummingbot/connector/exchange/injective_v2",
+      "test/hummingbot/connector/derivative/dydx_v4_perpetual",
+      "test/hummingbot/connector/derivative/injective_v2_perpetual",
+      "test/hummingbot/client/command/test_config_command.py",
+      "--tb=short",
+      "-o",
+      "faulthandler_timeout=30"
+    ],
+    "exit_code": -15,
+    "seconds": 155.39,
+    "label": "final-resource-focused-tests-3",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-resource-focused-tests-3.log",
+    "log_sha256": "3a32180ad2dabfacb494c237b919377f173af1fedf41eb58b11c95ec91bc7af6",
+    "log_bytes": 8925,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/exchange/foxbit",
+      "test/hummingbot/connector/exchange/injective_v2",
+      "test/hummingbot/connector/derivative/dydx_v4_perpetual",
+      "test/hummingbot/connector/derivative/injective_v2_perpetual",
+      "test/hummingbot/client/command/test_config_command.py",
+      "--tb=short",
+      "-o",
+      "faulthandler_timeout=30"
+    ],
+    "exit_code": 0,
+    "seconds": 61.72,
+    "label": "final-resource-focused-tests-4",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-resource-focused-tests-4.log",
+    "log_sha256": "c034623e7e4b6ac5e3e45cd77e44227fbc385a0c4f7f196202ef915838c6a6a5",
+    "log_bytes": 967,
+    "outcome_lines": [
+      "347 passed in 59.46s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/exchange/foxbit",
+      "test/hummingbot/connector/exchange/injective_v2",
+      "test/hummingbot/connector/derivative/dydx_v4_perpetual",
+      "test/hummingbot/connector/derivative/injective_v2_perpetual",
+      "test/hummingbot/client/command/test_config_command.py",
+      "--tb=short"
+    ],
+    "exit_code": -15,
+    "seconds": 208.0,
+    "label": "final-resource-focused-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-resource-focused-tests.log",
+    "log_sha256": "ac990a0e417c67c6a67963f6645ccf70b61b6ead50f496231db00e881a2fbb72",
+    "log_bytes": 1260,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-W",
+      "error",
+      "-m",
+      "compileall",
+      "-q",
+      "src",
+      "controllers",
+      "scripts",
+      "vendor",
+      "test/conftest.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.86,
+    "label": "final-strict-compile-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-strict-compile-2.log",
+    "log_sha256": "6c4eae318bdcd7c995806eab7418b679319971e6d69b7a69a90782c213d21c77",
+    "log_bytes": 93,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-W",
+      "error",
+      "-m",
+      "compileall",
+      "-q",
+      "src",
+      "controllers",
+      "scripts",
+      "vendor",
+      "test/conftest.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.64,
+    "label": "final-strict-compile-3",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-strict-compile-3.log",
+    "log_sha256": "6c4eae318bdcd7c995806eab7418b679319971e6d69b7a69a90782c213d21c77",
+    "log_bytes": 93,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-W",
+      "error",
+      "-m",
+      "compileall",
+      "-q",
+      "src",
+      "controllers",
+      "scripts",
+      "vendor",
+      "test/conftest.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.81,
+    "label": "final-strict-compile",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-strict-compile.log",
+    "log_sha256": "6c4eae318bdcd7c995806eab7418b679319971e6d69b7a69a90782c213d21c77",
+    "log_bytes": 93,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "env",
+      "TA_INCLUDE_PATH=/opt/homebrew/opt/ta-lib/include",
+      "TA_LIBRARY_PATH=/opt/homebrew/opt/ta-lib/lib",
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.15"
+    ],
+    "exit_code": 0,
+    "seconds": 204.99,
+    "label": "final-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-sync.log",
+    "log_sha256": "c4acc70dce0d7be433099db8b8bb97b1f8bcb4aa3815854795a8c2726e7e56b3",
+    "log_bytes": 4021,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test"
+    ],
+    "exit_code": 2,
+    "seconds": 14.73,
+    "label": "final-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-tests.log",
+    "log_sha256": "fa5973222834adc2bf9250b1ec0ef6b8601e025aa4bc23d4f6e2c7c1af15aa11",
+    "log_bytes": 7482,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-c",
+      "from pathlib import Path;import zipfile;w=max(Path('dist').glob('*.whl'),key=lambda p:p.stat().st_mtime);z=zipfile.ZipFile(w);names=z.namelist();native=[n for n in names if n.endswith('.so')];python=[n for n in names if n.endswith('.py')];assert len(native)==61;assert len(python)==902;assert 'hummingbot/VERSION' in names;assert not any('/__pycache__/' in n for n in names);print(w.name,'native modules',len(native),'Python modules',len(python),'size',w.stat().st_size)"
+    ],
+    "exit_code": 0,
+    "seconds": 0.08,
+    "label": "final-wheel-inventory-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-wheel-inventory-2.log",
+    "log_sha256": "0609e08f01fe8f71e7eb48ce3d7daf8e563399c00af32e3457c42a9afee9fff3",
+    "log_bytes": 598,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-c",
+      "from pathlib import Path;import zipfile;w=max(Path('dist').glob('*.whl'),key=lambda p:p.stat().st_mtime);z=zipfile.ZipFile(w);names=z.namelist();native=[n for n in names if n.endswith('.so')];python=[n for n in names if n.endswith('.py')];assert len(native)==61;assert len(python)==902;assert 'hummingbot/VERSION' in names;assert not any('/__pycache__/' in n for n in names);print(w.name,'native modules',len(native),'Python modules',len(python),'size',w.stat().st_size)"
+    ],
+    "exit_code": 0,
+    "seconds": 0.09,
+    "label": "final-wheel-inventory",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-wheel-inventory.log",
+    "log_sha256": "a8bf87007ea532ce5ec9ce8a4066110f5fa55d5c4b08a3039756264624d871e5",
+    "log_bytes": 598,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/client/command/test_config_command.py::ConfigCommandTest::test_list_configs_pydantic_model",
+      "--tb=short"
+    ],
+    "exit_code": 1,
+    "seconds": 5.35,
+    "label": "formatted-config-focused-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-formatted-config-focused-tests.log",
+    "log_sha256": "648e0030043160ef11cfb96c18ab60f22185866dac1053f6bb71540d43d5af8d",
+    "log_bytes": 3101,
+    "outcome_lines": [
+      "1 failed in 3.80s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test",
+      "--continue-on-collection-errors"
+    ],
+    "exit_code": 1,
+    "seconds": 157.88,
+    "label": "full-current-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-full-current-tests.log",
+    "log_sha256": "80ac4a5f42b83976708f77b6f33a697e7f41224538f85812dd08cd8cc715624e",
+    "log_bytes": 761775,
+    "outcome_lines": [
+      "72 failed, 3911 passed, 1 skipped, 167 errors, 2 subtests passed in 151.72s (0:02:31)"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test",
+      "--collect-only"
+    ],
+    "exit_code": 2,
+    "seconds": 15.47,
+    "label": "full315-collection",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-full315-collection.log",
+    "log_sha256": "a5ff0dd3cb3debfdddd2c9d5f94d1eacbda058508b93d26883580e26945a4090",
+    "log_bytes": 893277,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test",
+      "--continue-on-collection-errors"
+    ],
+    "exit_code": 1,
+    "seconds": 220.23,
+    "label": "full315-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-full315-tests.log",
+    "log_sha256": "3f83ffc1d525022169860894b37fc7077102504de865a05e6952153505c38e47",
+    "log_bytes": 1836175,
+    "outcome_lines": [
+      "231 failed, 2644 passed, 303 errors in 214.65s (0:03:34)"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "/tmp/bots-normalize-import-whitespace.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.85,
+    "label": "imported-source-whitespace",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-imported-source-whitespace.log",
+    "log_sha256": "925066a425f980efa8f84f3ffdd3d830826d2e4a97eaa059e4b941db79e7cc59",
+    "log_bytes": 140,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "env",
+      "TA_INCLUDE_PATH=/opt/homebrew/opt/ta-lib/include",
+      "TA_LIBRARY_PATH=/opt/homebrew/opt/ta-lib/lib",
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.15"
+    ],
+    "exit_code": 0,
+    "seconds": 110.8,
+    "label": "latest-pandas-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-latest-pandas-sync.log",
+    "log_sha256": "2b0250a400ed2837ad7057d02c545651681dfbb8067fa438d345fbbc5d825e90",
+    "log_bytes": 550,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-W",
+      "error",
+      "-m",
+      "compileall",
+      "-q",
+      "-f",
+      "vendor"
+    ],
+    "exit_code": 0,
+    "seconds": 1.24,
+    "label": "latest-vendor-compile",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-latest-vendor-compile.log",
+    "log_sha256": "79525c230c3d7a388b3dfa3f78ad77c99dbbf6de7123362ed28dd5b4937d5a87",
+    "log_bytes": 55,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/core",
+      "test/hummingbot/strategy"
+    ],
+    "exit_code": 1,
+    "seconds": 42.68,
+    "label": "legacy-fixture-tests-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-legacy-fixture-tests-2.log",
+    "log_sha256": "599b25be8c777803852818f85ff0b44bc9059fb12b57c2ceaf25492418fd3230",
+    "log_bytes": 608439,
+    "outcome_lines": [
+      "69 failed, 682 passed, 12 errors in 40.96s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/core",
+      "test/hummingbot/strategy"
+    ],
+    "exit_code": 2,
+    "seconds": 3.56,
+    "label": "legacy-fixture-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-legacy-fixture-tests.log",
+    "log_sha256": "cd0c42749ffa14ff9a2072b8e9ccb22b7b45aef9c69af1554a3b8f469ec7b6b0",
+    "log_bytes": 49101,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--frozen",
+      "--python",
+      "3.15"
+    ],
+    "exit_code": 0,
+    "seconds": 121.47,
+    "label": "lighter-final-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-lighter-final-sync.log",
+    "log_sha256": "16db784c32e1bdde4c1e52a637da3af47e8e788d1869e580c7716156336dd679",
+    "log_bytes": 1126,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "lock",
+      "--upgrade"
+    ],
+    "exit_code": 0,
+    "seconds": 2.7,
+    "label": "lighter-source-lock",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-lighter-source-lock.log",
+    "log_sha256": "e3e130e69bcc582c7f7453d53b48c5e4fe12c651ca4edc6f5fe04b2f8a748464",
+    "log_bytes": 549,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "lock",
+      "--upgrade",
+      "--python",
+      "3.13"
+    ],
+    "exit_code": 0,
+    "seconds": 0.87,
+    "label": "lock-3.13",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-lock-3.13.log",
+    "log_sha256": "e23e5aff33a36bf4f68a8ccf2e286874418ed7bfe6adea27bfc4dcabcc4226b3",
+    "log_bytes": 87,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "lock",
+      "--upgrade",
+      "--python",
+      "3.14"
+    ],
+    "exit_code": 0,
+    "seconds": 0.41,
+    "label": "lock-3.14",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-lock-3.14.log",
+    "log_sha256": "938bd609452597f58b61cdbe600a8ded9497a45b1ab4867ab5cb2d5afdf8db55",
+    "log_bytes": 151,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "lock",
+      "--upgrade",
+      "--python",
+      "3.15"
+    ],
+    "exit_code": 0,
+    "seconds": 14.71,
+    "label": "lock-3.15",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-lock-3.15.log",
+    "log_sha256": "f250c91d7f6d0c5e7fab5b7e3135795bb46420d3b62e2202c734959e58aa4422",
+    "log_bytes": 3892,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/core/data_type/test_order_book.py",
+      "test/hummingbot/core/event/test_event_logger.py",
+      "test/hummingbot/core/event/test_event_forwarder.py",
+      "test/hummingbot/core/test_clock.py"
+    ],
+    "exit_code": 4,
+    "seconds": 0.61,
+    "label": "native315-core",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-native315-core.log",
+    "log_sha256": "a7877aa444a2c453c560a9e0bd176140e520ceae9277adc6a4223afc43a8d297",
+    "log_bytes": 321,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/core/data_type/test_order_book.py",
+      "test/hummingbot/core/test_clock.py"
+    ],
+    "exit_code": 0,
+    "seconds": 4.17,
+    "label": "native315-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-native315-tests.log",
+    "log_sha256": "a7cdcb5d45437807708703d745247aaccece0cfe70cd4a46065a519a9d7b8530",
+    "log_bytes": 213,
+    "outcome_lines": [
+      "13 passed in 3.42s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/core/utils/test_trading_pair_fetcher.py",
+      "test/hummingbot/data_feed/candles_feed/btc_markets_spot_candles",
+      "test/test_isolated_asyncio_wrapper_test_case.py",
+      "test/test_logger_mixin_for_test.py",
+      "test/hummingbot/connector/derivative/bitmart_perpetual",
+      "test/hummingbot/connector/derivative/evedex_perpetual",
+      "--tb=short"
+    ],
+    "exit_code": 1,
+    "seconds": 53.47,
+    "label": "observed-loop-ownership-focused-tests-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-observed-loop-ownership-focused-tests-2.log",
+    "log_sha256": "f8400aa847a88e108346d9d839ab1cc9d04b1bae09d0f7c1b147e4526cc2bd32",
+    "log_bytes": 18743,
+    "outcome_lines": [
+      "2 failed, 394 passed in 40.58s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/core/utils/test_trading_pair_fetcher.py",
+      "test/hummingbot/data_feed/candles_feed/btc_markets_spot_candles",
+      "test/test_isolated_asyncio_wrapper_test_case.py",
+      "test/test_logger_mixin_for_test.py",
+      "test/hummingbot/connector/derivative/bitmart_perpetual",
+      "test/hummingbot/connector/derivative/evedex_perpetual",
+      "--tb=short"
+    ],
+    "exit_code": 0,
+    "seconds": 103.08,
+    "label": "observed-loop-ownership-focused-tests-3",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-observed-loop-ownership-focused-tests-3.log",
+    "log_sha256": "c23d2e08b378d64e003d1079c36d0cffb31abe2dfa9267643e41186d7402762b",
+    "log_bytes": 863,
+    "outcome_lines": [
+      "396 passed in 81.15s (0:01:21)"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/core/utils/test_trading_pair_fetcher.py",
+      "test/test_isolated_asyncio_wrapper_test_case.py",
+      "test/hummingbot/logger",
+      "test/hummingbot/data_feed/candles_feed/btc_markets_spot_candles",
+      "test/hummingbot/connector/exchange/bitmart",
+      "test/hummingbot/connector/exchange/evedex",
+      "--tb=short"
+    ],
+    "exit_code": 4,
+    "seconds": 0.62,
+    "label": "observed-loop-ownership-focused-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-observed-loop-ownership-focused-tests.log",
+    "log_sha256": "1b9be719e67a5e7d538f482b5026cbff96e304a1a42dbaf85c89b869a03316c3",
+    "log_bytes": 418,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.14"
+    ],
+    "exit_code": 1,
+    "seconds": 2.16,
+    "label": "override-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-override-sync.log",
+    "log_sha256": "a3c111cc3dee5efde8768120471720250c3282783bb4e417821b05a045b6aff0",
+    "log_bytes": 1814,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/core/utils/test_map_df_to_str.py"
+    ],
+    "exit_code": 0,
+    "seconds": 2.78,
+    "label": "pandas315-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-pandas315-tests.log",
+    "log_sha256": "52221b9b400b00f3cf465d933170692c3420d6436663797f9e3a9b2eff3e2399",
+    "log_bytes": 176,
+    "outcome_lines": [
+      "2 passed in 1.63s"
+    ]
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.15.0"
+    ],
+    "exit_code": 0,
+    "seconds": 73.16,
+    "label": "protobuf-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-protobuf-sync.log",
+    "log_sha256": "774f9729749af77fca2480401ee1d080f4186fa67410736d9b868892e064320e",
+    "log_bytes": 424,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "env",
+      "TA_INCLUDE_PATH=/opt/homebrew/opt/ta-lib/include",
+      "TA_LIBRARY_PATH=/opt/homebrew/opt/ta-lib/lib",
+      "uv",
+      "build",
+      "--python",
+      "3.15"
+    ],
+    "exit_code": 0,
+    "seconds": 246.43,
+    "label": "python315-build",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-python315-build.log",
+    "log_sha256": "282ccfd81bc20f4c7f0c3f4cdd01e2e29b041f5058aa839a72286139b6b1116d",
+    "log_bytes": 782114,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv315/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/core"
+    ],
+    "exit_code": -11,
+    "seconds": 23.89,
+    "label": "python315-core",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-python315-core.log",
+    "log_sha256": "e691b2574a4a404bfd01d455371a72ca430f7f873327232eeeb6d0d23afef65f",
+    "log_bytes": 15764,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.15",
+      "--dry-run"
+    ],
+    "exit_code": 0,
+    "seconds": 0.13,
+    "label": "python315-probe",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-python315-probe.log",
+    "log_sha256": "d29e38793303b7df0de827922d4033a4681b9064496cdaa51e50d0c0d6e8c782",
+    "log_bytes": 3225,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "env",
+      "UV_PROJECT_ENVIRONMENT=.venv315",
+      "TA_INCLUDE_PATH=/opt/homebrew/opt/ta-lib/include",
+      "TA_LIBRARY_PATH=/opt/homebrew/opt/ta-lib/lib",
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.15"
+    ],
+    "exit_code": 1,
+    "seconds": 188.12,
+    "label": "python315-sync-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-python315-sync-2.log",
+    "log_sha256": "a4b357d3b0dd185dc1b08e57fe84f382a74245e6ac33f1e95d8ca6288f7fc944",
+    "log_bytes": 82635,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "env",
+      "UV_PROJECT_ENVIRONMENT=.venv315",
+      "TA_INCLUDE_PATH=/opt/homebrew/opt/ta-lib/include",
+      "TA_LIBRARY_PATH=/opt/homebrew/opt/ta-lib/lib",
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.15"
+    ],
+    "exit_code": 0,
+    "seconds": 275.58,
+    "label": "python315-sync-3",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-python315-sync-3.log",
+    "log_sha256": "8d1b77a7b663af98dccd5e824f165dfdecaac8bd5f5dfa026ffb5cb553c3ab9d",
+    "log_bytes": 3600,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "env",
+      "UV_PROJECT_ENVIRONMENT=.venv315",
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.15"
+    ],
+    "exit_code": 1,
+    "seconds": 50.88,
+    "label": "python315-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-python315-sync.log",
+    "log_sha256": "1201e401ae50910ae278cf7f281f479df5c95774eab5a412b033910f758f0ba3",
+    "log_bytes": 5206,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv315/bin/python",
+      "-m",
+      "pytest",
+      "test"
+    ],
+    "exit_code": 2,
+    "seconds": 43.93,
+    "label": "python315-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-python315-tests.log",
+    "log_sha256": "1d21ad0e5566fdab8d9ff3d1f45ef613db820b1ce0108b1e4289969ccd85db01",
+    "log_bytes": 5767,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/exchange/ndax",
+      "test/hummingbot/connector/exchange/foxbit/test_foxbit_user_stream_data_source.py",
+      "test/hummingbot/connector/exchange/foxbit/test_foxbit_exchange.py",
+      "--tb=short"
+    ],
+    "exit_code": 1,
+    "seconds": 34.26,
+    "label": "remaining-api-focused-tests-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-remaining-api-focused-tests-2.log",
+    "log_sha256": "581f296b531253e408f4a1807f1b060f43841c2fb4795509642323c23e767496",
+    "log_bytes": 1612,
+    "outcome_lines": [
+      "1 failed, 124 passed in 33.03s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/exchange/ndax",
+      "test/hummingbot/connector/exchange/foxbit/test_foxbit_user_stream_data_source.py",
+      "test/hummingbot/connector/exchange/foxbit/test_foxbit_exchange.py",
+      "test/hummingbot/connector/derivative/binance_perpetual/test_binance_perpetual_user_stream_data_source.py",
+      "test/hummingbot/connector/derivative/aevo_perpetual/test_aevo_perpetual_api_user_stream_data_source.py",
+      "test/hummingbot/data_feed/candles_feed/lighter_perpetual_candles",
+      "test/hummingbot/data_feed/candles_feed/lighter_spot_candles",
+      "test/hummingbot/client/command/test_config_command.py",
+      "test/hummingbot/strategy/cross_exchange_market_making/test_cross_exchange_market_making.py",
+      "--tb=short"
+    ],
+    "exit_code": 1,
+    "seconds": 53.74,
+    "label": "remaining-api-focused-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-remaining-api-focused-tests.log",
+    "log_sha256": "03359a900296dabf6f8d9574f3d0a3f9a0059031ffd3d6cba97e47bf6146bd95",
+    "log_bytes": 43634,
+    "outcome_lines": [
+      "11 failed, 271 passed in 51.44s"
+    ]
+  },
+  {
+    "command": [
+      "uv",
+      "lock",
+      "--upgrade"
+    ],
+    "exit_code": 0,
+    "seconds": 2.09,
+    "label": "repaired-315-lock",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-repaired-315-lock.log",
+    "log_sha256": "61e96ddf120256406291dbf49859e54b28a4392f1bdb2eb19ce197944a14bf26",
+    "log_bytes": 158,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--frozen",
+      "--python",
+      "3.15.0"
+    ],
+    "exit_code": 0,
+    "seconds": 112.07,
+    "label": "repaired-315-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-repaired-315-sync.log",
+    "log_sha256": "70446e1578aa0c8bcdd190e36aac03560984521cd34b5e41a08f778218e4dd09",
+    "log_bytes": 4080,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "build",
+      "--python",
+      "3.15"
+    ],
+    "exit_code": 0,
+    "seconds": 270.27,
+    "label": "repaired-final-build",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-repaired-final-build.log",
+    "log_sha256": "2859958d9e96b193dc3162c71339916c9912d187ddc3065a90d3f3499f33e29c",
+    "log_bytes": 782016,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "compileall",
+      "-q",
+      "src",
+      "vendor",
+      "controllers"
+    ],
+    "exit_code": 0,
+    "seconds": 0.45,
+    "label": "repaired-final-compile",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-repaired-final-compile.log",
+    "log_sha256": "854f409c541a3808d36af90365ec87c5a9b65eb422efd3d95c368bb8a464bd97",
+    "log_bytes": 59,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/cli/test_update.py",
+      "test/hummingbot/strategy/test_strategy_v2_base.py",
+      "test/hummingbot/strategy/utils/trailing_indicators/test_historical_volatility.py",
+      "test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_auth.py",
+      "test/hummingbot/strategy_v2/backtesting/test_backtesting_engine_directional.py"
+    ],
+    "exit_code": 1,
+    "seconds": 8.1,
+    "label": "repaired-final-tests-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-repaired-final-tests-2.log",
+    "log_sha256": "66ed57f5d24b7646f262a7a2899f1e7d8e32c6a998c0b9806a6530e6d1ef81f3",
+    "log_bytes": 9920,
+    "outcome_lines": [
+      "1 failed, 51 passed in 6.52s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/cli/test_update.py",
+      "test/hummingbot/strategy/test_strategy_v2_base.py",
+      "test/hummingbot/strategy/utils/trailing_indicators/test_historical_volatility.py",
+      "test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_auth.py",
+      "test/hummingbot/strategy_v2/backtesting/test_backtesting_engine_directional.py",
+      "test/hummingbot/core/utils/test_async_utils.py"
+    ],
+    "exit_code": 4,
+    "seconds": 1.03,
+    "label": "repaired-final-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-repaired-final-tests.log",
+    "log_sha256": "e61e5bd5c68b3cae174c398b80a9b7c980bebd39d7cfe3768f8cf00ecfc7e535",
+    "log_bytes": 524,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/cli/test_update.py",
+      "test/hummingbot/strategy/test_strategy_v2_base.py",
+      "test/hummingbot/strategy/utils/trailing_indicators/test_historical_volatility.py",
+      "test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_auth.py",
+      "test/hummingbot/strategy_v2/backtesting/test_backtesting_engine_directional.py"
+    ],
+    "exit_code": 1,
+    "seconds": 15.19,
+    "label": "repaired-focused-tests-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-repaired-focused-tests-2.log",
+    "log_sha256": "37415cf681c0c19cce70188ae2302b8f93a43165d71aabed42f8a6c11dfc624e",
+    "log_bytes": 7763,
+    "outcome_lines": [
+      "1 failed, 51 passed in 11.05s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/cli/test_update.py",
+      "test/hummingbot/strategy/test_strategy_v2_base.py",
+      "test/hummingbot/strategy/utils/trailing_indicators/test_historical_volatility.py",
+      "test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_auth.py",
+      "test/hummingbot/strategy_v2/backtesting/test_backtesting_engine_directional.py"
+    ],
+    "exit_code": 0,
+    "seconds": 11.99,
+    "label": "repaired-focused-tests-3",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-repaired-focused-tests-3.log",
+    "log_sha256": "4e92055ba74cde726f259ef896be7c26d374e792df7a2eb812ee1208e6b51522",
+    "log_bytes": 469,
+    "outcome_lines": [
+      "52 passed in 9.18s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/cli/test_update.py",
+      "test/hummingbot/strategy/test_strategy_v2_base.py",
+      "test/hummingbot/strategy/utils/trailing_indicators/test_historical_volatility.py",
+      "test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_auth.py",
+      "test/hummingbot/strategy_v2/backtesting/test_backtesting_engine_directional.py"
+    ],
+    "exit_code": 1,
+    "seconds": 11.59,
+    "label": "repaired-focused-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-repaired-focused-tests.log",
+    "log_sha256": "fd5bf21e892a0d69d9a44488096ad81c27e7532bfc6ed899861fb252ee974d6d",
+    "log_bytes": 10147,
+    "outcome_lines": [
+      "2 failed, 50 passed in 8.21s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test",
+      "--continue-on-collection-errors"
+    ],
+    "exit_code": 1,
+    "seconds": 753.85,
+    "label": "repaired-full-tests-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-repaired-full-tests-2.log",
+    "log_sha256": "a62a3c1a7ad746e44a63f1148a757e2ecf700f4ab473e82c39dcbf51a9018c1d",
+    "log_bytes": 6651374,
+    "outcome_lines": [
+      "126 failed, 8529 passed, 1 skipped, 5 errors, 2 subtests passed in 735.65s (0:12:15)"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test"
+    ],
+    "exit_code": 2,
+    "seconds": 16.23,
+    "label": "repaired-full-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-repaired-full-tests.log",
+    "log_sha256": "d56c22cfb8b6b503a4b7501a2aedb3559cd9e85d05366f737e8b0eef12f14a2c",
+    "log_bytes": 11534,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/cli/test_update.py",
+      "test/hummingbot/strategy/test_strategy_v2_base.py",
+      "test/hummingbot/strategy/utils/trailing_indicators/test_historical_volatility.py",
+      "test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_auth.py",
+      "test/hummingbot/strategy_v2/backtesting/test_backtesting_engine_directional.py"
+    ],
+    "exit_code": 1,
+    "seconds": 18.87,
+    "label": "repaired-source-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-repaired-source-tests.log",
+    "log_sha256": "2e4ee4e038ef00e3c6b9077910c578f75497f97ecb295c53cec5510c5fea52d3",
+    "log_bytes": 18390,
+    "outcome_lines": [
+      "1 failed, 51 passed, 1 error in 13.27s"
+    ]
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--frozen",
+      "--python",
+      "3.15",
+      "--reinstall-package",
+      "aioresponses"
+    ],
+    "exit_code": 0,
+    "seconds": 0.58,
+    "label": "repaired-sync-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-repaired-sync-2.log",
+    "log_sha256": "051ddf2e836831f1e696fcfaebfeba74cd967ede12d5d2c439086cc80302f8b2",
+    "log_bytes": 460,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.15",
+      "--reinstall-package",
+      "aioresponses"
+    ],
+    "exit_code": 0,
+    "seconds": 1.57,
+    "label": "repaired-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-repaired-sync.log",
+    "log_sha256": "1b266ff7197fa20f3a471b49246ac764b24c9367fb274cec8eea3746e2a36071",
+    "log_bytes": 784,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--frozen",
+      "--python",
+      "3.15.0",
+      "--reinstall-package",
+      "aioresponses"
+    ],
+    "exit_code": 0,
+    "seconds": 0.45,
+    "label": "response-fixture-reinstall",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-response-fixture-reinstall.log",
+    "log_sha256": "964509c3ce102efe901871226fe73f991017eaa6937d419a20230580b0e7754c",
+    "log_bytes": 465,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.15.0"
+    ],
+    "exit_code": 0,
+    "seconds": 99.27,
+    "label": "response-fixture-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-response-fixture-sync.log",
+    "log_sha256": "ab42d49d8b22910451b0ea264a19357c15454012b500358571b573ae17993a14",
+    "log_bytes": 745,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--frozen",
+      "--python",
+      "3.15.0",
+      "--reinstall-package",
+      "aioresponses"
+    ],
+    "exit_code": 0,
+    "seconds": 0.45,
+    "label": "response-reinstall-final",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-response-reinstall-final.log",
+    "log_sha256": "71f363c3636b54fc3a840933b2c8675dfaef58d05e6e1342398998e5bceebadb",
+    "log_bytes": 462,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/core/utils/test_map_df_to_str.py",
+      "test/hummingbot/data_feed/candles_feed/binance_spot_candles/test_binance_spot_candles.py"
+    ],
+    "exit_code": 0,
+    "seconds": 2.04,
+    "label": "response-supported-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-response-supported-tests.log",
+    "log_sha256": "3d603a69974afa95b9f7ebbe7f40472568d479c6a4304419f954b34ed064ee73",
+    "log_bytes": 266,
+    "outcome_lines": [
+      "36 passed in 1.23s"
+    ]
+  },
+  {
+    "command": [
+      "uv",
+      "build",
+      "--project",
+      "vendor/aioresponses",
+      "--wheel",
+      "--out-dir",
+      "dist/aioresponses"
+    ],
+    "exit_code": 0,
+    "seconds": 0.34,
+    "label": "response-wheel",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-response-wheel.log",
+    "log_sha256": "77800d9d2bf7c6ae0f1663249714788dbbfbb20a26fc914a822c7cfe0b5a1d4f",
+    "log_bytes": 174,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test",
+      "--continue-on-collection-errors",
+      "--tb=short"
+    ],
+    "exit_code": 0,
+    "seconds": 901.32,
+    "label": "resumed-final-existing-full-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-resumed-final-existing-full-tests.log",
+    "log_sha256": "5d2a082a41cfa8f80bc7800b30b15e579cf8f664fd48549f5e3e922ee7403873",
+    "log_bytes": 10167,
+    "outcome_lines": [
+      "8802 passed, 1 skipped, 2 subtests passed in 901.32s (0:15:01)"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-W",
+      "error",
+      "-m",
+      "compileall",
+      "-q",
+      "src",
+      "controllers",
+      "scripts",
+      "vendor",
+      "test/conftest.py"
+    ],
+    "exit_code": 0,
+    "label": "resumed-final-strict-compile",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-resumed-final-strict-compile.log",
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "log_bytes": 0,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "build"
+    ],
+    "exit_code": 0,
+    "label": "resumed-final-wheel-build",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-resumed-final-wheel-build.log",
+    "log_sha256": "efea520ae57598463927fcca5427d8266d891d26b968593c07e8d9058b6375f6",
+    "log_bytes": 781991,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/derivative/injective_v2_perpetual",
+      "test/hummingbot/connector/derivative/dydx_v4_perpetual",
+      "--tb=short"
+    ],
+    "exit_code": 1,
+    "seconds": 47.92,
+    "label": "scoped-protobuf-focused-tests-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-scoped-protobuf-focused-tests-2.log",
+    "log_sha256": "588ba07a279db4e4d99a7ec72544429a0f0300f00d5d9c27d64b97fd649a5f9b",
+    "log_bytes": 63669,
+    "outcome_lines": [
+      "17 failed, 141 passed in 45.79s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/derivative/injective_v2_perpetual",
+      "test/hummingbot/connector/exchange/injective_v2",
+      "test/hummingbot/connector/derivative/dydx_v4_perpetual",
+      "--tb=short"
+    ],
+    "exit_code": 1,
+    "seconds": 49.64,
+    "label": "scoped-protobuf-focused-tests-3",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-scoped-protobuf-focused-tests-3.log",
+    "log_sha256": "1903c952dfc27340618c24c8242d4fb04098bef19f4fcc867721da435d4447f3",
+    "log_bytes": 13900,
+    "outcome_lines": [
+      "2 failed, 241 passed, 8 errors in 47.75s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/derivative/injective_v2_perpetual",
+      "test/hummingbot/connector/derivative/dydx_v4_perpetual",
+      "--tb=short"
+    ],
+    "exit_code": 2,
+    "seconds": 4.4,
+    "label": "scoped-protobuf-focused-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-scoped-protobuf-focused-tests.log",
+    "log_sha256": "b38dff7ec60468fa6b02ff664412c94028fe3dbc9c1cdfc1bcdb6de6578a2d79",
+    "log_bytes": 10671,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "lock",
+      "--upgrade"
+    ],
+    "exit_code": 0,
+    "seconds": 1.69,
+    "label": "scoped-protobuf-lock",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-scoped-protobuf-lock.log",
+    "log_sha256": "e7c4019562e02d7eacc285df1893bb233559c2220b0de29d8e3078b0fd009f13",
+    "log_bytes": 210,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--dev",
+      "--reinstall-package",
+      "injective-py"
+    ],
+    "exit_code": 0,
+    "seconds": 1.33,
+    "label": "scoped-protobuf-refresh-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-scoped-protobuf-refresh-2.log",
+    "log_sha256": "a5686cb729690aeedfff0c81966863084507b66823f0154f3f40dd885bdb53b5",
+    "log_bytes": 476,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--dev",
+      "--reinstall-package",
+      "injective-py"
+    ],
+    "exit_code": 0,
+    "seconds": 1.29,
+    "label": "scoped-protobuf-refresh",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-scoped-protobuf-refresh.log",
+    "log_sha256": "be090f69305d94988bc204dda484bcbfa6310d7eb46181e39e9657ac03c97594",
+    "log_bytes": 477,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--dev",
+      "--reinstall-package",
+      "injective-py"
+    ],
+    "exit_code": 0,
+    "seconds": 125.66,
+    "label": "scoped-protobuf-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-scoped-protobuf-sync.log",
+    "log_sha256": "fb6ecaa40d25fc755e4076cb92cc9582e28657c0de7f32f76c5b66c8394d0d84",
+    "log_bytes": 922,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-c",
+      "import ast,hashlib,io,pathlib,urllib.request,zipfile;url='https://files.pythonhosted.org/packages/d6/eb/0cfab54e116152ad021222c36e4d8067a6193c7735e54cfb64429511a26a/injective_py-1.16.2-py3-none-any.whl';data=urllib.request.urlopen(url).read();digest=hashlib.sha256(data).hexdigest();assert digest=='8aacf4e628cefb5091c701855ac64f0ec3e12b8c23bfe85b91d965edf9e2f9b3';z=zipfile.ZipFile(io.BytesIO(data));extract=lambda s:[ast.literal_eval(n.args[0]) for n in ast.walk(ast.parse(s)) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr=='AddSerializedFile'];pairs=[(n,pathlib.Path('vendor/injective-py/src')/n) for n in z.namelist() if n.startswith('pyinjective/') and n.endswith('_pb2.py')];assert len(pairs)==403;assert all(extract(z.read(n).decode())==extract(p.read_text()) for n,p in pairs);print('verified original wheel SHA256',digest,'and byte-identical serialized schemas for',len(pairs),'generated modules')"
+    ],
+    "exit_code": 0,
+    "seconds": 1.92,
+    "label": "scoped-schema-provenance-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-scoped-schema-provenance-2.log",
+    "log_sha256": "dd26cef42ef9d000d1cf147737a3976e5e5c0d80a10aec8c441ced5b2bb8758c",
+    "log_bytes": 1124,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-c",
+      "import ast,hashlib,io,pathlib,urllib.request,zipfile;url='https://files.pythonhosted.org/packages/d6/eb/0cfab54e116152ad021222c36e4d8067a6193c7735e54cfb64429511a26a/injective_py-1.16.2-py3-none-any.whl';data=urllib.request.urlopen(url).read();digest=hashlib.sha256(data).hexdigest();assert digest=='8aacf4e628cefb5091c701855ac64f0ec3e12b8c23bfe85b91d965edf9e2f9b3';z=zipfile.ZipFile(io.BytesIO(data));extract=lambda s:[ast.literal_eval(n.args[0]) for n in ast.walk(ast.parse(s)) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr=='AddSerializedFile'];pairs=[(n,pathlib.Path('vendor/injective-py/src')/n) for n in z.namelist() if n.startswith('pyinjective/') and n.endswith('_pb2.py')];assert len(pairs)==403;assert all(extract(z.read(n).decode())==extract(p.read_text()) for n,p in pairs);print('verified original wheel SHA256',digest,'and byte-identical serialized schemas for',len(pairs),'generated modules')"
+    ],
+    "exit_code": 0,
+    "seconds": 0.79,
+    "label": "scoped-schema-provenance",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-scoped-schema-provenance.log",
+    "log_sha256": "dd26cef42ef9d000d1cf147737a3976e5e5c0d80a10aec8c441ced5b2bb8758c",
+    "log_bytes": 1124,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/derivative/gate_io_perpetual",
+      "test/hummingbot/connector/derivative/grvt_perpetual",
+      "test/hummingbot/connector/exchange/coinbase_advanced_trade",
+      "test/hummingbot/connector/exchange/gemini",
+      "--tb=short"
+    ],
+    "exit_code": 1,
+    "seconds": 84.72,
+    "label": "ssl-resource-focused-tests-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-ssl-resource-focused-tests-2.log",
+    "log_sha256": "dd1c3f3c321c96289a7bacb15aad608f2ab77a8019c7e6c4fa6cac8038e635b3",
+    "log_bytes": 13935,
+    "outcome_lines": [
+      "3 failed, 540 passed in 83.29s (0:01:23)"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/connector/derivative/gate_io_perpetual",
+      "test/hummingbot/connector/derivative/grvt_perpetual",
+      "test/hummingbot/connector/exchange/coinbase_advanced_trade",
+      "test/hummingbot/connector/exchange/gemini",
+      "--tb=short"
+    ],
+    "exit_code": 1,
+    "seconds": 86.21,
+    "label": "ssl-resource-focused-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-ssl-resource-focused-tests.log",
+    "log_sha256": "71fdfd3b9225fc1fa92393e7e63a643ccdfbaefa1c4221239ee9fc7af2d5b18e",
+    "log_bytes": 29585,
+    "outcome_lines": [
+      "5 failed, 538 passed in 84.57s (0:01:24)"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-W",
+      "error",
+      "-m",
+      "compileall",
+      "-q",
+      "src",
+      "controllers",
+      "scripts",
+      "vendor"
+    ],
+    "exit_code": 0,
+    "seconds": 1.73,
+    "label": "strict-source-compile",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-strict-source-compile.log",
+    "log_sha256": "31f0fa59aa692aa29708f80d0a0b63b213896bc2cbfc7f2579f6db17aa74d304",
+    "log_bytes": 76,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.13"
+    ],
+    "exit_code": 1,
+    "seconds": 1.7,
+    "label": "sync-3.13",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-sync-3.13.log",
+    "log_sha256": "7017d48ca14e5fc08f053927906f237e3b361f074e09d270ea1f1971a084a4f8",
+    "log_bytes": 1199,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.14"
+    ],
+    "exit_code": 1,
+    "seconds": 2.6,
+    "label": "sync-3.14",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-sync-3.14.log",
+    "log_sha256": "8dc2a9e696a92e2cff94058099ee12b2b799b2c86fbe83fd6cd6c69b06d4058e",
+    "log_bytes": 2345,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.15"
+    ],
+    "exit_code": 1,
+    "seconds": 8.78,
+    "label": "sync-3.15",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-sync-3.15.log",
+    "log_sha256": "70966236d81b5fb196ac2cdd41c616976cb24e830479f82ce1c94b6172a165f4",
+    "log_bytes": 5484,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/data_feed/candles_feed/btc_markets_spot_candles",
+      "test/test_isolated_asyncio_wrapper_test_case.py",
+      "test/test_logger_mixin_for_test.py",
+      "test/hummingbot/connector/derivative/bitmart_perpetual",
+      "test/hummingbot/connector/derivative/evedex_perpetual",
+      "--tb=short"
+    ],
+    "exit_code": 0,
+    "seconds": 39.98,
+    "label": "task-ownership-focused-tests-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-task-ownership-focused-tests-2.log",
+    "log_sha256": "ae7e1f9ef4e7026dc89e3035a883c80471eae33df75a592e03ea393b4b05da29",
+    "log_bytes": 797,
+    "outcome_lines": [
+      "392 passed in 36.03s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test/hummingbot/data_feed/candles_feed/btc_markets_spot_candles",
+      "test/test_isolated_asyncio_wrapper_test_case.py",
+      "test/test_logger_mixin_for_test.py",
+      "test/hummingbot/connector/derivative/bitmart_perpetual",
+      "test/hummingbot/connector/derivative/evedex_perpetual",
+      "--tb=short"
+    ],
+    "exit_code": 1,
+    "seconds": 40.84,
+    "label": "task-ownership-focused-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-task-ownership-focused-tests.log",
+    "log_sha256": "4827371bea22b183a26be098a1598ca51c30ac82a0348102d1a20fa62ac9788e",
+    "log_bytes": 27921,
+    "outcome_lines": [
+      "2 failed, 390 passed in 36.64s"
+    ]
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test"
+    ],
+    "exit_code": 3,
+    "seconds": 17.79,
+    "label": "tests-2",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-tests-2.log",
+    "log_sha256": "a7c28b2ba19d99c961c30fe01f25ebb81c27994eda864600bf003b5e27adcdba",
+    "log_bytes": 3942,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "<workspace>/hummingbot/.venv/bin/python",
+      "-m",
+      "pytest",
+      "test"
+    ],
+    "exit_code": 1,
+    "seconds": 0.04,
+    "label": "tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-tests.log",
+    "log_sha256": "e4e371db0637c2a4fdbdd48b108bbc58cf7f1a92745dbe3f9bff9d5ca6f971c5",
+    "log_bytes": 159,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pytest",
+      "test",
+      "--continue-on-collection-errors"
+    ],
+    "exit_code": 1,
+    "seconds": 160.22,
+    "label": "updated-full-tests",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-updated-full-tests.log",
+    "log_sha256": "1d7a13101e95b2b7d36d006c0b6293c1fd0f0111880983e1783cb75308821119",
+    "log_bytes": 761570,
+    "outcome_lines": [
+      "72 failed, 3911 passed, 1 skipped, 167 errors, 2 subtests passed in 156.26s (0:02:36)"
+    ]
+  },
+  {
+    "command": [
+      "uv",
+      "sync",
+      "--all-extras",
+      "--python",
+      "3.14"
+    ],
+    "exit_code": 0,
+    "seconds": 147.35,
+    "label": "upstream-coincurve-sync",
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-upstream-coincurve-sync.log",
+    "log_sha256": "d64c4d0d02329e5d46b1ec20c78d5713f5c4e7eefd55e4a491ec74c927807547",
+    "log_bytes": 3860,
+    "outcome_lines": []
+  }
+]

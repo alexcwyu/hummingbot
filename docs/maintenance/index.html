@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>hummingbot: portable verification records</title><style>html{color-scheme:light dark}body{margin:0;background:#f5f7fa;color:#172333;font:16px/1.7 system-ui,sans-serif}main{max-width:1120px;margin:28px auto;background:white;padding:40px;border:1px solid #dbe2ea;border-radius:10px}h1,h2,h3{line-height:1.25}h2{margin-top:2em;border-bottom:1px solid #dbe2ea;padding-bottom:.4em}a{color:#1769aa}pre{overflow:auto;padding:16px;background:#f5f7fa;border:1px solid #dbe2ea;border-radius:6px}code{font:14px/1.6 ui-monospace,monospace}table{border-collapse:collapse;display:block;overflow:auto}th,td{border:1px solid #dbe2ea;padding:8px 12px;text-align:left;vertical-align:top}blockquote{margin-left:0;border-left:4px solid #1769aa;padding-left:18px}@media(max-width:700px){main{margin:8px;padding:18px}body{font-size:15px}}@media(prefers-color-scheme:dark){body{background:#111820;color:#e7edf5}main{background:#192330;border-color:#344354}pre{background:#111820}a{color:#78b9ef}th,td,h2,pre{border-color:#344354}}@media print{main{margin:0;border:0;padding:0}a{color:inherit}pre,table{overflow:visible}}</style></head><body><main><h1 id="hummingbot-portable-verification-records">hummingbot: portable verification records</h1>
+<p>These records retain exact commands, outcomes, original-log hashes and available source snapshots. Failed, interrupted and earlier exploratory commands remain visible. A later focused pass proves only its own scope.</p>
+<p><a href="verification.json">Machine-readable records</a> · <a href="../validation.md">Validation</a> · <a href="../ayu-develop.md">Engineering guide</a></p>
+<p>Original logs remain in the workspace maintenance evidence. Tracked source hashes exclude untracked additions and later edits, as stated in each captured snapshot.</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th style="text-align: right;">Exit</th>
+<th style="text-align: right;">Duration</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>async-fixture-focused-tests-2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.6s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_exchange.py::CoinbaseAdvancedTradeExchangeTests::test_lost_order_included_in_order_fills_update_and_not_in_order_status_update test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_exchange.py::CoinbaseAdvancedTradeExchangeTests::test_update_order_status_when_canceled test/hummingbot/connector/derivative/grvt_perpetual/test_grvt_perpetual_derivative.py::GrvtPerpetualDerivativeUnitTests test/hummingbot/connector/test_time_synchronizer.py --tb=short</code></td>
+</tr>
+<tr>
+<td>async-fixture-focused-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.9s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_exchange.py::CoinbaseAdvancedTradeExchangeTests::test_lost_order_included_in_order_fills_update_and_not_in_order_status_update test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_exchange.py::CoinbaseAdvancedTradeExchangeTests::test_update_order_status_when_canceled test/hummingbot/connector/derivative/grvt_perpetual/test_grvt_perpetual_derivative.py::GrvtPerpetualDerivativeUnitTests --tb=short</code></td>
+</tr>
+<tr>
+<td>async-interface-focused-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">21.86s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/test_connector_base.py test/hummingbot/connector/exchange/derive/test_derive_auth.py test/hummingbot/connector/exchange/foxbit/test_foxbit_user_stream_data_source.py test/hummingbot/connector/exchange/ndax/test_ndax_auth.py test/hummingbot/strategy/spot_perpetual_arbitrage/test_spot_perpetual_arbitrage_start.py test/hummingbot/strategy/avellaneda_market_making/test_avellaneda_market_making_start.py test/hummingbot/connector/derivative/kucoin_perpetual/test_kucoin_perpetual_derivative.py test/hummingbot/connector/exchange/xrpl/test_xrpl_transaction_pipeline.py test/hummingbot/connector/exchange/xrpl/test_xrpl_utils.py --tb=short</code></td>
+</tr>
+<tr>
+<td>build-dependency-sync</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6.06s</td>
+<td><code>uv sync --all-extras --python 3.14</code></td>
+</tr>
+<tr>
+<td>build</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">12.99s</td>
+<td><code>uv build --python 3.13</code></td>
+</tr>
+<tr>
+<td>cancel-order-focused-tests</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.3s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/exchange/binance/test_binance_exchange.py::BinanceExchangeTests::test_cancel_two_orders_with_cancel_all_and_one_fails test/hummingbot/connector/derivative/architect_perpetual/test_architect_perpetual_derivative.py::ArchitectPerpetualDerivativeUnitTest::test_cancel_two_orders_with_cancel_all_and_one_fails --tb=short</code></td>
+</tr>
+<tr>
+<td>candles-poll-existing-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">20.75s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/data_feed/candles_feed/btc_markets_spot_candles --tb=short</code></td>
+</tr>
+<tr>
+<td>compatible-sync-2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">508.03s</td>
+<td><code>uv sync --all-extras --python 3.14</code></td>
+</tr>
+<tr>
+<td>compatible-sync-3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">415.73s</td>
+<td><code>uv sync --all-extras --python 3.14</code></td>
+</tr>
+<tr>
+<td>compile</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.93s</td>
+<td><code>&lt;workspace&gt;/hummingbot/.venv/bin/python -m compileall -q src</code></td>
+</tr>
+<tr>
+<td>conservative-ownership-focused-tests</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">43.48s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/data_feed/candles_feed/btc_markets_spot_candles test/test_isolated_asyncio_wrapper_test_case.py test/test_logger_mixin_for_test.py test/hummingbot/connector/derivative/bitmart_perpetual test/hummingbot/connector/derivative/evedex_perpetual --tb=short</code></td>
+</tr>
+<tr>
+<td>core315-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">34.23s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/core test/hummingbot/strategy</code></td>
+</tr>
+<tr>
+<td>coroutine-allocation-diagnostic-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">71.36s</td>
+<td><code>env PYTHONTRACEMALLOC=15 .venv/bin/python -m pytest test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_exchange.py::CoinbaseAdvancedTradeExchangeTests::test_lost_order_included_in_order_fills_update_and_not_in_order_status_update test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_exchange.py::CoinbaseAdvancedTradeExchangeTests::test_update_order_status_when_canceled test/hummingbot/connector/derivative/grvt_perpetual/test_grvt_perpetual_derivative.py --tb=short</code></td>
+</tr>
+<tr>
+<td>corrected-sync</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.25s</td>
+<td><code>uv sync --all-extras --python 3.14</code></td>
+</tr>
+<tr>
+<td>current-api-final-focused-tests-2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">34.48s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/derivative/dydx_v4_perpetual test/hummingbot/connector/exchange/injective_v2 test/hummingbot/connector/exchange/foxbit/test_foxbit_user_stream_data_source.py test/hummingbot/connector/exchange/foxbit/test_foxbit_utils.py test/hummingbot/client/command/test_config_command.py --tb=short</code></td>
+</tr>
+<tr>
+<td>current-api-final-focused-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">18.91s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/derivative/dydx_v4_perpetual test/hummingbot/connector/exchange/foxbit/test_foxbit_user_stream_data_source.py test/hummingbot/client/command/test_config_command.py --tb=short</code></td>
+</tr>
+<tr>
+<td>current-api-focused-tests-2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">27.51s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/core/test_trading_core.py test/hummingbot/core/utils/test_tracking_nonce.py test/hummingbot/core/utils/test_estimate_fee.py test/hummingbot/connector/derivative/lighter_perpetual/test_lighter_perpetual_derivative.py test/hummingbot/connector/exchange/gemini/test_gemini_exchange.py</code></td>
+</tr>
+<tr>
+<td>current-api-focused-tests-3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">51.14s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/core/test_trading_core.py test/hummingbot/core/utils/test_tracking_nonce.py test/hummingbot/core/utils/test_estimate_fee.py test/hummingbot/connector/derivative/lighter_perpetual/test_lighter_perpetual_derivative.py test/hummingbot/connector/exchange/gemini/test_gemini_exchange.py</code></td>
+</tr>
+<tr>
+<td>current-api-focused-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">22.13s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/core/test_trading_core.py test/hummingbot/core/utils/test_tracking_nonce.py test/hummingbot/core/utils/test_estimate_fee.py test/hummingbot/connector/derivative/lighter_perpetual/test_lighter_perpetual_derivative.py</code></td>
+</tr>
+<tr>
+<td>current-full-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">951.07s</td>
+<td><code>.venv/bin/python -m pytest test --continue-on-collection-errors</code></td>
+</tr>
+<tr>
+<td>current-native-build-2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">129.47s</td>
+<td><code>uv build --python 3.15</code></td>
+</tr>
+<tr>
+<td>current-native-sync</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">139.36s</td>
+<td><code>uv sync --all-extras --frozen --python 3.15 --reinstall-package hummingbot</code></td>
+</tr>
+<tr>
+<td>current-sync</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">146.87s</td>
+<td><code>uv sync --all-extras --python 3.14</code></td>
+</tr>
+<tr>
+<td>default-loop-resource-focused-tests</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8.77s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/cli test/hummingbot/client/test_runner.py test/hummingbot/client/ui --tb=short</code></td>
+</tr>
+<tr>
+<td>final-current-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">675.13s</td>
+<td><code>.venv/bin/python -m pytest test --continue-on-collection-errors</code></td>
+</tr>
+<tr>
+<td>final-existing-full-tests</td>
+<td style="text-align: right;">-15</td>
+<td style="text-align: right;">655.48s</td>
+<td><code>.venv/bin/python -m pytest test --continue-on-collection-errors --tb=short -o faulthandler_timeout=60</code></td>
+</tr>
+<tr>
+<td>final-fallback-sync</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">96.0s</td>
+<td><code>uv sync --all-extras --frozen --python 3.14.8</code></td>
+</tr>
+<tr>
+<td>final-lock</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.95s</td>
+<td><code>uv lock --upgrade</code></td>
+</tr>
+<tr>
+<td>final-native-build-2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">97.7s</td>
+<td><code>uv build</code></td>
+</tr>
+<tr>
+<td>final-native-build</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">98.55s</td>
+<td><code>uv build --python 3.15.0</code></td>
+</tr>
+<tr>
+<td>final-native-tests</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4.3s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/core/test_pubsub.py test/hummingbot/core/data_type/test_order_book.py test/hummingbot/core/test_clock.py</code></td>
+</tr>
+<tr>
+<td>final-observed-existing-tests-2</td>
+<td style="text-align: right;">-15</td>
+<td style="text-align: right;">243.9s</td>
+<td><code>env BOTS_REPO=hummingbot .venv/bin/python -c import sys,pytest;sys.path.insert(0,'/tmp');raise SystemExit(pytest.main(['test','--continue-on-collection-errors','--tb=short','-p','bots_test_observer','-o','faulthandler_timeout=60']))</code></td>
+</tr>
+<tr>
+<td>final-observed-existing-tests-3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">950.24s</td>
+<td><code>env BOTS_REPO=hummingbot .venv/bin/python -c import sys,pytest;sys.path.insert(0,'/tmp');raise SystemExit(pytest.main(['test','--continue-on-collection-errors','--tb=short','-p','bots_test_observer','-o','faulthandler_timeout=60']))</code></td>
+</tr>
+<tr>
+<td>final-observed-existing-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">926.86s</td>
+<td><code>env BOTS_REPO=hummingbot .venv/bin/python -c import sys,pytest;sys.path.insert(0,'/tmp');raise SystemExit(pytest.main(['test','--continue-on-collection-errors','--tb=short','-p','bots_test_observer','-o','faulthandler_timeout=60']))</code></td>
+</tr>
+<tr>
+<td>final-resource-contract-tests</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">89.35s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/cli test/hummingbot/client/ui test/hummingbot/client/test_runner.py test/hummingbot/connector/derivative/gate_io_perpetual test/hummingbot/connector/derivative/grvt_perpetual test/hummingbot/connector/exchange/coinbase_advanced_trade test/hummingbot/connector/exchange/gemini test/hummingbot/connector/test_time_synchronizer.py --tb=short</code></td>
+</tr>
+<tr>
+<td>final-resource-focused-tests-3</td>
+<td style="text-align: right;">-15</td>
+<td style="text-align: right;">155.39s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/exchange/foxbit test/hummingbot/connector/exchange/injective_v2 test/hummingbot/connector/derivative/dydx_v4_perpetual test/hummingbot/connector/derivative/injective_v2_perpetual test/hummingbot/client/command/test_config_command.py --tb=short -o faulthandler_timeout=30</code></td>
+</tr>
+<tr>
+<td>final-resource-focused-tests-4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">61.72s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/exchange/foxbit test/hummingbot/connector/exchange/injective_v2 test/hummingbot/connector/derivative/dydx_v4_perpetual test/hummingbot/connector/derivative/injective_v2_perpetual test/hummingbot/client/command/test_config_command.py --tb=short -o faulthandler_timeout=30</code></td>
+</tr>
+<tr>
+<td>final-resource-focused-tests</td>
+<td style="text-align: right;">-15</td>
+<td style="text-align: right;">208.0s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/exchange/foxbit test/hummingbot/connector/exchange/injective_v2 test/hummingbot/connector/derivative/dydx_v4_perpetual test/hummingbot/connector/derivative/injective_v2_perpetual test/hummingbot/client/command/test_config_command.py --tb=short</code></td>
+</tr>
+<tr>
+<td>final-strict-compile-2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.86s</td>
+<td><code>.venv/bin/python -W error -m compileall -q src controllers scripts vendor test/conftest.py</code></td>
+</tr>
+<tr>
+<td>final-strict-compile-3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.64s</td>
+<td><code>.venv/bin/python -W error -m compileall -q src controllers scripts vendor test/conftest.py</code></td>
+</tr>
+<tr>
+<td>final-strict-compile</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.81s</td>
+<td><code>.venv/bin/python -W error -m compileall -q src controllers scripts vendor test/conftest.py</code></td>
+</tr>
+<tr>
+<td>final-sync</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">204.99s</td>
+<td><code>env TA_INCLUDE_PATH=/opt/homebrew/opt/ta-lib/include TA_LIBRARY_PATH=/opt/homebrew/opt/ta-lib/lib uv sync --all-extras --python 3.15</code></td>
+</tr>
+<tr>
+<td>final-tests</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">14.73s</td>
+<td><code>.venv/bin/python -m pytest test</code></td>
+</tr>
+<tr>
+<td>final-wheel-inventory-2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.08s</td>
+<td><code>.venv/bin/python -c from pathlib import Path;import zipfile;w=max(Path('dist').glob('*.whl'),key=lambda p:p.stat().st_mtime);z=zipfile.ZipFile(w);names=z.namelist();native=[n for n in names if n.endswith('.so')];python=[n for n in names if n.endswith('.py')];assert len(native)==61;assert len(python)==902;assert 'hummingbot/VERSION' in names;assert not any('/__pycache__/' in n for n in names);print(w.name,'native modules',len(native),'Python modules',len(python),'size',w.stat().st_size)</code></td>
+</tr>
+<tr>
+<td>final-wheel-inventory</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.09s</td>
+<td><code>.venv/bin/python -c from pathlib import Path;import zipfile;w=max(Path('dist').glob('*.whl'),key=lambda p:p.stat().st_mtime);z=zipfile.ZipFile(w);names=z.namelist();native=[n for n in names if n.endswith('.so')];python=[n for n in names if n.endswith('.py')];assert len(native)==61;assert len(python)==902;assert 'hummingbot/VERSION' in names;assert not any('/__pycache__/' in n for n in names);print(w.name,'native modules',len(native),'Python modules',len(python),'size',w.stat().st_size)</code></td>
+</tr>
+<tr>
+<td>formatted-config-focused-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5.35s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/client/command/test_config_command.py::ConfigCommandTest::test_list_configs_pydantic_model --tb=short</code></td>
+</tr>
+<tr>
+<td>full-current-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">157.88s</td>
+<td><code>.venv/bin/python -m pytest test --continue-on-collection-errors</code></td>
+</tr>
+<tr>
+<td>full315-collection</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">15.47s</td>
+<td><code>.venv/bin/python -m pytest test --collect-only</code></td>
+</tr>
+<tr>
+<td>full315-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">220.23s</td>
+<td><code>.venv/bin/python -m pytest test --continue-on-collection-errors</code></td>
+</tr>
+<tr>
+<td>imported-source-whitespace</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.85s</td>
+<td><code>.venv/bin/python /tmp/bots-normalize-import-whitespace.py</code></td>
+</tr>
+<tr>
+<td>latest-pandas-sync</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">110.8s</td>
+<td><code>env TA_INCLUDE_PATH=/opt/homebrew/opt/ta-lib/include TA_LIBRARY_PATH=/opt/homebrew/opt/ta-lib/lib uv sync --all-extras --python 3.15</code></td>
+</tr>
+<tr>
+<td>latest-vendor-compile</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.24s</td>
+<td><code>.venv/bin/python -W error -m compileall -q -f vendor</code></td>
+</tr>
+<tr>
+<td>legacy-fixture-tests-2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">42.68s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/core test/hummingbot/strategy</code></td>
+</tr>
+<tr>
+<td>legacy-fixture-tests</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3.56s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/core test/hummingbot/strategy</code></td>
+</tr>
+<tr>
+<td>lighter-final-sync</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">121.47s</td>
+<td><code>uv sync --all-extras --frozen --python 3.15</code></td>
+</tr>
+<tr>
+<td>lighter-source-lock</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.7s</td>
+<td><code>uv lock --upgrade</code></td>
+</tr>
+<tr>
+<td>lock-3.13</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.87s</td>
+<td><code>uv lock --upgrade --python 3.13</code></td>
+</tr>
+<tr>
+<td>lock-3.14</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.41s</td>
+<td><code>uv lock --upgrade --python 3.14</code></td>
+</tr>
+<tr>
+<td>lock-3.15</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">14.71s</td>
+<td><code>uv lock --upgrade --python 3.15</code></td>
+</tr>
+<tr>
+<td>native315-core</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.61s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/core/data_type/test_order_book.py test/hummingbot/core/event/test_event_logger.py test/hummingbot/core/event/test_event_forwarder.py test/hummingbot/core/test_clock.py</code></td>
+</tr>
+<tr>
+<td>native315-tests</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4.17s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/core/data_type/test_order_book.py test/hummingbot/core/test_clock.py</code></td>
+</tr>
+<tr>
+<td>observed-loop-ownership-focused-tests-2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">53.47s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/core/utils/test_trading_pair_fetcher.py test/hummingbot/data_feed/candles_feed/btc_markets_spot_candles test/test_isolated_asyncio_wrapper_test_case.py test/test_logger_mixin_for_test.py test/hummingbot/connector/derivative/bitmart_perpetual test/hummingbot/connector/derivative/evedex_perpetual --tb=short</code></td>
+</tr>
+<tr>
+<td>observed-loop-ownership-focused-tests-3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">103.08s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/core/utils/test_trading_pair_fetcher.py test/hummingbot/data_feed/candles_feed/btc_markets_spot_candles test/test_isolated_asyncio_wrapper_test_case.py test/test_logger_mixin_for_test.py test/hummingbot/connector/derivative/bitmart_perpetual test/hummingbot/connector/derivative/evedex_perpetual --tb=short</code></td>
+</tr>
+<tr>
+<td>observed-loop-ownership-focused-tests</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.62s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/core/utils/test_trading_pair_fetcher.py test/test_isolated_asyncio_wrapper_test_case.py test/hummingbot/logger test/hummingbot/data_feed/candles_feed/btc_markets_spot_candles test/hummingbot/connector/exchange/bitmart test/hummingbot/connector/exchange/evedex --tb=short</code></td>
+</tr>
+<tr>
+<td>override-sync</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.16s</td>
+<td><code>uv sync --all-extras --python 3.14</code></td>
+</tr>
+<tr>
+<td>pandas315-tests</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.78s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/core/utils/test_map_df_to_str.py</code></td>
+</tr>
+<tr>
+<td>protobuf-sync</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">73.16s</td>
+<td><code>uv sync --all-extras --python 3.15.0</code></td>
+</tr>
+<tr>
+<td>python315-build</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">246.43s</td>
+<td><code>env TA_INCLUDE_PATH=/opt/homebrew/opt/ta-lib/include TA_LIBRARY_PATH=/opt/homebrew/opt/ta-lib/lib uv build --python 3.15</code></td>
+</tr>
+<tr>
+<td>python315-core</td>
+<td style="text-align: right;">-11</td>
+<td style="text-align: right;">23.89s</td>
+<td><code>.venv315/bin/python -m pytest test/hummingbot/core</code></td>
+</tr>
+<tr>
+<td>python315-probe</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.13s</td>
+<td><code>uv sync --all-extras --python 3.15 --dry-run</code></td>
+</tr>
+<tr>
+<td>python315-sync-2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">188.12s</td>
+<td><code>env UV_PROJECT_ENVIRONMENT=.venv315 TA_INCLUDE_PATH=/opt/homebrew/opt/ta-lib/include TA_LIBRARY_PATH=/opt/homebrew/opt/ta-lib/lib uv sync --all-extras --python 3.15</code></td>
+</tr>
+<tr>
+<td>python315-sync-3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">275.58s</td>
+<td><code>env UV_PROJECT_ENVIRONMENT=.venv315 TA_INCLUDE_PATH=/opt/homebrew/opt/ta-lib/include TA_LIBRARY_PATH=/opt/homebrew/opt/ta-lib/lib uv sync --all-extras --python 3.15</code></td>
+</tr>
+<tr>
+<td>python315-sync</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">50.88s</td>
+<td><code>env UV_PROJECT_ENVIRONMENT=.venv315 uv sync --all-extras --python 3.15</code></td>
+</tr>
+<tr>
+<td>python315-tests</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">43.93s</td>
+<td><code>.venv315/bin/python -m pytest test</code></td>
+</tr>
+<tr>
+<td>remaining-api-focused-tests-2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">34.26s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/exchange/ndax test/hummingbot/connector/exchange/foxbit/test_foxbit_user_stream_data_source.py test/hummingbot/connector/exchange/foxbit/test_foxbit_exchange.py --tb=short</code></td>
+</tr>
+<tr>
+<td>remaining-api-focused-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">53.74s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/exchange/ndax test/hummingbot/connector/exchange/foxbit/test_foxbit_user_stream_data_source.py test/hummingbot/connector/exchange/foxbit/test_foxbit_exchange.py test/hummingbot/connector/derivative/binance_perpetual/test_binance_perpetual_user_stream_data_source.py test/hummingbot/connector/derivative/aevo_perpetual/test_aevo_perpetual_api_user_stream_data_source.py test/hummingbot/data_feed/candles_feed/lighter_perpetual_candles test/hummingbot/data_feed/candles_feed/lighter_spot_candles test/hummingbot/client/command/test_config_command.py test/hummingbot/strategy/cross_exchange_market_making/test_cross_exchange_market_making.py --tb=short</code></td>
+</tr>
+<tr>
+<td>repaired-315-lock</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.09s</td>
+<td><code>uv lock --upgrade</code></td>
+</tr>
+<tr>
+<td>repaired-315-sync</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">112.07s</td>
+<td><code>uv sync --all-extras --frozen --python 3.15.0</code></td>
+</tr>
+<tr>
+<td>repaired-final-build</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">270.27s</td>
+<td><code>uv build --python 3.15</code></td>
+</tr>
+<tr>
+<td>repaired-final-compile</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.45s</td>
+<td><code>.venv/bin/python -m compileall -q src vendor controllers</code></td>
+</tr>
+<tr>
+<td>repaired-final-tests-2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8.1s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/cli/test_update.py test/hummingbot/strategy/test_strategy_v2_base.py test/hummingbot/strategy/utils/trailing_indicators/test_historical_volatility.py test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_auth.py test/hummingbot/strategy_v2/backtesting/test_backtesting_engine_directional.py</code></td>
+</tr>
+<tr>
+<td>repaired-final-tests</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1.03s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/cli/test_update.py test/hummingbot/strategy/test_strategy_v2_base.py test/hummingbot/strategy/utils/trailing_indicators/test_historical_volatility.py test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_auth.py test/hummingbot/strategy_v2/backtesting/test_backtesting_engine_directional.py test/hummingbot/core/utils/test_async_utils.py</code></td>
+</tr>
+<tr>
+<td>repaired-focused-tests-2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">15.19s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/cli/test_update.py test/hummingbot/strategy/test_strategy_v2_base.py test/hummingbot/strategy/utils/trailing_indicators/test_historical_volatility.py test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_auth.py test/hummingbot/strategy_v2/backtesting/test_backtesting_engine_directional.py</code></td>
+</tr>
+<tr>
+<td>repaired-focused-tests-3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">11.99s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/cli/test_update.py test/hummingbot/strategy/test_strategy_v2_base.py test/hummingbot/strategy/utils/trailing_indicators/test_historical_volatility.py test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_auth.py test/hummingbot/strategy_v2/backtesting/test_backtesting_engine_directional.py</code></td>
+</tr>
+<tr>
+<td>repaired-focused-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11.59s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/cli/test_update.py test/hummingbot/strategy/test_strategy_v2_base.py test/hummingbot/strategy/utils/trailing_indicators/test_historical_volatility.py test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_auth.py test/hummingbot/strategy_v2/backtesting/test_backtesting_engine_directional.py</code></td>
+</tr>
+<tr>
+<td>repaired-full-tests-2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">753.85s</td>
+<td><code>.venv/bin/python -m pytest test --continue-on-collection-errors</code></td>
+</tr>
+<tr>
+<td>repaired-full-tests</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">16.23s</td>
+<td><code>.venv/bin/python -m pytest test</code></td>
+</tr>
+<tr>
+<td>repaired-source-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">18.87s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/cli/test_update.py test/hummingbot/strategy/test_strategy_v2_base.py test/hummingbot/strategy/utils/trailing_indicators/test_historical_volatility.py test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_auth.py test/hummingbot/strategy_v2/backtesting/test_backtesting_engine_directional.py</code></td>
+</tr>
+<tr>
+<td>repaired-sync-2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.58s</td>
+<td><code>uv sync --all-extras --frozen --python 3.15 --reinstall-package aioresponses</code></td>
+</tr>
+<tr>
+<td>repaired-sync</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.57s</td>
+<td><code>uv sync --all-extras --python 3.15 --reinstall-package aioresponses</code></td>
+</tr>
+<tr>
+<td>response-fixture-reinstall</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.45s</td>
+<td><code>uv sync --all-extras --frozen --python 3.15.0 --reinstall-package aioresponses</code></td>
+</tr>
+<tr>
+<td>response-fixture-sync</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">99.27s</td>
+<td><code>uv sync --all-extras --python 3.15.0</code></td>
+</tr>
+<tr>
+<td>response-reinstall-final</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.45s</td>
+<td><code>uv sync --all-extras --frozen --python 3.15.0 --reinstall-package aioresponses</code></td>
+</tr>
+<tr>
+<td>response-supported-tests</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.04s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/core/utils/test_map_df_to_str.py test/hummingbot/data_feed/candles_feed/binance_spot_candles/test_binance_spot_candles.py</code></td>
+</tr>
+<tr>
+<td>response-wheel</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.34s</td>
+<td><code>uv build --project vendor/aioresponses --wheel --out-dir dist/aioresponses</code></td>
+</tr>
+<tr>
+<td>resumed-final-existing-full-tests</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">901.32s</td>
+<td><code>.venv/bin/python -m pytest test --continue-on-collection-errors --tb=short</code></td>
+</tr>
+<tr>
+<td>resumed-final-strict-compile</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">unknowns</td>
+<td><code>.venv/bin/python -W error -m compileall -q src controllers scripts vendor test/conftest.py</code></td>
+</tr>
+<tr>
+<td>resumed-final-wheel-build</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">unknowns</td>
+<td><code>uv build</code></td>
+</tr>
+<tr>
+<td>scoped-protobuf-focused-tests-2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">47.92s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/derivative/injective_v2_perpetual test/hummingbot/connector/derivative/dydx_v4_perpetual --tb=short</code></td>
+</tr>
+<tr>
+<td>scoped-protobuf-focused-tests-3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">49.64s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/derivative/injective_v2_perpetual test/hummingbot/connector/exchange/injective_v2 test/hummingbot/connector/derivative/dydx_v4_perpetual --tb=short</code></td>
+</tr>
+<tr>
+<td>scoped-protobuf-focused-tests</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4.4s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/derivative/injective_v2_perpetual test/hummingbot/connector/derivative/dydx_v4_perpetual --tb=short</code></td>
+</tr>
+<tr>
+<td>scoped-protobuf-lock</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.69s</td>
+<td><code>uv lock --upgrade</code></td>
+</tr>
+<tr>
+<td>scoped-protobuf-refresh-2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.33s</td>
+<td><code>uv sync --all-extras --dev --reinstall-package injective-py</code></td>
+</tr>
+<tr>
+<td>scoped-protobuf-refresh</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.29s</td>
+<td><code>uv sync --all-extras --dev --reinstall-package injective-py</code></td>
+</tr>
+<tr>
+<td>scoped-protobuf-sync</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">125.66s</td>
+<td><code>uv sync --all-extras --dev --reinstall-package injective-py</code></td>
+</tr>
+<tr>
+<td>scoped-schema-provenance-2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.92s</td>
+<td><code>.venv/bin/python -c import ast,hashlib,io,pathlib,urllib.request,zipfile;url='https://files.pythonhosted.org/packages/d6/eb/0cfab54e116152ad021222c36e4d8067a6193c7735e54cfb64429511a26a/injective_py-1.16.2-py3-none-any.whl';data=urllib.request.urlopen(url).read();digest=hashlib.sha256(data).hexdigest();assert digest=='8aacf4e628cefb5091c701855ac64f0ec3e12b8c23bfe85b91d965edf9e2f9b3';z=zipfile.ZipFile(io.BytesIO(data));extract=lambda s:[ast.literal_eval(n.args[0]) for n in ast.walk(ast.parse(s)) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr=='AddSerializedFile'];pairs=[(n,pathlib.Path('vendor/injective-py/src')/n) for n in z.namelist() if n.startswith('pyinjective/') and n.endswith('_pb2.py')];assert len(pairs)==403;assert all(extract(z.read(n).decode())==extract(p.read_text()) for n,p in pairs);print('verified original wheel SHA256',digest,'and byte-identical serialized schemas for',len(pairs),'generated modules')</code></td>
+</tr>
+<tr>
+<td>scoped-schema-provenance</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.79s</td>
+<td><code>.venv/bin/python -c import ast,hashlib,io,pathlib,urllib.request,zipfile;url='https://files.pythonhosted.org/packages/d6/eb/0cfab54e116152ad021222c36e4d8067a6193c7735e54cfb64429511a26a/injective_py-1.16.2-py3-none-any.whl';data=urllib.request.urlopen(url).read();digest=hashlib.sha256(data).hexdigest();assert digest=='8aacf4e628cefb5091c701855ac64f0ec3e12b8c23bfe85b91d965edf9e2f9b3';z=zipfile.ZipFile(io.BytesIO(data));extract=lambda s:[ast.literal_eval(n.args[0]) for n in ast.walk(ast.parse(s)) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr=='AddSerializedFile'];pairs=[(n,pathlib.Path('vendor/injective-py/src')/n) for n in z.namelist() if n.startswith('pyinjective/') and n.endswith('_pb2.py')];assert len(pairs)==403;assert all(extract(z.read(n).decode())==extract(p.read_text()) for n,p in pairs);print('verified original wheel SHA256',digest,'and byte-identical serialized schemas for',len(pairs),'generated modules')</code></td>
+</tr>
+<tr>
+<td>ssl-resource-focused-tests-2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">84.72s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/derivative/gate_io_perpetual test/hummingbot/connector/derivative/grvt_perpetual test/hummingbot/connector/exchange/coinbase_advanced_trade test/hummingbot/connector/exchange/gemini --tb=short</code></td>
+</tr>
+<tr>
+<td>ssl-resource-focused-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">86.21s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/connector/derivative/gate_io_perpetual test/hummingbot/connector/derivative/grvt_perpetual test/hummingbot/connector/exchange/coinbase_advanced_trade test/hummingbot/connector/exchange/gemini --tb=short</code></td>
+</tr>
+<tr>
+<td>strict-source-compile</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.73s</td>
+<td><code>.venv/bin/python -W error -m compileall -q src controllers scripts vendor</code></td>
+</tr>
+<tr>
+<td>sync-3.13</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.7s</td>
+<td><code>uv sync --all-extras --python 3.13</code></td>
+</tr>
+<tr>
+<td>sync-3.14</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.6s</td>
+<td><code>uv sync --all-extras --python 3.14</code></td>
+</tr>
+<tr>
+<td>sync-3.15</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8.78s</td>
+<td><code>uv sync --all-extras --python 3.15</code></td>
+</tr>
+<tr>
+<td>task-ownership-focused-tests-2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">39.98s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/data_feed/candles_feed/btc_markets_spot_candles test/test_isolated_asyncio_wrapper_test_case.py test/test_logger_mixin_for_test.py test/hummingbot/connector/derivative/bitmart_perpetual test/hummingbot/connector/derivative/evedex_perpetual --tb=short</code></td>
+</tr>
+<tr>
+<td>task-ownership-focused-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">40.84s</td>
+<td><code>.venv/bin/python -m pytest test/hummingbot/data_feed/candles_feed/btc_markets_spot_candles test/test_isolated_asyncio_wrapper_test_case.py test/test_logger_mixin_for_test.py test/hummingbot/connector/derivative/bitmart_perpetual test/hummingbot/connector/derivative/evedex_perpetual --tb=short</code></td>
+</tr>
+<tr>
+<td>tests-2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">17.79s</td>
+<td><code>.venv/bin/python -m pytest test</code></td>
+</tr>
+<tr>
+<td>tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.04s</td>
+<td><code>&lt;workspace&gt;/hummingbot/.venv/bin/python -m pytest test</code></td>
+</tr>
+<tr>
+<td>updated-full-tests</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">160.22s</td>
+<td><code>.venv/bin/python -m pytest test --continue-on-collection-errors</code></td>
+</tr>
+<tr>
+<td>upstream-coincurve-sync</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">147.35s</td>
+<td><code>uv sync --all-extras --python 3.14</code></td>
+</tr>
+</tbody>
+</table></main>
+</body></html>

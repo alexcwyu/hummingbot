@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hummingbot Development Guide</title><style>html{color-scheme:light dark}body{margin:0;background:#f5f7fa;color:#172333;font:16px/1.7 system-ui,sans-serif}main{max-width:1120px;margin:28px auto;background:white;padding:40px;border:1px solid #dbe2ea;border-radius:10px}h1,h2,h3{line-height:1.25}h2{margin-top:2em;border-bottom:1px solid #dbe2ea;padding-bottom:.4em}a{color:#1769aa}pre{overflow:auto;padding:16px;background:#f5f7fa;border:1px solid #dbe2ea;border-radius:6px}code{font:14px/1.6 ui-monospace,monospace}table{border-collapse:collapse;display:block;overflow:auto}th,td{border:1px solid #dbe2ea;padding:8px 12px;text-align:left;vertical-align:top}blockquote{margin-left:0;border-left:4px solid #1769aa;padding-left:18px}@media(max-width:700px){main{margin:8px;padding:18px}body{font-size:15px}}@media(prefers-color-scheme:dark){body{background:#111820;color:#e7edf5}main{background:#192330;border-color:#344354}pre{background:#111820}a{color:#78b9ef}th,td,h2,pre{border-color:#344354}}@media print{main{margin:0;border:0;padding:0}a{color:inherit}pre,table{overflow:visible}}</style></head><body><main><h1 id="hummingbot-development-guide">Hummingbot Development Guide</h1>
+<h2 id="development-setup">Development Setup</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>Managed Python 3.15.0 (the verified maintenance runtime; package metadata permits Python &gt;=3.13)</li>
+<li>A C/C++ compiler (for Cython extensions)</li>
+<li>Git</li>
+</ul>
+<h3 id="installation">Installation</h3>
+<pre><code class="language-bash"># Clone and checkout
+git clone https://github.com/hummingbot/hummingbot.git
+cd hummingbot
+git checkout feature/ayu_develop
+
+# Install with uv (recommended)
+uv sync --frozen --all-groups --all-extras --python 3.15.0
+
+# Or install with pip
+pip install -e ".[all]"
+
+# Build Cython extensions
+uv build --python 3.15.0
+</code></pre>
+<h3 id="running">Running</h3>
+<pre><code class="language-bash"># Interactive CLI mode
+python -m hummingbot
+
+# Headless mode (for programmatic/MQTT control)
+python -m hummingbot --headless
+</code></pre>
+<h3 id="running-tests">Running Tests</h3>
+<pre><code class="language-bash"># All tests
+pytest test/
+
+# Specific connector tests
+pytest test/hummingbot/connector/exchange/binance/
+
+# Specific strategy tests
+pytest test/hummingbot/strategy/pure_market_making/
+
+# With coverage
+pytest --cov=hummingbot test/
+</code></pre>
+<h2 id="project-structure">Project Structure</h2>
+<pre><code>hummingbot/
+├── src/hummingbot/
+│   ├── client/                    # CLI and application layer
+│   │   ├── hummingbot_application.py  # Main application singleton
+│   │   ├── command/               # CLI command implementations
+│   │   │   ├── start_command.py
+│   │   │   ├── stop_command.py
+│   │   │   ├── config_command.py
+│   │   │   ├── connect_command.py
+│   │   │   ├── balance_command.py
+│   │   │   ├── gateway_command.py
+│   │   │   └── ...
+│   │   ├── config/                # Configuration system
+│   │   │   ├── client_config_map.py   # Main config model
+│   │   │   ├── config_helpers.py      # Config loading utilities
+│   │   │   ├── security.py            # API key encryption
+│   │   │   └── ...
+│   │   ├── settings.py            # Global settings and connector registry
+│   │   ├── performance.py         # PnL calculation
+│   │   └── ui/                    # CLI UI components
+│   │       ├── hummingbot_cli.py  # prompt_toolkit CLI
+│   │       ├── completer.py       # Tab completion
+│   │       └── parser.py          # Command parser
+│   │
+│   ├── connector/                 # Exchange connectors
+│   │   ├── connector_base.pyx     # Cython base (balances, events, fees)
+│   │   ├── exchange_base.pyx      # Cython exchange base (order books)
+│   │   ├── exchange_py_base.py    # Python exchange base (modern connectors)
+│   │   ├── derivative_base.py     # Derivative connector base
+│   │   ├── perpetual_derivative_py_base.py
+│   │   ├── client_order_tracker.py    # InFlightOrder management
+│   │   ├── budget_checker.py      # Balance/budget validation
+│   │   ├── markets_recorder.py    # Trade persistence
+│   │   ├── exchange/              # CEX connector implementations
+│   │   │   ├── binance/
+│   │   │   ├── bybit/
+│   │   │   ├── kucoin/
+│   │   │   ├── okx/
+│   │   │   ├── gate_io/
+│   │   │   ├── paper_trade/
+│   │   │   └── ...  (28+ exchanges)
+│   │   ├── derivative/            # Perpetual futures connectors
+│   │   │   ├── binance_perpetual/
+│   │   │   ├── bybit_perpetual/
+│   │   │   ├── hyperliquid_perpetual/
+│   │   │   └── ...  (15+ exchanges)
+│   │   ├── gateway/               # DEX gateway connectors
+│   │   │   ├── gateway_base.py
+│   │   │   ├── gateway_swap.py
+│   │   │   └── gateway_lp.py
+│   │   └── utilities/             # Shared connector utilities
+│   │
+│   ├── core/                      # Core infrastructure
+│   │   ├── clock.pyx              # Cython clock (REALTIME/BACKTEST)
+│   │   ├── pubsub.pyx             # Cython event pub/sub
+│   │   ├── time_iterator.pyx      # Clock-driven base class
+│   │   ├── network_iterator.pyx   # Network connectivity base
+│   │   ├── trading_core.py        # Core trading engine
+│   │   ├── connector_manager.py   # Dynamic connector management
+│   │   ├── data_type/             # Core data types
+│   │   │   ├── in_flight_order.py # Order state machine
+│   │   │   ├── order_book.py      # Order book data structure
+│   │   │   ├── order_book_tracker.py
+│   │   │   ├── user_stream_tracker.py
+│   │   │   ├── common.py          # OrderType, TradeType, PriceType enums
+│   │   │   ├── trade_fee.py       # Fee models
+│   │   │   └── ...
+│   │   ├── event/                 # Event system
+│   │   │   ├── events.py          # Event enums and data classes
+│   │   │   ├── event_listener.pyx
+│   │   │   ├── event_forwarder.py
+│   │   │   └── event_logger.py
+│   │   ├── rate_oracle/           # Price conversion oracle
+│   │   │   ├── rate_oracle.py
+│   │   │   └── sources/           # 15+ rate sources
+│   │   ├── gateway/               # Gateway HTTP client
+│   │   ├── api_throttler/         # Rate limiting
+│   │   ├── web_assistant/         # REST/WS client framework
+│   │   │   ├── web_assistants_factory.py
+│   │   │   ├── rest_assistant.py
+│   │   │   ├── ws_assistant.py
+│   │   │   └── auth.py
+│   │   └── utils/                 # Utilities
+│   │
+│   ├── strategy/                  # V1 strategies
+│   │   ├── strategy_base.pyx      # Cython strategy base
+│   │   ├── strategy_py_base.pyx   # Python strategy base
+│   │   ├── strategy_v2_base.py    # V2 strategy base
+│   │   ├── pure_market_making/    # PMM strategy
+│   │   ├── cross_exchange_market_making/  # XEMM strategy
+│   │   ├── avellaneda_market_making/      # Avellaneda MM
+│   │   ├── amm_arb/               # AMM arbitrage
+│   │   ├── spot_perpetual_arbitrage/
+│   │   ├── liquidity_mining/
+│   │   ├── perpetual_market_making/
+│   │   ├── hedge/
+│   │   ├── order_tracker.pyx      # Strategy order tracking
+│   │   └── hanging_orders_tracker.py
+│   │
+│   ├── strategy_v2/               # V2 strategy framework
+│   │   ├── runnable_base.py       # Base for async components
+│   │   ├── controllers/           # Signal generation
+│   │   │   ├── controller_base.py
+│   │   │   ├── market_making_controller_base.py
+│   │   │   └── directional_trading_controller_base.py
+│   │   ├── executors/             # Order execution
+│   │   │   ├── executor_base.py
+│   │   │   ├── executor_orchestrator.py
+│   │   │   ├── position_executor/
+│   │   │   ├── dca_executor/
+│   │   │   ├── grid_executor/
+│   │   │   ├── twap_executor/
+│   │   │   ├── xemm_executor/
+│   │   │   ├── arbitrage_executor/
+│   │   │   ├── order_executor/
+│   │   │   └── lp_executor/
+│   │   ├── models/                # Data models
+│   │   │   ├── base.py            # RunnableStatus enum
+│   │   │   ├── executors.py       # CloseType enum
+│   │   │   ├── executors_info.py  # ExecutorInfo, PerformanceReport
+│   │   │   └── executor_actions.py
+│   │   ├── backtesting/           # V2 backtesting support
+│   │   └── utils/
+│   │
+│   ├── data_feed/                 # External data feeds
+│   │   ├── data_feed_base.py
+│   │   ├── market_data_provider.py
+│   │   ├── candles_feed/          # OHLCV candle data
+│   │   ├── coin_cap_data_feed/
+│   │   ├── coin_gecko_data_feed/
+│   │   └── liquidations_feed/
+│   │
+│   ├── model/                     # SQLAlchemy ORM models
+│   │   ├── trade_fill.py
+│   │   ├── order.py
+│   │   ├── order_status.py
+│   │   ├── position.py
+│   │   ├── market_state.py
+│   │   └── sql_connection_manager.py
+│   │
+│   ├── remote_iface/              # Remote control
+│   │   └── mqtt.py                # MQTT bridge
+│   │
+│   ├── logger/                    # Logging system
+│   ├── notifier/                  # Notification system
+│   ├── templates/                 # Strategy config templates (YAML)
+│   └── user/                      # User data management
+│
+├── test/                          # Test suite
+│   └── hummingbot/
+│       ├── connector/
+│       ├── strategy/
+│       ├── core/
+│       └── ...
+│
+├── conf/                          # User configuration files
+├── scripts/                       # User strategy scripts (V2)
+├── docs/                          # Documentation
+├── pyproject.toml                 # Project metadata and dependencies
+└── setup.py                       # Cython build configuration
+</code></pre>
+<h2 id="creating-custom-strategies">Creating Custom Strategies</h2>
+<h3 id="v2-strategy-recommended">V2 Strategy (Recommended)</h3>
+<p>The V2 framework is the recommended approach for new strategies. Create a script in the <code>scripts/</code> directory.</p>
+<h4 id="1-define-the-configuration">1. Define the Configuration</h4>
+<pre><code class="language-python"># scripts/my_strategy_config.py (or inline in the script)
+from decimal import Decimal
+from hummingbot.strategy.strategy_v2_base import StrategyV2ConfigBase
+
+class MyStrategyConfig(StrategyV2ConfigBase):
+    script_file_name: str = "my_strategy.py"
+
+    # Strategy parameters
+    exchange: str = "binance"
+    trading_pair: str = "BTC-USDT"
+    order_amount: Decimal = Decimal("0.001")
+    spread: Decimal = Decimal("0.01")  # 1%
+
+    def update_markets(self, markets: dict):
+        """Define required markets."""
+        markets[self.exchange] = {self.trading_pair}
+</code></pre>
+<h4 id="2-create-the-strategy-script">2. Create the Strategy Script</h4>
+<pre><code class="language-python"># scripts/my_strategy.py
+from decimal import Decimal
+from typing import Dict, List
+from hummingbot.strategy.strategy_v2_base import StrategyV2Base
+from hummingbot.strategy_v2.models.executor_actions import (
+    CreateExecutorAction, ExecutorAction
+)
+from hummingbot.strategy_v2.executors.position_executor.data_types import (
+    PositionExecutorConfig, TripleBarrierConfig
+)
+from hummingbot.core.data_type.common import OrderType, TradeType
+
+class MyStrategy(StrategyV2Base):
+    def create_actions_proposal(self) -&gt; List[ExecutorAction]:
+        actions = []
+        mid_price = self.get_mid_price("binance", "BTC-USDT")
+        if mid_price is None:
+            return actions
+
+        # Create a long position executor
+        config = PositionExecutorConfig(
+            connector_name="binance",
+            trading_pair="BTC-USDT",
+            side=TradeType.BUY,
+            amount=Decimal("0.001"),
+            entry_price=mid_price * Decimal("0.999"),
+            triple_barrier_config=TripleBarrierConfig(
+                take_profit=Decimal("0.02"),
+                stop_loss=Decimal("0.01"),
+                time_limit=3600,
+            ),
+        )
+        actions.append(CreateExecutorAction(executor_config=config))
+        return actions
+</code></pre>
+<h4 id="3-optionally-create-a-controller">3. Optionally Create a Controller</h4>
+<p>For more complex strategies, create a controller that generates executor actions:</p>
+<pre><code class="language-python"># controllers/my_controller.py
+from hummingbot.strategy_v2.controllers.market_making_controller_base import (
+    MarketMakingControllerBase, MarketMakingControllerConfigBase
+)
+
+class MyControllerConfig(MarketMakingControllerConfigBase):
+    controller_name: str = "my_controller"
+    connector_name: str = "binance"
+    trading_pair: str = "BTC-USDT"
+    # ... additional config
+
+class MyController(MarketMakingControllerBase):
+    def __init__(self, config: MyControllerConfig, *args, **kwargs):
+        super().__init__(config, *args, **kwargs)
+
+    def update_processed_data(self):
+        # Analyze market data and prepare signals
+        pass
+
+    def get_executor_actions(self):
+        # Return list of CreateExecutorAction / StopExecutorAction
+        pass
+</code></pre>
+<h3 id="v1-strategy-legacy">V1 Strategy (Legacy)</h3>
+<p>V1 strategies inherit from <code>StrategyPyBase</code> and implement <code>tick()</code> directly:</p>
+<pre><code class="language-python">from hummingbot.strategy.strategy_py_base import StrategyPyBase
+from hummingbot.strategy.market_trading_pair_tuple import MarketTradingPairTuple
+
+class MyLegacyStrategy(StrategyPyBase):
+    def __init__(self, market_info: MarketTradingPairTuple,
+                 spread: Decimal, amount: Decimal):
+        super().__init__()
+        self._market_info = market_info
+        self._spread = spread
+        self._amount = amount
+        self.add_markets([market_info.market])
+
+    def tick(self, timestamp: float):
+        if not self._market_info.market.ready:
+            return
+
+        mid_price = self._market_info.get_mid_price()
+        bid_price = mid_price * (1 - self._spread)
+        ask_price = mid_price * (1 + self._spread)
+
+        # Place orders
+        self.buy_with_specific_market(
+            self._market_info, self._amount,
+            order_type=OrderType.LIMIT, price=bid_price
+        )
+        self.sell_with_specific_market(
+            self._market_info, self._amount,
+            order_type=OrderType.LIMIT, price=ask_price
+        )
+</code></pre>
+<h2 id="creating-custom-connectors">Creating Custom Connectors</h2>
+<h3 id="connector-file-structure">Connector File Structure</h3>
+<p>Each CEX connector lives in <code>src/hummingbot/connector/exchange/&lt;exchange_name&gt;/</code>:</p>
+<pre><code>&lt;exchange_name&gt;/
+├── __init__.py
+├── &lt;exchange_name&gt;_exchange.py        # Main connector class
+├── &lt;exchange_name&gt;_api_order_book_data_source.py  # Order book data source
+├── &lt;exchange_name&gt;_api_user_stream_data_source.py # User stream data source
+├── &lt;exchange_name&gt;_auth.py            # Authentication
+├── &lt;exchange_name&gt;_web_utils.py       # API endpoints, URL construction
+├── &lt;exchange_name&gt;_constants.py       # Constants (rate limits, URLs)
+└── &lt;exchange_name&gt;_order_book.py      # Custom OrderBook (if needed)
+</code></pre>
+<h3 id="implementing-a-connector">Implementing a Connector</h3>
+<h4 id="1-define-constants">1. Define Constants</h4>
+<pre><code class="language-python"># my_exchange_constants.py
+from hummingbot.core.api_throttler.data_types import RateLimit
+
+BASE_URL = "https://api.myexchange.com"
+WS_URL = "wss://ws.myexchange.com"
+
+# Rate limits
+RATE_LIMITS = [
+    RateLimit(limit_id="GET_ORDER_BOOK", limit=10, time_interval=1),
+    RateLimit(limit_id="CREATE_ORDER", limit=5, time_interval=1),
+    RateLimit(limit_id="CANCEL_ORDER", limit=5, time_interval=1),
+]
+</code></pre>
+<h4 id="2-implement-authentication">2. Implement Authentication</h4>
+<pre><code class="language-python"># my_exchange_auth.py
+from hummingbot.core.web_assistant.auth import AuthBase
+from hummingbot.core.web_assistant.connections.data_types import RESTRequest, WSRequest
+
+class MyExchangeAuth(AuthBase):
+    def __init__(self, api_key: str, secret_key: str):
+        self._api_key = api_key
+        self._secret_key = secret_key
+
+    async def rest_authenticate(self, request: RESTRequest) -&gt; RESTRequest:
+        # Add authentication headers/params
+        request.headers["X-API-KEY"] = self._api_key
+        # Add signature...
+        return request
+
+    async def ws_authenticate(self, request: WSRequest) -&gt; WSRequest:
+        # Add WebSocket authentication
+        return request
+</code></pre>
+<h4 id="3-implement-the-exchange-class">3. Implement the Exchange Class</h4>
+<p>Extend <code>ExchangePyBase</code> and implement all abstract methods:</p>
+<pre><code class="language-python"># my_exchange_exchange.py
+from hummingbot.connector.exchange_py_base import ExchangePyBase
+
+class MyExchangeExchange(ExchangePyBase):
+    @property
+    def name(self) -&gt; str:
+        return "my_exchange"
+
+    @property
+    def authenticator(self) -&gt; AuthBase:
+        return MyExchangeAuth(self._api_key, self._secret_key)
+
+    @property
+    def rate_limits_rules(self) -&gt; List[RateLimit]:
+        return RATE_LIMITS
+
+    # Implement abstract methods:
+    # _create_order_book_data_source()
+    # _create_user_stream_data_source()
+    # _place_order()
+    # _place_cancel()
+    # _get_last_traded_price()
+    # _update_balances()
+    # _request_order_status()
+    # _all_trade_updates_for_order()
+    # ... and more
+</code></pre>
+<h4 id="4-implement-data-sources">4. Implement Data Sources</h4>
+<p>Create <code>OrderBookTrackerDataSource</code> and <code>UserStreamTrackerDataSource</code> subclasses that implement WebSocket subscription and REST snapshot methods for your exchange's API.</p>
+<h2 id="testing-patterns">Testing Patterns</h2>
+<h3 id="connector-testing">Connector Testing</h3>
+<p>Connector tests use aioresponses to mock HTTP calls and a mock WebSocket for stream testing:</p>
+<pre><code class="language-python">import asyncio
+from unittest.mock import patch, AsyncMock
+from aioresponses import aioresponses
+from test.hummingbot.connector.exchange.my_exchange.my_exchange_exchange import MyExchangeExchange
+
+class TestMyExchange:
+    def setup_method(self):
+        self.exchange = MyExchangeExchange(
+            api_key="test", secret_key="test",
+            trading_pairs=["BTC-USDT"]
+        )
+
+    @aioresponses()
+    def test_place_order(self, mock_api):
+        mock_api.post("https://api.myexchange.com/order",
+                      payload={"orderId": "123"})
+        result = asyncio.get_event_loop().run_until_complete(
+            self.exchange._place_order(...)
+        )
+        assert result.exchange_order_id == "123"
+</code></pre>
+<h3 id="strategy-testing">Strategy Testing</h3>
+<p>Strategy tests use paper trade connectors and a backtest clock:</p>
+<pre><code class="language-python">from hummingbot.core.clock import Clock, ClockMode
+from hummingbot.connector.exchange.paper_trade import create_paper_trade_market
+
+class TestMyStrategy:
+    def setup_method(self):
+        self.clock = Clock(ClockMode.BACKTEST, tick_size=1.0,
+                          start_time=1000, end_time=2000)
+        self.connector = create_paper_trade_market("binance", ["BTC-USDT"])
+        self.connector.set_balance("USDT", Decimal("10000"))
+        self.strategy = MyStrategy(...)
+        self.clock.add_iterator(self.connector)
+        self.clock.add_iterator(self.strategy)
+</code></pre>
+<h3 id="isolated-async-test-support">Isolated Async Test Support</h3>
+<p>The project provides <code>IsolatedAsyncioWrapperTestCase</code> for tests that need isolated event loops, preventing test pollution across async test methods.</p>
+<h2 id="configuration-system">Configuration System</h2>
+<h3 id="configuration-hierarchy">Configuration Hierarchy</h3>
+<pre><code>Client Config (client_config_map.py)
+├── Instance ID, kill switch, rate oracle source
+├── Paper trade settings (balances)
+├── Gateway config (host, port, SSL)
+├── MQTT bridge config
+├── Logging config
+├── Exchange rate conversion
+└── Tick size
+</code></pre>
+<h3 id="configuration-files">Configuration Files</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Location</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>conf_client.yml</code></td>
+<td><code>conf/</code></td>
+<td>Main client configuration</td>
+</tr>
+<tr>
+<td><code>conf_fee_overrides.yml</code></td>
+<td><code>conf/</code></td>
+<td>Custom fee overrides per exchange</td>
+</tr>
+<tr>
+<td><code>*.yml</code></td>
+<td><code>conf/strategies/</code></td>
+<td>Strategy-specific configuration</td>
+</tr>
+<tr>
+<td><code>*.yml</code></td>
+<td><code>conf/connectors/</code></td>
+<td>Exchange API keys (encrypted)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="config-data-types">Config Data Types</h3>
+<p>Configuration uses Pydantic models (<code>BaseClientModel</code>) with validation:</p>
+<pre><code class="language-python">from hummingbot.client.config.config_data_types import BaseClientModel
+
+class MyConfig(BaseClientModel):
+    exchange: str = "binance"
+    trading_pair: str = "BTC-USDT"
+    spread: Decimal = Decimal("0.01")
+
+    @field_validator("spread")
+    def validate_spread(cls, v):
+        if v &lt;= 0:
+            raise ValueError("Spread must be positive")
+        return v
+</code></pre>
+<h3 id="security">Security</h3>
+<p>API keys are encrypted at rest using <code>Security</code> (<code>src/hummingbot/client/config/security.py</code>). Keys are stored in encrypted YAML files under <code>conf/connectors/</code> and decrypted at runtime using a user-provided password.</p>
+<h3 id="strategy-templates">Strategy Templates</h3>
+<p>YAML templates in <code>src/hummingbot/templates/</code> provide default configurations:</p>
+<table>
+<thead>
+<tr>
+<th>Template</th>
+<th>Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>conf_pure_market_making_strategy_TEMPLATE.yml</code></td>
+<td>Pure Market Making</td>
+</tr>
+<tr>
+<td><code>conf_perpetual_market_making_strategy_TEMPLATE.yml</code></td>
+<td>Perpetual Market Making</td>
+</tr>
+<tr>
+<td><code>conf_amm_arb_strategy_TEMPLATE.yml</code></td>
+<td>AMM Arbitrage</td>
+</tr>
+<tr>
+<td><code>conf_spot_perpetual_arbitrage_strategy_TEMPLATE.yml</code></td>
+<td>Spot-Perpetual Arbitrage</td>
+</tr>
+<tr>
+<td><code>conf_liquidity_mining_strategy_TEMPLATE.yml</code></td>
+<td>Liquidity Mining</td>
+</tr>
+<tr>
+<td><code>conf_fee_overrides_TEMPLATE.yml</code></td>
+<td>Fee override defaults</td>
+</tr>
+</tbody>
+</table>
+<h2 id="connector-creation-flow">Connector Creation Flow</h2>
+<p>The following diagram shows the steps to create a new CEX connector and how the components fit together:</p>
+<div class="diagram"><svg id="mermaid-1791774313446" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 100%; height: auto;" viewBox="4 4 1445.1875 1643" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#mermaid-1791774313446{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#mermaid-1791774313446 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#mermaid-1791774313446 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#mermaid-1791774313446 .error-icon{fill:#552222;}#mermaid-1791774313446 .error-text{fill:#552222;stroke:#552222;}#mermaid-1791774313446 .edge-thickness-normal{stroke-width:1px;}#mermaid-1791774313446 .edge-thickness-thick{stroke-width:3.5px;}#mermaid-1791774313446 .edge-pattern-solid{stroke-dasharray:0;}#mermaid-1791774313446 .edge-thickness-invisible{stroke-width:0;fill:none;}#mermaid-1791774313446 .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-1791774313446 .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-1791774313446 .marker{fill:#333333;stroke:#333333;}#mermaid-1791774313446 .marker.cross{stroke:#333333;}#mermaid-1791774313446 svg{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;}#mermaid-1791774313446 p{margin:0;}#mermaid-1791774313446 .label{font-family:"trebuchet ms",verdana,arial,sans-serif;color:#333;}#mermaid-1791774313446 .cluster-label text{fill:#333;}#mermaid-1791774313446 .cluster-label span{color:#333;}#mermaid-1791774313446 .cluster-label span p{background-color:transparent;}#mermaid-1791774313446 .label text,#mermaid-1791774313446 span{fill:#333;color:#333;}#mermaid-1791774313446 .node rect,#mermaid-1791774313446 .node circle,#mermaid-1791774313446 .node ellipse,#mermaid-1791774313446 .node polygon,#mermaid-1791774313446 .node path{fill:#ECECFF;stroke:#9370DB;stroke-width:1px;}#mermaid-1791774313446 .rough-node .label text,#mermaid-1791774313446 .node .label text,#mermaid-1791774313446 .image-shape .label,#mermaid-1791774313446 .icon-shape .label{text-anchor:middle;}#mermaid-1791774313446 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#mermaid-1791774313446 .rough-node .label,#mermaid-1791774313446 .node .label,#mermaid-1791774313446 .image-shape .label,#mermaid-1791774313446 .icon-shape .label{text-align:center;}#mermaid-1791774313446 .node.clickable{cursor:pointer;}#mermaid-1791774313446 .root .anchor path{fill:#333333!important;stroke-width:0;stroke:#333333;}#mermaid-1791774313446 .arrowheadPath{fill:#333333;}#mermaid-1791774313446 .edgePaths .path{stroke:#333333;stroke-width:1px;}#mermaid-1791774313446 .flowchart-link{stroke:#333333;fill:none;}#mermaid-1791774313446 .edgeLabel{background-color:rgba(232,232,232, 0.8);text-align:center;}#mermaid-1791774313446 .edgeLabel p{background-color:rgba(232,232,232, 0.8);}#mermaid-1791774313446 .edgeLabel rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#mermaid-1791774313446 .labelBkg{background-color:rgba(232, 232, 232, 0.5);}#mermaid-1791774313446 .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px;}#mermaid-1791774313446 .cluster text{fill:#333;}#mermaid-1791774313446 .cluster span{color:#333;}#mermaid-1791774313446 .node .collapsed-indicator{fill:#aaaa33;stroke:none;opacity:0.6;}#mermaid-1791774313446 .node .collapsed-separator{stroke:#aaaa33;stroke-width:0.75px;}#mermaid-1791774313446 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:12px;background:hsl(80, 100%, 96.2745098039%);border:1px solid #aaaa33;border-radius:2px;pointer-events:none;z-index:100;}#mermaid-1791774313446 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#333;}#mermaid-1791774313446 rect.text{fill:none;stroke-width:0;}#mermaid-1791774313446 .icon-shape,#mermaid-1791774313446 .image-shape{background-color:rgba(232,232,232, 0.8);text-align:center;}#mermaid-1791774313446 .icon-shape p,#mermaid-1791774313446 .image-shape p{background-color:rgba(232,232,232, 0.8);padding:2px;}#mermaid-1791774313446 .icon-shape .label rect,#mermaid-1791774313446 .image-shape .label rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#mermaid-1791774313446 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#mermaid-1791774313446 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#mermaid-1791774313446 .node .neo-node{stroke:#9370DB;}#mermaid-1791774313446 [data-look="neo"].node rect,#mermaid-1791774313446 [data-look="neo"].cluster rect,#mermaid-1791774313446 [data-look="neo"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#mermaid-1791774313446 [data-look="neo"].swimlane.cluster rect{filter:none;}#mermaid-1791774313446 [data-look="neo"].node path{stroke:#9370DB;stroke-width:1px;}#mermaid-1791774313446 [data-look="neo"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#mermaid-1791774313446 [data-look="neo"].node .neo-line path{stroke:#9370DB;filter:none;}#mermaid-1791774313446 [data-look="neo"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#mermaid-1791774313446 [data-look="neo"].node circle .state-start{fill:#000000;}#mermaid-1791774313446 [data-look="neo"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#mermaid-1791774313446 [data-look="neo"].icon-shape .icon-neo path{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#mermaid-1791774313446 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}</style><g><marker id="mermaid-1791774313446_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1791774313446_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1791774313446_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1791774313446_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></polygon></marker><marker id="mermaid-1791774313446_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1791774313446_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1791774313446_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1791774313446_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1791774313446_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1791774313446_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1791774313446_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"></path></marker><marker id="mermaid-1791774313446_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"></path></marker><g class="root"><g class="clusters"><g class="cluster" id="mermaid-1791774313446-FileStructure" data-look="neo"><rect style="" x="252.38783482142844" y="12" width="376" height="411"></rect><g class="cluster-label" transform="translate(368.11439732142844, 12)"><foreignObject width="144.546875" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5;"><span class="nodeLabel"><p>Connector Directory</p></span></div></foreignObject></g></g></g><g class="edges edgePaths"><path d="M744.3878348214286,423L744.3878348214286,459" id="mermaid-1791774313446-L_START_CONST_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_START_CONST_0" data-points="W3sieCI6NzQ0LjM4NzgzNDgyMTQyODYsInkiOjQyM30seyJ4Ijo3NDQuMzg3ODM0ODIxNDI4NiwieSI6NDYzfV0=" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M744.3878348214286,607L744.3878348214286,643" id="mermaid-1791774313446-L_CONST_AUTH_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_CONST_AUTH_0" data-points="W3sieCI6NzQ0LjM4NzgzNDgyMTQyODYsInkiOjYwN30seyJ4Ijo3NDQuMzg3ODM0ODIxNDI4NiwieSI6NjQ3fV0=" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M744.3878348214286,767L744.3878348214286,803" id="mermaid-1791774313446-L_AUTH_EXCHANGE_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_AUTH_EXCHANGE_0" data-points="W3sieCI6NzQ0LjM4NzgzNDgyMTQyODYsInkiOjc2N30seyJ4Ijo3NDQuMzg3ODM0ODIxNDI4NiwieSI6ODA3fV0=" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M722.3878348214286,927L722.3878348214286,939.9289321881345Q722.3878348214286,947 715.3167670095631,947L399.8937240618654,947Q392.8226562499999,947 392.8226562499999,954.0710678118655L392.8226562499999,963" id="mermaid-1791774313446-L_EXCHANGE_ABSTRACT_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 356.2368469238281 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_EXCHANGE_ABSTRACT_0" data-points="W3sieCI6NzIyLjM4NzgzNDgyMTQyODYsInkiOjkyN30seyJ4Ijo3MjIuMzg3ODM0ODIxNDI4NiwieSI6OTQ3fSx7IngiOjM5Mi44MjI2NTYyNDk5OTk5LCJ5Ijo5NDd9LHsieCI6MzkyLjgyMjY1NjI0OTk5OTksInkiOjk2N31d" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M353.2226562499999,1063L353.2226562499999,1075.9289321881345Q353.2226562499999,1083 346.1515884381344,1083L95.07106781186548,1083Q88,1083 88,1090.0710678118655L88,1143" id="mermaid-1791774313446-L_ABSTRACT_PLACE_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 335.8943176269531 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_ABSTRACT_PLACE_0" data-points="W3sieCI6MzUzLjIyMjY1NjI0OTk5OTksInkiOjEwNjN9LHsieCI6MzUzLjIyMjY1NjI0OTk5OTksInkiOjEwODN9LHsieCI6ODgsInkiOjEwODN9LHsieCI6ODgsInkiOjExNDd9XQ==" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M379.62265624999986,1063L379.62265624999986,1095.9289321881345Q379.62265624999986,1103 372.5515884381344,1103L297.5163803118655,1103Q290.4453125,1103 290.4453125,1110.0710678118655L290.4453125,1155" id="mermaid-1791774313446-L_ABSTRACT_BALANCES_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 171.84902954101562 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_ABSTRACT_BALANCES_0" data-points="W3sieCI6Mzc5LjYyMjY1NjI0OTk5OTg2LCJ5IjoxMDYzfSx7IngiOjM3OS42MjI2NTYyNDk5OTk4NiwieSI6MTEwM30seyJ4IjoyOTAuNDQ1MzEyNSwieSI6MTEwM30seyJ4IjoyOTAuNDQ1MzEyNSwieSI6MTE1OX1d" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M406.02265624999995,1063L406.02265624999995,1095.9289321881345Q406.02265624999995,1103 413.09372406186543,1103L514.9367446881345,1103Q522.0078125,1103 522.0078125,1110.0710678118655L522.0078125,1155" id="mermaid-1791774313446-L_ABSTRACT_PRICES_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 198.6568603515625 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_ABSTRACT_PRICES_0" data-points="W3sieCI6NDA2LjAyMjY1NjI0OTk5OTk1LCJ5IjoxMDYzfSx7IngiOjQwNi4wMjI2NTYyNDk5OTk5NSwieSI6MTEwM30seyJ4Ijo1MjIuMDA3ODEyNSwieSI6MTEwM30seyJ4Ijo1MjIuMDA3ODEyNSwieSI6MTE1OX1d" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M432.42265624999993,1063L432.42265624999993,1075.9289321881345Q432.42265624999993,1083 439.4937240618654,1083L762.3195571881345,1083Q769.390625,1083 769.390625,1090.0710678118655L769.390625,1155" id="mermaid-1791774313446-L_ABSTRACT_STATUS_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 419.6396484375 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_ABSTRACT_STATUS_0" data-points="W3sieCI6NDMyLjQyMjY1NjI0OTk5OTkzLCJ5IjoxMDYzfSx7IngiOjQzMi40MjI2NTYyNDk5OTk5MywieSI6MTA4M30seyJ4Ijo3NjkuMzkwNjI1LCJ5IjoxMDgzfSx7IngiOjc2OS4zOTA2MjUsInkiOjExNTl9XQ==" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M766.3878348214286,927L766.3878348214286,939.9289321881345Q766.3878348214286,947 773.458902633294,947L1167.5226821881345,947Q1174.59375,947 1174.59375,954.0710678118655L1174.59375,979" id="mermaid-1791774313446-L_EXCHANGE_DATASOURCES_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 450.8775939941406 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_EXCHANGE_DATASOURCES_0" data-points="W3sieCI6NzY2LjM4NzgzNDgyMTQyODYsInkiOjkyN30seyJ4Ijo3NjYuMzg3ODM0ODIxNDI4NiwieSI6OTQ3fSx7IngiOjExNzQuNTkzNzUsInkiOjk0N30seyJ4IjoxMTc0LjU5Mzc1LCJ5Ijo5ODN9XQ==" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M1152.59375,1055L1152.59375,1075.9289321881345Q1152.59375,1083 1145.5226821881345,1083L1039.2820053118655,1083Q1032.2109375,1083 1032.2109375,1090.0710678118655L1032.2109375,1119" id="mermaid-1791774313446-L_DATASOURCES_OB_DS_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 175.0544891357422 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_DATASOURCES_OB_DS_0" data-points="W3sieCI6MTE1Mi41OTM3NSwieSI6MTA1NX0seyJ4IjoxMTUyLjU5Mzc1LCJ5IjoxMDgzfSx7IngiOjEwMzIuMjEwOTM3NSwieSI6MTA4M30seyJ4IjoxMDMyLjIxMDkzNzUsInkiOjExMjN9XQ==" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M1196.59375,1055L1196.59375,1075.9289321881345Q1196.59375,1083 1203.6648178118655,1083L1309.9054946881345,1083Q1316.9765625,1083 1316.9765625,1090.0710678118655L1316.9765625,1119" id="mermaid-1791774313446-L_DATASOURCES_US_DS_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 175.05453491210938 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_DATASOURCES_US_DS_0" data-points="W3sieCI6MTE5Ni41OTM3NSwieSI6MTA1NX0seyJ4IjoxMTk2LjU5Mzc1LCJ5IjoxMDgzfSx7IngiOjEzMTYuOTc2NTYyNSwieSI6MTA4M30seyJ4IjoxMzE2Ljk3NjU2MjUsInkiOjExMjN9XQ==" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M1032.2109375,1243L1032.2109375,1275.9289321881345Q1032.2109375,1283 1025.1398696881345,1283L769.0786570975797,1283Q762.0075892857142,1283 762.0075892857142,1290.0710678118655L762.0075892857142,1319" id="mermaid-1791774313446-L_OB_DS_TESTS_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 336.8750915527344 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_OB_DS_TESTS_0" data-points="W3sieCI6MTAzMi4yMTA5Mzc1LCJ5IjoxMjQzfSx7IngiOjEwMzIuMjEwOTM3NSwieSI6MTI4M30seyJ4Ijo3NjIuMDA3NTg5Mjg1NzE0MiwieSI6MTI4M30seyJ4Ijo3NjIuMDA3NTg5Mjg1NzE0MiwieSI6MTMyM31d" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M1316.9765625,1243L1316.9765625,1295.9289321881345Q1316.9765625,1303 1309.9054946881345,1303L787.9357999547226,1303Q780.8647321428571,1303 780.8647321428571,1310.0710678118655L780.8647321428571,1319" id="mermaid-1791774313446-L_US_DS_TESTS_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 602.7835693359375 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_US_DS_TESTS_0" data-points="W3sieCI6MTMxNi45NzY1NjI1LCJ5IjoxMjQzfSx7IngiOjEzMTYuOTc2NTYyNSwieSI6MTMwM30seyJ4Ijo3ODAuODY0NzMyMTQyODU3MSwieSI6MTMwM30seyJ4Ijo3ODAuODY0NzMyMTQyODU3MSwieSI6MTMyM31d" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M88,1219L88,1295.9289321881345Q88,1303 95.07106781186548,1303L679.5079500452773,1303Q686.5790178571427,1303 686.5790178571427,1310.0710678118655L686.5790178571427,1319" id="mermaid-1791774313446-L_PLACE_TESTS_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 689.2507934570312 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_PLACE_TESTS_0" data-points="W3sieCI6ODgsInkiOjEyMTl9LHsieCI6ODgsInkiOjEzMDN9LHsieCI6Njg2LjU3OTAxNzg1NzE0MjcsInkiOjEzMDN9LHsieCI6Njg2LjU3OTAxNzg1NzE0MjcsInkiOjEzMjN9XQ==" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M290.4453125,1207L290.4453125,1275.9289321881345Q290.4453125,1283 297.5163803118655,1283L698.3650929024202,1283Q705.4361607142856,1283 705.4361607142856,1290.0710678118655L705.4361607142856,1319" id="mermaid-1791774313446-L_BALANCES_TESTS_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 517.6625366210938 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_BALANCES_TESTS_0" data-points="W3sieCI6MjkwLjQ0NTMxMjUsInkiOjEyMDd9LHsieCI6MjkwLjQ0NTMxMjUsInkiOjEyODN9LHsieCI6NzA1LjQzNjE2MDcxNDI4NTYsInkiOjEyODN9LHsieCI6NzA1LjQzNjE2MDcxNDI4NTYsInkiOjEzMjN9XQ==" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M522.0078125,1207L522.0078125,1255.9289321881345Q522.0078125,1263 529.0788803118655,1263L717.2222357595629,1263Q724.2933035714284,1263 724.2933035714284,1270.0710678118655L724.2933035714284,1319" id="mermaid-1791774313446-L_PRICES_TESTS_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 304.95721435546875 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_PRICES_TESTS_0" data-points="W3sieCI6NTIyLjAwNzgxMjUsInkiOjEyMDd9LHsieCI6NTIyLjAwNzgxMjUsInkiOjEyNjN9LHsieCI6NzI0LjI5MzMwMzU3MTQyODQsInkiOjEyNjN9LHsieCI6NzI0LjI5MzMwMzU3MTQyODQsInkiOjEzMjN9XQ==" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M769.390625,1207L769.390625,1255.9289321881345Q769.390625,1263 762.3195571881345,1263L750.2215142404368,1263Q743.1504464285713,1263 743.1504464285713,1270.0710678118655L743.1504464285713,1319" id="mermaid-1791774313446-L_STATUS_TESTS_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 128.911865234375 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_STATUS_TESTS_0" data-points="W3sieCI6NzY5LjM5MDYyNSwieSI6MTIwN30seyJ4Ijo3NjkuMzkwNjI1LCJ5IjoxMjYzfSx7IngiOjc0My4xNTA0NDY0Mjg1NzEzLCJ5IjoxMjYzfSx7IngiOjc0My4xNTA0NDY0Mjg1NzEzLCJ5IjoxMzIzfV0=" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M694.1218749999998,1371L694.1218749999998,1383.9289321881345Q694.1218749999998,1391 687.0508071881343,1391L424.2685008475797,1391Q417.1974330357142,1391 417.1974330357142,1398.0710678118655L417.1974330357142,1427" id="mermaid-1791774313446-L_TESTS_MOCK_REST_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 323.59619140625 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_TESTS_MOCK_REST_0" data-points="W3sieCI6Njk0LjEyMTg3NDk5OTk5OTgsInkiOjEzNzF9LHsieCI6Njk0LjEyMTg3NDk5OTk5OTgsInkiOjEzOTF9LHsieCI6NDE3LjE5NzQzMzAzNTcxNDIsInkiOjEzOTF9LHsieCI6NDE3LjE5NzQzMzAzNTcxNDIsInkiOjE0MzF9XQ==" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M720.5218749999999,1371L720.5218749999999,1403.9289321881345Q720.5218749999999,1411 713.4508071881344,1411L616.2685008475796,1411Q609.1974330357142,1411 609.1974330357142,1418.0710678118655L609.1974330357142,1427" id="mermaid-1791774313446-L_TESTS_MOCK_WS_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 157.99615478515625 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_TESTS_MOCK_WS_0" data-points="W3sieCI6NzIwLjUyMTg3NDk5OTk5OTksInkiOjEzNzF9LHsieCI6NzIwLjUyMTg3NDk5OTk5OTksInkiOjE0MTF9LHsieCI6NjA5LjE5NzQzMzAzNTcxNDIsInkiOjE0MTF9LHsieCI6NjA5LjE5NzQzMzAzNTcxNDIsInkiOjE0MzF9XQ==" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M746.9218749999999,1371L746.9218749999999,1403.9289321881345Q746.9218749999999,1411 753.9929428118653,1411L794.1263652238488,1411Q801.1974330357142,1411 801.1974330357142,1418.0710678118655L801.1974330357142,1427" id="mermaid-1791774313446-L_TESTS_PAPER_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 100.94730377197266 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_TESTS_PAPER_0" data-points="W3sieCI6NzQ2LjkyMTg3NDk5OTk5OTksInkiOjEzNzF9LHsieCI6NzQ2LjkyMTg3NDk5OTk5OTksInkiOjE0MTF9LHsieCI6ODAxLjE5NzQzMzAzNTcxNDIsInkiOjE0MTF9LHsieCI6ODAxLjE5NzQzMzAzNTcxNDIsInkiOjE0MzF9XQ==" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M773.3218749999999,1371L773.3218749999999,1383.9289321881345Q773.3218749999999,1391 780.3929428118654,1391L986.1263652238488,1391Q993.1974330357142,1391 993.1974330357142,1398.0710678118655L993.1974330357142,1439" id="mermaid-1791774313446-L_TESTS_REGISTER_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 278.54730224609375 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_TESTS_REGISTER_0" data-points="W3sieCI6NzczLjMyMTg3NDk5OTk5OTksInkiOjEzNzF9LHsieCI6NzczLjMyMTg3NDk5OTk5OTksInkiOjEzOTF9LHsieCI6OTkzLjE5NzQzMzAzNTcxNDIsInkiOjEzOTF9LHsieCI6OTkzLjE5NzQzMzAzNTcxNDIsInkiOjE0NDN9XQ==" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path><path d="M993.1974330357142,1515L993.1974330357142,1563" id="mermaid-1791774313446-L_REGISTER_DONE_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 44 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_REGISTER_DONE_0" data-points="W3sieCI6OTkzLjE5NzQzMzAzNTcxNDIsInkiOjE1MTV9LHsieCI6OTkzLjE5NzQzMzAzNTcxNDIsInkiOjE1Njd9XQ==" data-look="neo" marker-end="url(#mermaid-1791774313446_flowchart-v2-pointEnd-margin)"></path></g><g class="edgeLabels"></g><g class="nodes"><g class="node default" id="mermaid-1791774313446-flowchart-START-0" data-look="neo" transform="translate(744.3878348214286, 387)"><rect class="basic label-container" style="" x="-76" y="-36" width="152" height="72"></rect><g class="label" style="" transform="translate(-60, -24)"><rect></rect><foreignObject width="120" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>New Exchange Connector</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-CONST-1" data-look="neo" transform="translate(744.3878348214286, 535)"><rect class="basic label-container" style="" x="-76" y="-72" width="152" height="144"></rect><g class="label" style="" transform="translate(-60, -60)"><rect></rect><foreignObject width="120" height="120"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>1. Define Constants<br>URLs, rate limits, endpoints</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-AUTH-3" data-look="neo" transform="translate(744.3878348214286, 707)"><rect class="basic label-container" style="" x="-76" y="-60" width="152" height="120"></rect><g class="label" style="" transform="translate(-60, -48)"><rect></rect><foreignObject width="120" height="96"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>2. Implement Auth<br>API key signing, WS auth</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-EXCHANGE-5" data-look="neo" transform="translate(744.3878348214286, 867)"><rect class="basic label-container" style="" x="-76" y="-60" width="152" height="120"></rect><g class="label" style="" transform="translate(-60, -48)"><rect></rect><foreignObject width="120" height="96"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>3. Implement Exchange Class<br>Extend ExchangePyBase</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-ABSTRACT-7" data-look="neo" transform="translate(392.8226562499999, 1015)"><rect class="basic label-container" style="" x="-76" y="-48" width="152" height="96"></rect><g class="label" style="" transform="translate(-60, -36)"><rect></rect><foreignObject width="120" height="72"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>Implement Abstract Methods</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-PLACE-9" data-look="neo" transform="translate(88, 1183)"><rect class="basic label-container" style="" x="-76" y="-36" width="152" height="72"></rect><g class="label" style="" transform="translate(-60, -24)"><rect></rect><foreignObject width="120" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: nowrap; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>_place_order()<br>_place_cancel()</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-BALANCES-11" data-look="neo" transform="translate(290.4453125, 1183)"><rect class="basic label-container" style="" x="-86.4453125" y="-24" width="172.890625" height="48"></rect><g class="label" style="" transform="translate(-70.4453125, -12)"><rect></rect><foreignObject width="140.890625" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>_update_balances()</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-PRICES-13" data-look="neo" transform="translate(522.0078125, 1183)"><rect class="basic label-container" style="" x="-105.1171875" y="-24" width="210.234375" height="48"></rect><g class="label" style="" transform="translate(-89.1171875, -12)"><rect></rect><foreignObject width="178.234375" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>_get_last_traded_price()</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-STATUS-15" data-look="neo" transform="translate(769.390625, 1183)"><rect class="basic label-container" style="" x="-102.265625" y="-24" width="204.53125" height="48"></rect><g class="label" style="" transform="translate(-86.265625, -12)"><rect></rect><foreignObject width="172.53125" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>_request_order_status()</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-DATASOURCES-17" data-look="neo" transform="translate(1174.59375, 1019)"><rect class="basic label-container" style="" x="-76" y="-36" width="152" height="72"></rect><g class="label" style="" transform="translate(-60, -24)"><rect></rect><foreignObject width="120" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>4. Create Data Sources</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-OB_DS-19" data-look="neo" transform="translate(1032.2109375, 1183)"><rect class="basic label-container" style="" x="-120.5546875" y="-60" width="241.109375" height="120"></rect><g class="label" style="" transform="translate(-104.5546875, -48)"><rect></rect><foreignObject width="209.109375" height="96"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>OrderBookTrackerDataSource<br>- REST snapshot endpoint<br>- WS diff subscription<br>- WS trade subscription</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-US_DS-21" data-look="neo" transform="translate(1316.9765625, 1183)"><rect class="basic label-container" style="" x="-124.2109375" y="-60" width="248.421875" height="120"></rect><g class="label" style="" transform="translate(-108.2109375, -48)"><rect></rect><foreignObject width="216.421875" height="96"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>UserStreamTrackerDataSource<br>- WS balance updates<br>- WS order updates<br>- WS fill updates</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-TESTS-23" data-look="neo" transform="translate(733.721875, 1347)"><rect class="basic label-container" style="" x="-76" y="-24" width="152" height="48"></rect><g class="label" style="" transform="translate(-60, -12)"><rect></rect><foreignObject width="120" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: nowrap; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>5. Write Tests</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-MOCK_REST-35" data-look="neo" transform="translate(417.1974330357142, 1467)"><rect class="basic label-container" style="" x="-76" y="-36" width="152" height="72"></rect><g class="label" style="" transform="translate(-60, -24)"><rect></rect><foreignObject width="120" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: nowrap; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>REST tests<br>(aioresponses)</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-MOCK_WS-37" data-look="neo" transform="translate(609.1974330357142, 1479)"><rect class="basic label-container" style="" x="-76" y="-48" width="152" height="96"></rect><g class="label" style="" transform="translate(-60, -36)"><rect></rect><foreignObject width="120" height="72"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>WebSocket tests<br>(mock WS assistant)</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-PAPER-39" data-look="neo" transform="translate(801.1974330357142, 1467)"><rect class="basic label-container" style="" x="-76" y="-36" width="152" height="72"></rect><g class="label" style="" transform="translate(-60, -24)"><rect></rect><foreignObject width="120" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: nowrap; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>Paper trade<br>integration test</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-F1-40" data-look="neo" transform="translate(352.38783482142844, 87)"><rect class="basic label-container" style="" x="-76" y="-24" width="152" height="48"></rect><g class="label" style="" transform="translate(-60, -12)"><rect></rect><foreignObject width="120" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: nowrap; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>__init__.py</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-F2-41" data-look="neo" transform="translate(528.3878348214284, 87)"><rect class="basic label-container" style="" x="-76" y="-24" width="152" height="48"></rect><g class="label" style="" transform="translate(-60, -12)"><rect></rect><foreignObject width="120" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: nowrap; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>*_exchange.py</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-F3-42" data-look="neo" transform="translate(352.38783482142844, 159)"><rect class="basic label-container" style="" x="-76" y="-24" width="152" height="48"></rect><g class="label" style="" transform="translate(-60, -12)"><rect></rect><foreignObject width="120" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: nowrap; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>*_auth.py</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-F4-43" data-look="neo" transform="translate(414.36439732142844, 303)"><rect class="basic label-container" style="" x="-137.9765625" y="-24" width="275.953125" height="48"></rect><g class="label" style="" transform="translate(-121.9765625, -12)"><rect></rect><foreignObject width="243.953125" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>*_api_order_book_data_source.py</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-F5-44" data-look="neo" transform="translate(417.76283482142844, 375)"><rect class="basic label-container" style="" x="-141.375" y="-24" width="282.75" height="48"></rect><g class="label" style="" transform="translate(-125.375, -12)"><rect></rect><foreignObject width="250.75" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>*_api_user_stream_data_source.py</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-F6-45" data-look="neo" transform="translate(528.3878348214284, 159)"><rect class="basic label-container" style="" x="-76" y="-24" width="152" height="48"></rect><g class="label" style="" transform="translate(-60, -12)"><rect></rect><foreignObject width="120" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: nowrap; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>*_web_utils.py</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-F7-46" data-look="neo" transform="translate(352.38783482142844, 231)"><rect class="basic label-container" style="" x="-76" y="-24" width="152" height="48"></rect><g class="label" style="" transform="translate(-60, -12)"><rect></rect><foreignObject width="120" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: nowrap; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>*_constants.py</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-REGISTER-48" data-look="neo" transform="translate(993.1974330357142, 1479)"><rect class="basic label-container" style="" x="-76" y="-36" width="152" height="72"></rect><g class="label" style="" transform="translate(-60, -24)"><rect></rect><foreignObject width="120" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>6. Register in settings.py</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791774313446-flowchart-DONE-50" data-look="neo" transform="translate(993.1974330357142, 1603)"><rect class="basic label-container" style="" x="-76" y="-36" width="152" height="72"></rect><g class="label" style="" transform="translate(-60, -24)"><rect></rect><foreignObject width="120" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>Connector Ready</p></span></div></foreignObject></g></g></g></g></g><defs><filter id="mermaid-1791774313446-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs><defs><filter id="mermaid-1791774313446-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs></svg></div><details><summary>Diagram source</summary><pre><code>flowchart TD
+    START[New Exchange Connector] --&gt; CONST[1. Define Constants&lt;br/&gt;URLs, rate limits, endpoints]
+    CONST --&gt; AUTH[2. Implement Auth&lt;br/&gt;API key signing, WS auth]
+    AUTH --&gt; EXCHANGE[3. Implement Exchange Class&lt;br/&gt;Extend ExchangePyBase]
+
+    EXCHANGE --&gt; ABSTRACT[Implement Abstract Methods]
+    ABSTRACT --&gt; PLACE["_place_order()&lt;br/&gt;_place_cancel()"]
+    ABSTRACT --&gt; BALANCES["_update_balances()"]
+    ABSTRACT --&gt; PRICES["_get_last_traded_price()"]
+    ABSTRACT --&gt; STATUS["_request_order_status()"]
+
+    EXCHANGE --&gt; DATASOURCES[4. Create Data Sources]
+    DATASOURCES --&gt; OB_DS["OrderBookTrackerDataSource&lt;br/&gt;- REST snapshot endpoint&lt;br/&gt;- WS diff subscription&lt;br/&gt;- WS trade subscription"]
+    DATASOURCES --&gt; US_DS["UserStreamTrackerDataSource&lt;br/&gt;- WS balance updates&lt;br/&gt;- WS order updates&lt;br/&gt;- WS fill updates"]
+
+    OB_DS --&gt; TESTS[5. Write Tests]
+    US_DS --&gt; TESTS
+    PLACE --&gt; TESTS
+    BALANCES --&gt; TESTS
+    PRICES --&gt; TESTS
+    STATUS --&gt; TESTS
+
+    TESTS --&gt; MOCK_REST["REST tests&lt;br/&gt;(aioresponses)"]
+    TESTS --&gt; MOCK_WS["WebSocket tests&lt;br/&gt;(mock WS assistant)"]
+    TESTS --&gt; PAPER["Paper trade&lt;br/&gt;integration test"]
+
+    subgraph FileStructure["Connector Directory"]
+        direction LR
+        F1["__init__.py"]
+        F2["*_exchange.py"]
+        F3["*_auth.py"]
+        F4["*_api_order_book_data_source.py"]
+        F5["*_api_user_stream_data_source.py"]
+        F6["*_web_utils.py"]
+        F7["*_constants.py"]
+    end
+
+    TESTS --&gt; REGISTER[6. Register in settings.py]
+    REGISTER --&gt; DONE[Connector Ready]</code></pre></details>
+<h2 id="configuration-reference">Configuration Reference</h2>
+<p>Hummingbot uses a layered configuration system with Pydantic models. The main client config is at <code>conf/conf_client.yml</code>, exchange credentials in <code>conf/connectors/</code>, and strategy configs in <code>conf/strategies/</code>.</p>
+<h3 id="client-configuration-confconf_clientyml">Client Configuration (<code>conf/conf_client.yml</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>instance_id</code></td>
+<td><code>str</code></td>
+<td>(auto-generated)</td>
+<td>Unique 40-char hex identifier for this bot instance</td>
+</tr>
+<tr>
+<td><code>kill_switch_mode.kill_switch_enabled</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Enable automatic shutdown based on PnL</td>
+</tr>
+<tr>
+<td><code>kill_switch_mode.kill_switch_rate</code></td>
+<td><code>Decimal</code></td>
+<td><code>-100</code></td>
+<td>PnL threshold (%) to trigger shutdown</td>
+</tr>
+<tr>
+<td><code>rate_oracle_source</code></td>
+<td><code>str</code></td>
+<td><code>"binance"</code></td>
+<td>Source for cross-exchange price conversion (15+ options)</td>
+</tr>
+<tr>
+<td><code>tick_size</code></td>
+<td><code>float</code></td>
+<td><code>1.0</code></td>
+<td>Clock tick interval in seconds</td>
+</tr>
+<tr>
+<td><code>gateway_api_host</code></td>
+<td><code>str</code></td>
+<td><code>"localhost"</code></td>
+<td>Gateway middleware hostname</td>
+</tr>
+<tr>
+<td><code>gateway_api_port</code></td>
+<td><code>str</code></td>
+<td><code>"15888"</code></td>
+<td>Gateway middleware port</td>
+</tr>
+<tr>
+<td><code>gateway_use_ssl</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td>Use SSL for Gateway connections</td>
+</tr>
+<tr>
+<td><code>mqtt_bridge.mqtt_host</code></td>
+<td><code>str</code></td>
+<td><code>"localhost"</code></td>
+<td>MQTT broker hostname</td>
+</tr>
+<tr>
+<td><code>mqtt_bridge.mqtt_port</code></td>
+<td><code>int</code></td>
+<td><code>1883</code></td>
+<td>MQTT broker port</td>
+</tr>
+<tr>
+<td><code>mqtt_bridge.mqtt_username</code></td>
+<td><code>str</code></td>
+<td><code>""</code></td>
+<td>MQTT broker username</td>
+</tr>
+<tr>
+<td><code>mqtt_bridge.mqtt_password</code></td>
+<td><code>str</code></td>
+<td><code>""</code></td>
+<td>MQTT broker password</td>
+</tr>
+<tr>
+<td><code>mqtt_bridge.mqtt_namespace</code></td>
+<td><code>str</code></td>
+<td><code>"hbot"</code></td>
+<td>MQTT topic namespace</td>
+</tr>
+<tr>
+<td><code>mqtt_bridge.mqtt_ssl</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Use SSL for MQTT</td>
+</tr>
+<tr>
+<td><code>mqtt_bridge.mqtt_autostart</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Auto-connect to MQTT on startup</td>
+</tr>
+<tr>
+<td><code>market_data_collection.market_data_collection_enabled</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Enable order book data collection</td>
+</tr>
+<tr>
+<td><code>market_data_collection.market_data_collection_interval</code></td>
+<td><code>int</code></td>
+<td><code>60</code></td>
+<td>Collection interval in seconds</td>
+</tr>
+<tr>
+<td><code>market_data_collection.market_data_collection_depth</code></td>
+<td><code>int</code></td>
+<td><code>20</code></td>
+<td>Order book depth to collect</td>
+</tr>
+<tr>
+<td><code>tables_format</code></td>
+<td><code>str</code></td>
+<td><code>"psql"</code></td>
+<td>Table format for CLI output (any <code>tabulate</code> format)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="paper-trade-configuration">Paper Trade Configuration</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>paper_trade_exchanges</code></td>
+<td><code>list[str]</code></td>
+<td><code>["binance", "kucoin", "kraken", "gate_io"]</code></td>
+<td>Exchanges enabled for paper trading</td>
+</tr>
+<tr>
+<td><code>paper_trade_account_balance</code></td>
+<td><code>dict[str, float]</code></td>
+<td><code>{"BTC": 1, "USDT": 100000, "ETH": 20, ...}</code></td>
+<td>Starting balances for paper trade mode</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pure-market-making-strategy-config">Pure Market Making Strategy Config</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>exchange</code></td>
+<td><code>str</code></td>
+<td>(required)</td>
+<td>Exchange connector name</td>
+</tr>
+<tr>
+<td><code>market</code></td>
+<td><code>str</code></td>
+<td>(required)</td>
+<td>Trading pair (e.g., <code>BTC-USDT</code>)</td>
+</tr>
+<tr>
+<td><code>bid_spread</code></td>
+<td><code>Decimal</code></td>
+<td>(required)</td>
+<td>Bid spread from mid price (1 = 1%)</td>
+</tr>
+<tr>
+<td><code>ask_spread</code></td>
+<td><code>Decimal</code></td>
+<td>(required)</td>
+<td>Ask spread from mid price (1 = 1%)</td>
+</tr>
+<tr>
+<td><code>order_amount</code></td>
+<td><code>Decimal</code></td>
+<td>(required)</td>
+<td>Order size in base asset</td>
+</tr>
+<tr>
+<td><code>order_refresh_time</code></td>
+<td><code>float</code></td>
+<td>(required)</td>
+<td>Seconds between order refresh cycles</td>
+</tr>
+<tr>
+<td><code>order_levels</code></td>
+<td><code>int</code></td>
+<td><code>1</code></td>
+<td>Number of order levels on each side</td>
+</tr>
+<tr>
+<td><code>order_level_spread</code></td>
+<td><code>Decimal</code></td>
+<td><code>0</code></td>
+<td>Spread between order levels</td>
+</tr>
+<tr>
+<td><code>order_level_amount</code></td>
+<td><code>Decimal</code></td>
+<td><code>0</code></td>
+<td>Size increment per level</td>
+</tr>
+<tr>
+<td><code>inventory_skew_enabled</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Enable inventory-weighted order sizing</td>
+</tr>
+<tr>
+<td><code>inventory_target_base_pct</code></td>
+<td><code>Decimal</code></td>
+<td><code>50</code></td>
+<td>Target base asset percentage (0-100)</td>
+</tr>
+<tr>
+<td><code>hanging_orders_enabled</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Keep filled-side orders active</td>
+</tr>
+<tr>
+<td><code>order_optimization_enabled</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Optimize order placement using order book depth</td>
+</tr>
+<tr>
+<td><code>add_transaction_costs</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Add exchange fees to order pricing</td>
+</tr>
+<tr>
+<td><code>price_source</code></td>
+<td><code>str</code></td>
+<td><code>"current_market"</code></td>
+<td>Price source: <code>current_market</code>, <code>external_market</code>, or <code>custom_api</code></td>
+</tr>
+<tr>
+<td><code>price_type</code></td>
+<td><code>str</code></td>
+<td><code>"mid_price"</code></td>
+<td>Price type: <code>mid_price</code>, <code>last_price</code>, <code>best_bid</code>, <code>best_ask</code>, <code>inventory_cost</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="1-cython-extension-build-fails">1. <code>Cython extension build fails</code></h3>
+<p>Ensure you have a C/C++ compiler installed and Python development headers:</p>
+<pre><code class="language-bash"># Ubuntu/Debian
+sudo apt-get install -y build-essential python3-dev
+# macOS
+xcode-select --install
+# Then rebuild
+uv build --python 3.15.0
+</code></pre>
+<h3 id="2-modulenotfounderror-no-module-named-hummingbotcoreclock">2. <code>ModuleNotFoundError: No module named 'hummingbot.core.clock'</code></h3>
+<p>This means Cython extensions are not compiled. Run:</p>
+<pre><code class="language-bash">uv build --python 3.15.0
+</code></pre>
+<h3 id="3-paper-trade-connector-shows-zero-balances">3. Paper trade connector shows zero balances</h3>
+<p>Paper trade balances are configured in <code>conf/conf_client.yml</code> under <code>paper_trade_account_balance</code>. Ensure the currency symbols match what the exchange connector expects (e.g., <code>USDT</code> not <code>USD</code>).</p>
+<h3 id="4-connectionerror-when-connecting-to-an-exchange">4. <code>ConnectionError</code> when connecting to an exchange</h3>
+<ul>
+<li>Verify API keys are correct using the exchange's own web interface</li>
+<li>Check if the exchange requires IP whitelisting for API access</li>
+<li>Ensure no firewall or proxy is blocking outbound HTTPS connections</li>
+<li>Some exchanges (e.g., Binance) have regional restrictions</li>
+</ul>
+<h3 id="5-orders-not-being-placed-budgetchecker-rejecting-orders">5. Orders not being placed / <code>BudgetChecker</code> rejecting orders</h3>
+<p>The <code>BudgetChecker</code> validates that sufficient balance exists before placing orders. Common causes:
+- <code>order_amount</code> exceeds available balance
+- Fee reserve is insufficient (add more quote currency balance)
+- For paper trade, increase balances in config</p>
+<h3 id="6-strategy-exits-immediately-with-clock-tick-error">6. Strategy exits immediately with <code>Clock tick error</code></h3>
+<p>This typically means a connector failed to initialize. Check:
+- Exchange API credentials are set via <code>connect &lt;exchange&gt;</code> command
+- The trading pair format is correct (use <code>BTC-USDT</code> not <code>BTC/USDT</code> -- Hummingbot uses dashes)
+- The exchange supports the requested trading pair</p>
+<h3 id="7-gateway-connection-refused">7. Gateway connection refused</h3>
+<ul>
+<li>Ensure Gateway is running (<code>docker ps</code> or check the Gateway process)</li>
+<li>Verify <code>gateway_api_host</code> and <code>gateway_api_port</code> in <code>conf/conf_client.yml</code></li>
+<li>Check that SSL certificates are generated (run <code>gateway generate-certs</code> in the Hummingbot CLI)</li>
+<li>Verify Gateway logs for startup errors</li>
+</ul>
+<h3 id="8-mqtt-bridge-not-connecting">8. MQTT bridge not connecting</h3>
+<ul>
+<li>Ensure an MQTT broker (e.g., Mosquitto) is running at the configured host/port</li>
+<li>Set <code>mqtt_autostart: true</code> in config to connect on startup</li>
+<li>Check broker authentication if <code>mqtt_username</code>/<code>mqtt_password</code> are set</li>
+<li>Verify firewall allows connections on the MQTT port (default 1883)</li>
+</ul>
+<h3 id="9-asyncio-event-loop-errors-or-runtimeerror-event-loop-is-closed">9. <code>asyncio</code> event loop errors or <code>RuntimeError: Event loop is closed</code></h3>
+<p>Hummingbot relies heavily on asyncio. These errors often occur when:
+- Running in an incompatible Jupyter environment
+- Tests pollute the event loop (use <code>IsolatedAsyncioWrapperTestCase</code> for test isolation)
+- Python version mismatch (use the verified managed Python 3.15.0 environment)</p>
+<h3 id="10-exchange-connector-tests-fail-with-aioresponses-errors">10. Exchange connector tests fail with <code>aioresponses</code> errors</h3>
+<p>Ensure <code>aioresponses</code> is installed and the mock URLs match the exchange's current API endpoints. Exchange APIs change frequently -- check if the connector constants file needs updating.</p>
+<h2 id="security-considerations">Security Considerations</h2>
+<ul>
+<li><strong>API key encryption</strong>: Hummingbot encrypts exchange API keys at rest using AES encryption via the <code>Security</code> class (<code>src/hummingbot/client/config/security.py</code>). Keys are stored in encrypted YAML files under <code>conf/connectors/</code>. A user-provided password decrypts them at runtime. Use a strong, unique password.</li>
+<li><strong>Password management</strong>: The encryption password is entered interactively at startup and held in memory. It is never written to disk. If you lose the password, you must re-enter API keys.</li>
+<li><strong>Gateway mTLS</strong>: Gateway communication uses mutual TLS (client certificates). Certificates are generated locally and stored in <code>conf/certs/</code>. Protect this directory from unauthorized access.</li>
+<li><strong>Wallet private keys</strong>: When using Gateway for DEX trading, wallet private keys are stored in encrypted keystores within the Gateway service. Never share Gateway data directories.</li>
+<li><strong>MQTT exposure</strong>: If MQTT bridge is enabled, bot commands and trade events are transmitted over MQTT. Use <code>mqtt_ssl: true</code> and authentication in production. Never expose the MQTT broker to the public internet without authentication.</li>
+<li><strong>Paper trade isolation</strong>: Paper trade connectors simulate order execution locally. Ensure you are not accidentally connected to a real exchange connector with real API keys when testing.</li>
+<li><strong>Database contents</strong>: The SQLite database (<code>hummingbot_trades.sqlite</code>) stores complete trade history. Set file permissions appropriately and do not share database files.</li>
+<li><strong>Config file permissions</strong>: Strategy configs and <code>conf_client.yml</code> may contain sensitive parameters. Restrict permissions: <code>chmod 600 conf/*.yml conf/connectors/*.yml</code>.</li>
+<li><strong>Docker deployment</strong>: When running in Docker, use volume mounts for <code>conf/</code> and avoid baking credentials into images. Use Docker secrets or environment variables for sensitive values.</li>
+<li><strong>Rate limiting</strong>: Each exchange connector implements rate limiting via <code>ApiThrottler</code>. Do not bypass or reduce rate limits, as this can result in IP bans from exchanges.</li>
+</ul>
+<hr>
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="../README.md">README</a> — Project overview and quick start</li>
+<li><a href="ayu-develop.md#architecture">Architecture</a> — System design and components</li>
+<li><a href="ayu-develop.md#workflow">Workflow</a> — Event flows and processing pipelines</li>
+<li><a href="ayu-develop.md#components">State Management</a> — State lifecycle and data models</li>
+</ul>
+<h2 id="uv-maintenance-workflow-2026-10-12">uv maintenance workflow (2026-10-12)</h2>
+<p>Selected complete environment: Python 3.15.0; build backend <code>setuptools.build_meta</code>. The workspace uses uv 0.13.0. Python 3.15 was attempted before any fallback; the actual failure and selected runtime are recorded in <a href="validation.md">validation</a>.</p>
+<pre><code class="language-sh">export UV_PYTHON_PREFERENCE=only-managed
+export TA_INCLUDE_PATH=/opt/homebrew/opt/ta-lib/include
+export TA_LIBRARY_PATH=/opt/homebrew/opt/ta-lib/lib
+uv python install 3.15.0
+uv lock --upgrade
+uv sync --all-extras --python 3.15.0
+uv build --python 3.15.0
+uv run --frozen --all-extras python -m compileall -q src/hummingbot
+uv run --frozen --all-extras python -m pytest test
+</code></pre>
+<p>The backend builds Cython/C++ extensions and needs the Apple compiler toolchain. Inspect wheel shared libraries, not just its exit status. Python 3.15 source builds of TA-Lib additionally require native ta-lib headers/libraries (<code>TA_INCLUDE_PATH</code> and <code>TA_LIBRARY_PATH</code>). The exact coincurve Git revision is locked in uv sources.</p>
+<p>Keep source resources inside their package and preserve the repository's existing src layout. Rebuild after source/native/asset changes. Use the locked environment for final verification. Commands above are the standard workflow, not a promise that every existing suite currently passes; consult validation for exact outcomes and unresolved compatibility issues.</p>
+<h3 id="python-315-compatibility-sources">Python 3.15 compatibility sources</h3>
+<p><a href="../vendor/ft-pandas-ta/PROVENANCE.md">ft-pandas-ta provenance</a> records the MIT 0.3.16 source and two exact compiler repairs: a raw regex replacement string and returning after the date-index predicate's try/except. Numerical indicator algorithms remain unchanged. <a href="../vendor/aioresponses/PROVENANCE.md">aioresponses provenance</a> records its MIT 0.7.9 source and the required current aiohttp <code>stream_writer</code> constructor argument. Both are explicit uv sources, compile under strict warnings and retain their licenses. The native PubSub change uses ordinary weak-reference calls on Python 3.15.</p>
+<p>The Apache-2.0 <a href="../vendor/lighter-sdk/PROVENANCE.md">Lighter SDK compatibility source</a> keeps all upstream platform signer libraries and replaces its deprecated WebSocket import with the current asynchronous API.</p>
+<p>The Apache-2.0 <a href="../vendor/injective-py/PROVENANCE.md">Injective SDK compatibility source</a> retains all upstream SDK modules, license and notice. Its 403 unchanged serialized schemas use a private protobuf descriptor pool so current Injective and dYdX Cosmos revisions coexist. Private well-known message classes and JSON descriptor lookup use that same pool; numerical and wire definitions remain unchanged.</p>
+<p>The shared <a href="../src/hummingbot/core/utils/__init__.py">asynchronous TTL cache</a> keeps real, hashable argument objects in its cache key. This preserves connector identity when Python reuses a freed object's memory address; a string representation of arguments cannot provide that guarantee. Existing rate-source, Gateway and TTL-expiration cases exercise the same cache.</p>
+<p>The <a href="../test/conftest.py">test resource fixture</a> observes both explicit <code>asyncio.new_event_loop</code> calls and the <code>asyncio.events.new_event_loop</code> entry point used by <code>asyncio.Runner</code>. It drains only newly allocated tasks and closes loops it actually observed being created, preserving tasks already present on external loops. Existing BTC Markets lifecycle cases mock both their recent-candle and historical-candle HTTP boundaries using their original candle data, while retaining every start/stop assertion.</p></main>
+<div class="mermaidTooltip" style="opacity: 0; position: absolute; text-align: center; max-width: 200px; padding: 2px; font-size: 12px; background: rgb(255, 255, 222); border: 1px solid rgb(51, 51, 51); border-radius: 2px; pointer-events: none; z-index: 100;"></div></body></html>

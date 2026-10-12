@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-- Python 3.12 (exact match required)
+- Managed Python 3.15.0 (the verified maintenance runtime; package metadata permits Python >=3.13)
 - A C/C++ compiler (for Cython extensions)
 - Git
 
@@ -17,13 +17,13 @@ cd hummingbot
 git checkout feature/ayu_develop
 
 # Install with uv (recommended)
-uv sync --active --all-groups --all-extras
+uv sync --frozen --all-groups --all-extras --python 3.15.0
 
 # Or install with pip
 pip install -e ".[all]"
 
 # Build Cython extensions
-python setup.py build_ext --inplace
+uv build --python 3.15.0
 ```
 
 ### Running
@@ -670,14 +670,14 @@ sudo apt-get install -y build-essential python3-dev
 # macOS
 xcode-select --install
 # Then rebuild
-python setup.py build_ext --inplace
+uv build --python 3.15.0
 ```
 
 ### 2. `ModuleNotFoundError: No module named 'hummingbot.core.clock'`
 
 This means Cython extensions are not compiled. Run:
 ```bash
-python setup.py build_ext --inplace
+uv build --python 3.15.0
 ```
 
 ### 3. Paper trade connector shows zero balances
@@ -724,7 +724,7 @@ This typically means a connector failed to initialize. Check:
 Hummingbot relies heavily on asyncio. These errors often occur when:
 - Running in an incompatible Jupyter environment
 - Tests pollute the event loop (use `IsolatedAsyncioWrapperTestCase` for test isolation)
-- Python version mismatch (requires exactly Python 3.12)
+- Python version mismatch (use the verified managed Python 3.15.0 environment)
 
 ### 10. Exchange connector tests fail with `aioresponses` errors
 
@@ -745,10 +745,10 @@ Ensure `aioresponses` is installed and the mock URLs match the exchange's curren
 
 ---
 ## See Also
-- [README](README.md) — Project overview and quick start
-- [Architecture](architecture.md) — System design and components
-- [Workflow](workflow.md) — Event flows and processing pipelines
-- [State Management](state-management.md) — State lifecycle and data models
+- [README](../README.md) — Project overview and quick start
+- [Architecture](ayu-develop.md#architecture) — System design and components
+- [Workflow](ayu-develop.md#workflow) — Event flows and processing pipelines
+- [State Management](ayu-develop.md#components) — State lifecycle and data models
 
 ## uv maintenance workflow (2026-10-12)
 
