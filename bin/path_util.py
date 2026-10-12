@@ -14,3 +14,5 @@ else:
     import sys
     from os.path import join, realpath
     sys.path.insert(0, realpath(join(__file__, "../../")))
+    # Keep bin/hummingbot.py from shadowing the src-layout package.
+    sys.path.insert(0, realpath(join(__file__, "../../src")))

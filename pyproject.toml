@@ -44,6 +44,8 @@ dependencies = [
     "objgraph",
     "pandas",
     "prompt_toolkit",
+    "ptpython",
+    "appdirs",
     "protobuf",
     "psutil",
     "pydantic",
@@ -85,7 +87,8 @@ Documentation = "https://docs.hummingbot.org"
 Repository = "https://github.com/hummingbot/hummingbot"
 
 [project.scripts]
-hummingbot_quickstart = "bin.hummingbot_quickstart:main"
+hummingbot_quickstart = "hummingbot.client.quickstart:main"
+hbot = "hummingbot.cli.main:main"
 
 
 
