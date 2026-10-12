@@ -1322,7 +1322,7 @@ class CoinbaseAdvancedTradeExchangeTests(AbstractExchangeConnectorTests.Exchange
         self.assertTrue(order.is_done)
 
     @aioresponses()
-    @patch("hummingbot.core.utils.trading_pair_fetcher.TradingPairFetcher.fetch_all", new_callable=AsyncMock())
+    @patch("hummingbot.core.utils.trading_pair_fetcher.TradingPairFetcher.fetch_all", new_callable=AsyncMock)
     def test_update_order_status_when_canceled(self, mock_api, fetch_all):
         self.exchange._set_current_timestamp(1640780000)
 
@@ -1359,7 +1359,7 @@ class CoinbaseAdvancedTradeExchangeTests(AbstractExchangeConnectorTests.Exchange
         )
 
     @aioresponses()
-    @patch("hummingbot.core.utils.trading_pair_fetcher.TradingPairFetcher.fetch_all", new_callable=AsyncMock())
+    @patch("hummingbot.core.utils.trading_pair_fetcher.TradingPairFetcher.fetch_all", new_callable=AsyncMock)
     def test_lost_order_included_in_order_fills_update_and_not_in_order_status_update(self, mock_api, fetcher):
         self.exchange._set_current_timestamp(1640780000)
         request_sent_event = asyncio.Event()

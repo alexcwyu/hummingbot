@@ -152,7 +152,10 @@ class NdaxExchangeTests(AbstractExchangeConnectorTests.ExchangeConnectorTests):
 
     @property
     def balance_event_websocket_update(self):
-        raise NotImplementedError
+        return {
+            "n": CONSTANTS.ACCOUNT_POSITION_EVENT_ENDPOINT_NAME,
+            "o": json.dumps({"Hold": "5", "Amount": "15", "ProductSymbol": self.base_asset}),
+        }
 
     @property
     def expected_latest_price(self):
@@ -772,13 +775,6 @@ class NdaxExchangeTests(AbstractExchangeConnectorTests.ExchangeConnectorTests):
                 "orderOriginator": 0,
             }
         ]
-
-    def test_user_stream_balance_update(self):
-        return {
-            "Hold": 1,
-            "Amount": 1,
-            "ProductSymbol": "BTC",
-        }
 
     def test_get_fee_default(self):
         expected_maker_fee = DeductedFromReturnsTradeFee(percent=self.exchange.estimate_fee_pct(True))

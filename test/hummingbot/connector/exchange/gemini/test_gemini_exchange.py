@@ -155,6 +155,9 @@ class GeminiExchangeTests(TestCase):
         try:
             return loop.run_until_complete(coro)
         finally:
+            from hummingbot.core.web_assistant.connections.connections_factory import ConnectionsFactory
+            loop.run_until_complete(ConnectionsFactory().close())
+            loop.run_until_complete(asyncio.sleep(0.25))
             loop.close()
 
     def _start_tracking_limit_buy(self, order_id="HBOT1", exchange_order_id="100234",

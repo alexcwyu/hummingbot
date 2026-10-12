@@ -44,7 +44,7 @@ class MockTestConnector(ConnectorBase):
 class ConnectorBaseUnitTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls._patcher = unittest.mock.patch("hummingbot.connector.connector_base.estimate_fee")
+        cls._patcher = unittest.mock.patch("hummingbot.connector.connector_base.build_trade_fee")
         cls._url_mock = cls._patcher.start()
         cls._url_mock.return_value = AddedToCostTradeFee(percent=Decimal("0"), flat_fees=[])
 

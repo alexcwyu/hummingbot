@@ -1,5 +1,5 @@
 import json
-from unittest import TestCase
+from unittest import IsolatedAsyncioTestCase
 from unittest.mock import MagicMock, patch
 
 import eth_utils
@@ -9,7 +9,7 @@ from hummingbot.connector.exchange.derive.derive_auth import DeriveAuth
 from hummingbot.core.web_assistant.connections.data_types import RESTMethod, RESTRequest, WSRequest
 
 
-class DeriveAuthTests(TestCase):
+class DeriveAuthTests(IsolatedAsyncioTestCase):
     def setUp(self) -> None:
         super().setUp()
         self.wallet_address = "0x1234567890abcdef1234567890abcdef12345678"  # noqa: mock

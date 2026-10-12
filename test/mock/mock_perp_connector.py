@@ -38,7 +38,7 @@ class MockPerpConnector(MockPaperExchange, PerpetualTrading):
 
     def get_buy_collateral_token(self, trading_pair: str) -> str:
         token = (
-            super().get_buy_collateral_token(trading_pair)
+            trading_pair.split("-")[1]
             if self._buy_collateral_token is None
             else self._buy_collateral_token
         )
@@ -46,7 +46,7 @@ class MockPerpConnector(MockPaperExchange, PerpetualTrading):
 
     def get_sell_collateral_token(self, trading_pair: str) -> str:
         token = (
-            super().get_sell_collateral_token(trading_pair)
+            trading_pair.split("-")[1]
             if self._sell_collateral_token is None
             else self._sell_collateral_token
         )

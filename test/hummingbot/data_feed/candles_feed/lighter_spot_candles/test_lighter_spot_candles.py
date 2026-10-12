@@ -337,7 +337,7 @@ class TestLighterSpotCandles(TestCandlesBase):
         )
         with patch(PATCH_FETCH, new_callable=AsyncMock) as mock_fetch, \
              patch(PATCH_SLEEP, new_callable=AsyncMock) as mock_sleep, \
-             patch("hummingbot.data_feed.candles_feed.lighter_spot_candles.lighter_spot_candles.safe_ensure_future") as mock_future:
+             patch("hummingbot.data_feed.candles_feed.lighter_spot_candles.lighter_spot_candles.safe_ensure_future", side_effect=lambda coro: coro.close()) as mock_future:
             mock_fetch.return_value = candle
             mock_sleep.side_effect = asyncio.CancelledError
 
@@ -355,7 +355,7 @@ class TestLighterSpotCandles(TestCandlesBase):
         # Lighter's listen_for_subscriptions never calls _subscribe_channels; skip WS test.
         pass
 
-    @patch("hummingbot.data_feed.candles_feed.lighter_spot_candles.lighter_spot_candles.safe_ensure_future")
+    @patch("hummingbot.data_feed.candles_feed.lighter_spot_candles.lighter_spot_candles.safe_ensure_future", side_effect=lambda coro: coro.close())
     @patch(PATCH_SLEEP, new_callable=AsyncMock)
     @patch(PATCH_FETCH, new_callable=AsyncMock)
     async def test_process_websocket_messages_empty_candle(self, mock_fetch, mock_sleep, mock_future):
@@ -373,7 +373,7 @@ class TestLighterSpotCandles(TestCandlesBase):
         self.assertEqual(self.data_feed.candles_df.shape[1], 10)
         mock_future.assert_called_once()
 
-    @patch("hummingbot.data_feed.candles_feed.lighter_spot_candles.lighter_spot_candles.safe_ensure_future")
+    @patch("hummingbot.data_feed.candles_feed.lighter_spot_candles.lighter_spot_candles.safe_ensure_future", side_effect=lambda coro: coro.close())
     @patch(PATCH_SLEEP, new_callable=AsyncMock)
     @patch(PATCH_FETCH, new_callable=AsyncMock)
     async def test_process_websocket_messages_duplicated_candle_not_included(
@@ -398,7 +398,7 @@ class TestLighterSpotCandles(TestCandlesBase):
         # High was updated in-place
         self.assertAlmostEqual(float(self.data_feed._candles[-1][2]), 94200.0)
 
-    @patch("hummingbot.data_feed.candles_feed.lighter_spot_candles.lighter_spot_candles.safe_ensure_future")
+    @patch("hummingbot.data_feed.candles_feed.lighter_spot_candles.lighter_spot_candles.safe_ensure_future", side_effect=lambda coro: coro.close())
     @patch(PATCH_SLEEP, new_callable=AsyncMock)
     @patch(PATCH_FETCH, new_callable=AsyncMock)
     async def test_process_websocket_messages_with_two_valid_messages(

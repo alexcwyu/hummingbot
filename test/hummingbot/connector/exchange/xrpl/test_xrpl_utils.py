@@ -1418,7 +1418,7 @@ class TestXRPLNodePoolCheckAllConnections(IsolatedAsyncioWrapperTestCase):
 
         with patch.object(pool, "_reconnect", new_callable=AsyncMock):
             # Need to patch asyncio.create_task since _check_all_connections calls it
-            with patch("asyncio.create_task"):
+            with patch("asyncio.create_task", side_effect=lambda coro: coro.close()):
                 await pool._check_all_connections()
 
         self.assertFalse(conn.is_healthy)
@@ -1434,7 +1434,7 @@ class TestXRPLNodePoolCheckAllConnections(IsolatedAsyncioWrapperTestCase):
         conn.created_at = time.time() - 100  # Very old connection
         pool._connections["wss://test.com"] = conn
 
-        with patch("asyncio.create_task"):
+        with patch("asyncio.create_task", side_effect=lambda coro: coro.close()):
             await pool._check_all_connections()
 
         self.assertFalse(conn.is_healthy)
@@ -1472,7 +1472,7 @@ class TestXRPLNodePoolCheckAllConnections(IsolatedAsyncioWrapperTestCase):
         conn.consecutive_errors = CONSTANTS.CONNECTION_MAX_CONSECUTIVE_ERRORS - 1
         pool._connections["wss://test.com"] = conn
 
-        with patch("asyncio.create_task"):
+        with patch("asyncio.create_task", side_effect=lambda coro: coro.close()):
             await pool._check_all_connections()
 
         self.assertFalse(conn.is_healthy)
@@ -1488,7 +1488,7 @@ class TestXRPLNodePoolCheckAllConnections(IsolatedAsyncioWrapperTestCase):
         conn = XRPLConnection(url="wss://test.com", client=mock_client, is_healthy=True)
         pool._connections["wss://test.com"] = conn
 
-        with patch("asyncio.create_task"):
+        with patch("asyncio.create_task", side_effect=lambda coro: coro.close()):
             await pool._check_all_connections()
 
         self.assertFalse(conn.is_healthy)
@@ -1504,7 +1504,7 @@ class TestXRPLNodePoolCheckAllConnections(IsolatedAsyncioWrapperTestCase):
         conn = XRPLConnection(url="wss://test.com", client=mock_client, is_healthy=True)
         pool._connections["wss://test.com"] = conn
 
-        with patch("asyncio.create_task"):
+        with patch("asyncio.create_task", side_effect=lambda coro: coro.close()):
             await pool._check_all_connections()
 
         self.assertFalse(conn.is_healthy)
@@ -1547,7 +1547,7 @@ class TestXRPLNodePoolMarkError(IsolatedAsyncioWrapperTestCase):
         pool._connections["wss://test.com"] = conn
 
         with patch.object(pool, "_reconnect", new_callable=AsyncMock), \
-             patch("asyncio.create_task"):
+             patch("asyncio.create_task", side_effect=lambda coro: coro.close()):
             pool.mark_error(mock_client)
 
         self.assertFalse(conn.is_healthy)
@@ -1574,7 +1574,7 @@ class TestXRPLNodePoolMarkBadNode(IsolatedAsyncioWrapperTestCase):
         conn = XRPLConnection(url="wss://test.com", is_healthy=True)
         pool._connections["wss://test.com"] = conn
 
-        with patch("asyncio.create_task"):
+        with patch("asyncio.create_task", side_effect=lambda coro: coro.close()):
             pool.mark_bad_node("wss://test.com")
 
         self.assertIn("wss://test.com", pool._bad_nodes)

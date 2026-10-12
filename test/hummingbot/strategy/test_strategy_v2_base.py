@@ -38,7 +38,7 @@ class TestStrategyV2Base(IsolatedAsyncioWrapperTestCase):
         self.connector_name: str = "mock_paper_exchange"
         self.trading_pair: str = "HBOT-USDT"
         self.strategy_config = StrategyV2ConfigBase()
-        with patch('asyncio.create_task', return_value=MagicMock()):
+        with patch('asyncio.create_task', side_effect=lambda coro, *args, **kwargs: (coro.close(), MagicMock())[1]):
             # Initialize the strategy with mock components
             with patch("hummingbot.strategy.strategy_v2_base.StrategyV2Base.listen_to_executor_actions", return_value=AsyncMock()):
                 with patch('hummingbot.strategy.strategy_v2_base.ExecutorOrchestrator') as MockExecutorOrchestrator:
@@ -439,7 +439,7 @@ class StrategyV2BaseBasicTest(unittest.TestCase):
         )
         self.clock.add_iterator(self.connector)
         StrategyV2Base.markets = {self.connector_name: {self.trading_pair}}
-        with patch('asyncio.create_task', return_value=MagicMock()):
+        with patch('asyncio.create_task', side_effect=lambda coro, *args, **kwargs: (coro.close(), MagicMock())[1]):
             with patch("hummingbot.strategy.strategy_v2_base.StrategyV2Base.listen_to_executor_actions", return_value=AsyncMock()):
                 with patch('hummingbot.strategy.strategy_v2_base.ExecutorOrchestrator'):
                     with patch('hummingbot.strategy.strategy_v2_base.MarketDataProvider'):

@@ -40,6 +40,10 @@ class TestIsolatedAsyncioWrapperTestCase(unittest.IsolatedAsyncioTestCase):
                 future.set_exception(e)
             else:
                 future.set_result(None)
+            finally:
+                # This thread explicitly requested a new helper loop and owns it.
+                IsolatedAsyncioWrapperTestCase.main_event_loop.close()
+                asyncio.set_event_loop(None)
 
         future = concurrent.futures.Future()
         thread = threading.Thread(target=run_test_in_thread, args=(future,))

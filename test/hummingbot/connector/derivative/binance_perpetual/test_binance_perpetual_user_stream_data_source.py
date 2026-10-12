@@ -2,7 +2,7 @@ import asyncio
 import re
 from test.isolated_asyncio_wrapper_test_case import IsolatedAsyncioWrapperTestCase
 from typing import Any, Dict, Optional
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import ujson
 from aioresponses.core import aioresponses
@@ -328,10 +328,14 @@ class BinancePerpetualUserStreamDataSourceUnitTests(IsolatedAsyncioWrapperTestCa
         mock_safe_ensure_future.assert_not_called()
         self.assertEqual(mock_task, self.data_source._manage_listen_key_task)
 
+    @staticmethod
+    async def _raise_task_error(error):
+        raise error
+
     async def test_ensure_listen_key_task_running_with_done_task_cancelled_error(self):
-        mock_task = AsyncMock()
+        mock_task = MagicMock(spec=asyncio.Task)
         mock_task.done.return_value = True
-        mock_task.side_effect = asyncio.CancelledError()
+        mock_task.__await__ = lambda _self: self._raise_task_error(asyncio.CancelledError()).__await__()
         self.data_source._manage_listen_key_task = mock_task
 
         await self.data_source._ensure_listen_key_task_running()
@@ -342,9 +346,9 @@ class BinancePerpetualUserStreamDataSourceUnitTests(IsolatedAsyncioWrapperTestCa
         self.assertNotEqual(mock_task, self.data_source._manage_listen_key_task)
 
     async def test_ensure_listen_key_task_running_with_done_task_exception(self):
-        mock_task = AsyncMock()
+        mock_task = MagicMock(spec=asyncio.Task)
         mock_task.done.return_value = True
-        mock_task.side_effect = Exception("Test exception")
+        mock_task.__await__ = lambda _self: self._raise_task_error(Exception("Test exception")).__await__()
         self.data_source._manage_listen_key_task = mock_task
 
         await self.data_source._ensure_listen_key_task_running()

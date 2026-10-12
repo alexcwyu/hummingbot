@@ -1394,7 +1394,7 @@ class DydxV4PerpetualDerivativeTests(AbstractPerpetualDerivativeTests.PerpetualD
                 "INFO",
                 f"Order {order_id} has failed. Order Update: OrderUpdate(trading_pair='{self.trading_pair}', "
                 f"update_timestamp={self.exchange.current_timestamp}, new_state={repr(OrderState.FAILED)}, "
-                f"client_order_id='{order_id}', exchange_order_id=None, misc_updates=None)",
+                f"client_order_id='{order_id}', exchange_order_id=None, misc_updates={{}})",
             )
         )
 
@@ -1496,10 +1496,14 @@ class DydxV4PerpetualDerivativeTests(AbstractPerpetualDerivativeTests.PerpetualD
 
         self.assertTrue(
             self.is_logged(
-                "WARNING",
-                "Buy order amount 0.0001 is lower than the minimum order "
-                "size 0.01. The order will not be created, increase the "
-                "amount to be higher than the minimum order size."
+                "INFO",
+                f"Order {order_id_for_invalid_order} has failed. Order Update: "
+                f"OrderUpdate(trading_pair='{self.trading_pair}', "
+                f"update_timestamp={self.exchange.current_timestamp}, new_state={repr(OrderState.FAILED)}, "
+                f"client_order_id='{order_id_for_invalid_order}', exchange_order_id=None, "
+                "misc_updates={'error_message': 'Order amount 0.0001 is lower than minimum order size 0.01 "
+                f"for the pair {self.trading_pair}. The order will not be created.', "
+                "'error_type': 'ValueError'})"
             )
         )
         self.assertTrue(
@@ -1507,7 +1511,7 @@ class DydxV4PerpetualDerivativeTests(AbstractPerpetualDerivativeTests.PerpetualD
                 "INFO",
                 f"Order {order_id} has failed. Order Update: OrderUpdate(trading_pair='{self.trading_pair}', "
                 f"update_timestamp={self.exchange.current_timestamp}, new_state={repr(OrderState.FAILED)}, "
-                f"client_order_id='{order_id}', exchange_order_id=None, misc_updates=None)"
+                f"client_order_id='{order_id}', exchange_order_id=None, misc_updates={{}})"
             )
         )
 

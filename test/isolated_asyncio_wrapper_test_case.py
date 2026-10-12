@@ -69,6 +69,7 @@ class IsolatedAsyncioWrapperTestCase(unittest.IsolatedAsyncioTestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        cls._owned_restored_loops = []
         # Save the current event loop
         try:
             # This will trigger a RuntimeError if no event loop is running or no event loop is set.
@@ -92,7 +93,9 @@ class IsolatedAsyncioWrapperTestCase(unittest.IsolatedAsyncioTestCase):
             asyncio.set_event_loop(self.main_event_loop)
             assert asyncio.get_event_loop() is self.main_event_loop
         else:
-            asyncio.set_event_loop(asyncio.new_event_loop())
+            restored_loop = asyncio.new_event_loop()
+            type(self)._owned_restored_loops.append(restored_loop)
+            asyncio.set_event_loop(restored_loop)
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -102,8 +105,22 @@ class IsolatedAsyncioWrapperTestCase(unittest.IsolatedAsyncioTestCase):
         if cls.main_event_loop is not None and not cls.main_event_loop.is_closed():
             asyncio.set_event_loop(cls.main_event_loop)
         else:
-            asyncio.set_event_loop(asyncio.new_event_loop())
+            restored_loop = asyncio.new_event_loop()
+            cls._owned_restored_loops.append(restored_loop)
+            asyncio.set_event_loop(restored_loop)
         assert asyncio.get_event_loop() is not None
+        # Release only fallback loops this helper allocated after a runner closed
+        # its main loop; leave the externally supplied class loop to its owner.
+        for loop in cls._owned_restored_loops:
+            if not loop.is_closed():
+                tasks = asyncio.all_tasks(loop)
+                for task in tasks:
+                    task.cancel()
+                if tasks:
+                    loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
+                loop.run_until_complete(loop.shutdown_asyncgens())
+                loop.close()
+        cls._owned_restored_loops.clear()
 
     def run_async_with_timeout(self, coroutine: Awaitable, timeout: float = 1.0) -> Any:
         """
@@ -263,7 +280,8 @@ class LocalTestEventLoopWrapperTestCase(unittest.TestCase):
         if cls.main_event_loop is not None and not cls.main_event_loop.is_closed():
             asyncio.set_event_loop(cls.main_event_loop)
         else:
-            asyncio.set_event_loop(asyncio.new_event_loop())
+            # Subsequent fixtures own their default loops; do not orphan one here.
+            asyncio.set_event_loop(None)
 
         cls.main_event_loop = None
         super().tearDownClass()

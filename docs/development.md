@@ -749,3 +749,35 @@ Ensure `aioresponses` is installed and the mock URLs match the exchange's curren
 - [Architecture](architecture.md) — System design and components
 - [Workflow](workflow.md) — Event flows and processing pipelines
 - [State Management](state-management.md) — State lifecycle and data models
+
+## uv maintenance workflow (2026-10-12)
+
+Selected complete environment: Python 3.15.0; build backend `setuptools.build_meta`. The workspace uses uv 0.13.0. Python 3.15 was attempted before any fallback; the actual failure and selected runtime are recorded in [validation](validation.md).
+
+```sh
+export UV_PYTHON_PREFERENCE=only-managed
+export TA_INCLUDE_PATH=/opt/homebrew/opt/ta-lib/include
+export TA_LIBRARY_PATH=/opt/homebrew/opt/ta-lib/lib
+uv python install 3.15.0
+uv lock --upgrade
+uv sync --all-extras --python 3.15.0
+uv build --python 3.15.0
+uv run --frozen --all-extras python -m compileall -q src/hummingbot
+uv run --frozen --all-extras python -m pytest test
+```
+
+The backend builds Cython/C++ extensions and needs the Apple compiler toolchain. Inspect wheel shared libraries, not just its exit status. Python 3.15 source builds of TA-Lib additionally require native ta-lib headers/libraries (`TA_INCLUDE_PATH` and `TA_LIBRARY_PATH`). The exact coincurve Git revision is locked in uv sources.
+
+Keep source resources inside their package and preserve the repository's existing src layout. Rebuild after source/native/asset changes. Use the locked environment for final verification. Commands above are the standard workflow, not a promise that every existing suite currently passes; consult validation for exact outcomes and unresolved compatibility issues.
+
+### Python 3.15 compatibility sources
+
+[ft-pandas-ta provenance](../vendor/ft-pandas-ta/PROVENANCE.md) records the MIT 0.3.16 source and two exact compiler repairs: a raw regex replacement string and returning after the date-index predicate's try/except. Numerical indicator algorithms remain unchanged. [aioresponses provenance](../vendor/aioresponses/PROVENANCE.md) records its MIT 0.7.9 source and the required current aiohttp `stream_writer` constructor argument. Both are explicit uv sources, compile under strict warnings and retain their licenses. The native PubSub change uses ordinary weak-reference calls on Python 3.15.
+
+The Apache-2.0 [Lighter SDK compatibility source](../vendor/lighter-sdk/PROVENANCE.md) keeps all upstream platform signer libraries and replaces its deprecated WebSocket import with the current asynchronous API.
+
+The Apache-2.0 [Injective SDK compatibility source](../vendor/injective-py/PROVENANCE.md) retains all upstream SDK modules, license and notice. Its 403 unchanged serialized schemas use a private protobuf descriptor pool so current Injective and dYdX Cosmos revisions coexist. Private well-known message classes and JSON descriptor lookup use that same pool; numerical and wire definitions remain unchanged.
+
+The shared [asynchronous TTL cache](../src/hummingbot/core/utils/__init__.py) keeps real, hashable argument objects in its cache key. This preserves connector identity when Python reuses a freed object's memory address; a string representation of arguments cannot provide that guarantee. Existing rate-source, Gateway and TTL-expiration cases exercise the same cache.
+
+The [test resource fixture](../test/conftest.py) observes both explicit `asyncio.new_event_loop` calls and the `asyncio.events.new_event_loop` entry point used by `asyncio.Runner`. It drains only newly allocated tasks and closes loops it actually observed being created, preserving tasks already present on external loops. Existing BTC Markets lifecycle cases mock both their recent-candle and historical-candle HTTP boundaries using their original candle data, while retaining every start/stop assertion.

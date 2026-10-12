@@ -118,6 +118,7 @@ class ConfigCommandTest(IsolatedAsyncioWrapperTestCase):
             "\n    +-------+---------+"
         )
 
+        self.maxDiff = None
         self.assertEqual(df_str_expected, captures[5])
 
     @patch("hummingbot.client.hummingbot_application.get_strategy_config_map")
@@ -176,6 +177,7 @@ class ConfigCommandTest(IsolatedAsyncioWrapperTestCase):
             "\n    +------------------------+------------------------+"
         )
 
+        self.maxDiff = None
         self.assertEqual(df_str_expected, captures[5])
 
     @patch("hummingbot.client.hummingbot_application.get_strategy_config_map")

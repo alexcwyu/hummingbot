@@ -1,0 +1,17 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ft-pandas-ta"
+version = "0.3.16+ayu.1"
+description = "Latest ft-pandas-ta with semantics-preserving Python 3.15 escape repairs"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = ["pandas>=3.0", "numpy>=2.4,<3"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pandas_ta"]
+dev-mode-dirs = ["src"]
+[tool.hatch.build.targets.wheel.force-include]
+"src/pandas_ta" = "pandas_ta"

@@ -48,9 +48,10 @@ class CoinbaseAdvancedTradeAuthTests(IsolatedAsyncioWrapperTestCase):
 
     async def asyncTearDown(self):
         logging.info("Close")
-        if aiohttp.ClientSession()._connector is not None:
-            logging.info("Close")
-            await aiohttp.ClientSession().close()
+        # Close the factory's session; allocating a fresh session here leaked
+        # the inspected instance and never closed the request session.
+        from hummingbot.core.web_assistant.connections.connections_factory import ConnectionsFactory
+        await ConnectionsFactory().close()
         await super().asyncTearDown()
 
     def tearDown(self):

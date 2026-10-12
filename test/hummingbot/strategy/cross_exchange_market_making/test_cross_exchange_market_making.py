@@ -854,6 +854,7 @@ class HedgedMarketMakingUnitTest(unittest.TestCase):
                 order_size_taker_balance_factor=Decimal("100"),
                 order_size_portfolio_ratio_limit=Decimal("100"),
                 slippage_buffer=Decimal("25"),
+                conversion_rate_mode=deepcopy(config_map_raw.conversion_rate_mode),
             )
         )
         strategy_with_slippage_buffer: CrossExchangeMarketMakingStrategy = CrossExchangeMarketMakingStrategy()

@@ -86,7 +86,7 @@ class AvellanedaStartTest(IsolatedAsyncioWrapperTestCase):
         self.assertEqual(self.strategy.order_levels, Decimal("4"))
         self.assertEqual(self.strategy.level_distances, Decimal("1"))
         self.assertTrue(all(c is not None for c in (self.strategy.gamma, self.strategy.eta)))
-        strategy_start.start(self)
+        await strategy_start.start(self)
         self.assertTrue(all(c is not None for c in (self.strategy.min_spread, self.strategy.gamma)))
 
     async def test_strategy_creation_when_something_fails(self):

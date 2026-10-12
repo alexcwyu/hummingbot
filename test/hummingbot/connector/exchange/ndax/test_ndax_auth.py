@@ -3,7 +3,7 @@ import json
 import re
 import time
 from typing import Awaitable
-from unittest import TestCase
+from unittest import IsolatedAsyncioTestCase
 from unittest.mock import patch
 
 from aioresponses import aioresponses
@@ -13,7 +13,7 @@ from hummingbot.connector.exchange.ndax.ndax_auth import NdaxAuth
 from hummingbot.core.web_assistant.connections.data_types import RESTMethod, RESTRequest
 
 
-class NdaxAuthTests(TestCase):
+class NdaxAuthTests(IsolatedAsyncioTestCase):
 
     def setUp(self) -> None:
         self._uid: str = '001'
@@ -91,7 +91,7 @@ class NdaxAuthTests(TestCase):
         auth = NdaxAuth(uid=self._uid, api_key=self._api_key, secret_key=self._secret_key, account_name=self._account_name)
         nonce = '1234567890'
 
-        with patch('hummingbot.connector.exchange.ndax.ndax_auth.get_tracking_nonce_low_res') as generate_nonce_mock:
+        with patch.object(auth._nonce_creator, 'get_tracking_nonce') as generate_nonce_mock:
             generate_nonce_mock.return_value = nonce
             auth_info = auth.header_for_authentication()
 

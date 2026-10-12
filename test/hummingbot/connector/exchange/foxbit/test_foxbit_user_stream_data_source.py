@@ -17,7 +17,7 @@ from hummingbot.core.web_assistant.ws_assistant import WSAssistant
 
 
 @patch("hummingbot.connector.exchange.foxbit.foxbit_api_user_stream_data_source.FoxbitAPIUserStreamDataSource._sleep", new_callable=AsyncMock)
-class FoxbitUserStreamDataSourceUnitTests(unittest.TestCase):
+class FoxbitUserStreamDataSourceUnitTests(unittest.IsolatedAsyncioTestCase):
     # the level is required to receive logs from the data source logger
     level = 0
 
@@ -135,7 +135,7 @@ class FoxbitUserStreamDataSourceUnitTests(unittest.TestCase):
         mock_ws.connect = AsyncMock()
         mock_ws.send = AsyncMock()
         # Simulate authenticated response
-        mock_ws.receive = AsyncMock(return_value=MagicMock(data={"o": '{"Authenticated": True}'}))
+        mock_ws.receive = AsyncMock(return_value=MagicMock(data={"o": json.dumps({"Authenticated": True})}))
         mock_ws_assistant_cls.return_value = mock_ws
 
         mock_api_factory = MagicMock()
@@ -162,7 +162,18 @@ class FoxbitUserStreamDataSourceUnitTests(unittest.TestCase):
         mock_ws.receive.assert_awaited()
 
     async def test_run_ws_assistant(self, mock_sleep):
+        self.mocking_assistant = NetworkMockingAssistant()
+        await asyncio.sleep(0)  # let the assistant finish its scheduled async_init
+        ws_mock = self.mocking_assistant.configure_web_assistants_factory(
+            self.connector._web_assistants_factory
+        )
+        for frame in (
+            {"o": json.dumps({"Authenticated": True})},
+            {"n": CONSTANTS.WS_SUBSCRIBE_ACCOUNT, "o": json.dumps({"Subscribed": True})},
+        ):
+            self.mocking_assistant.add_websocket_aiohttp_message(ws_mock, json.dumps(frame))
         ws: WSAssistant = await self.data_source._connected_websocket_assistant()
         self.assertIsNotNone(ws)
         await self.data_source._subscribe_channels(ws)
         await self.data_source._on_user_stream_interruption(ws)
+        await self.connector._web_assistants_factory.close()

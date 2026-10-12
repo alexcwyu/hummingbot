@@ -14,9 +14,9 @@ from hummingbot.logger.cli_handler import CLIHandler
 
 
 def tearDownModule():
-    # IsolatedAsyncioTestCase leaves the main thread with no current event loop; legacy tests later
-    # in the suite still reach it via asyncio.get_event_loop(), so restore one.
-    asyncio.set_event_loop(asyncio.new_event_loop())
+    # The next test fixture supplies and owns any legacy default loop.
+    # Allocating one here orphaned its selector sockets when that fixture replaced it.
+    asyncio.set_event_loop(None)
 
 
 class AutofixPermissionsTest(unittest.TestCase):

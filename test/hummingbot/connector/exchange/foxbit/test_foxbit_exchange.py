@@ -814,7 +814,7 @@ class FoxbitExchangeTests(AbstractExchangeConnectorTests.ExchangeConnectorTests)
         mock_response = order_status
         mock_api.get(regex_url, body=json.dumps(mock_response))
 
-        self.exchange._update_order_status()
+        await self.exchange._update_order_status()
 
         request = self._all_executed_requests(mock_api, web_utils.private_rest_url(CONSTANTS.GET_ORDER_BY_CLIENT_ID.format(order.exchange_order_id)))
         self.assertEqual([], request)

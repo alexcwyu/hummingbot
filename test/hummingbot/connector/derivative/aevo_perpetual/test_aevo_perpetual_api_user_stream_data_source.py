@@ -107,6 +107,7 @@ class AevoPerpetualAPIUserStreamDataSourceTests(IsolatedAsyncioWrapperTestCase):
 
     @patch("hummingbot.connector.derivative.aevo_perpetual.aevo_perpetual_api_user_stream_data_source.safe_ensure_future")
     async def test_connected_websocket_assistant_connects_and_starts_ping(self, safe_future_mock):
+        safe_future_mock.side_effect = lambda coro: coro.close()
         ws_mock = AsyncMock(spec=WSAssistant)
         self.data_source._get_ws_assistant = AsyncMock(return_value=ws_mock)
 

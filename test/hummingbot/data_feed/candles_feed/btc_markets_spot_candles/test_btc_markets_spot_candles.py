@@ -28,8 +28,7 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def asyncTearDown(self):
         # Clean shutdown of any running tasks
-        if hasattr(self.data_feed, "_polling_task") and self.data_feed._polling_task:
-            await self.data_feed.stop_network()
+        await self.data_feed.stop_network()
         await super().asyncTearDown()
 
     @classmethod
@@ -629,7 +628,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_polling_loop_successful_run(self):
         """Test successful polling loop execution"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = [self.get_fetch_candles_data_mock()[0]]
 
             # Run polling loop for a short time
@@ -644,7 +645,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_polling_loop_cancellation(self):
         """Test that polling loop handles cancellation properly"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = [self.get_fetch_candles_data_mock()[0]]
 
             self.data_feed._is_running = True
@@ -657,12 +660,19 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_polling_loop_unexpected_error(self):
         """Test that polling loop handles unexpected errors"""
-        with patch.object(self.data_feed, "_poll_and_update_candles", new_callable=AsyncMock) as mock_poll:
-            mock_poll.side_effect = Exception("Unexpected error")
+        poll_started = asyncio.Event()
+
+        async def fail_poll():
+            poll_started.set()
+            raise Exception("Unexpected error")
+
+        with patch.object(self.data_feed, "_initialize_candles", new_callable=AsyncMock), \
+                patch.object(self.data_feed, "_poll_and_update_candles", new_callable=AsyncMock) as mock_poll:
+            mock_poll.side_effect = fail_poll
 
             self.data_feed._is_running = True
             polling_task = asyncio.create_task(self.data_feed._polling_loop())
-            await asyncio.sleep(0.1)
+            await asyncio.wait_for(poll_started.wait(), timeout=1)
             self.data_feed._shutdown_event.set()
             await polling_task
 
@@ -680,7 +690,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_poll_and_update_candles_empty_response(self):
         """Test handling of empty response during polling"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = []
 
             await self.data_feed._poll_and_update_candles()
@@ -689,7 +701,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_poll_and_update_candles_first_candle(self):
         """Test adding first candle during polling"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = [self.get_fetch_candles_data_mock()[0]]
 
             with patch.object(self.data_feed, "fill_historical_candles", new_callable=AsyncMock) as mock_fill:
@@ -706,7 +720,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
         # Add existing candle
         self.data_feed._candles.append([1672981200.0, 100, 105, 95, 102, 10, 0, 0, 0, 0])
 
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             # Return newer candle
             mock_fetch.return_value = [[1672984800.0, 102, 108, 101, 106, 12, 0, 0, 0, 0]]
 
@@ -720,7 +736,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
         existing_candle = [1672981200.0, 100, 105, 95, 102, 10, 0, 0, 0, 0]
         self.data_feed._candles.append(existing_candle.copy())
 
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             # Return updated version of same candle
             updated_candle = [1672981200.0, 100, 108, 95, 106, 15, 0, 0, 0, 0]
             mock_fetch.return_value = [updated_candle]
@@ -733,7 +751,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_poll_and_update_candles_exception(self):
         """Test exception handling during polling"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.side_effect = Exception("Poll error")
 
             await self.data_feed._poll_and_update_candles()
@@ -743,7 +763,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_initialize_candles_success(self):
         """Test successful candle initialization"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = self.get_fetch_candles_data_mock()[:2]
 
             with patch.object(self.data_feed, "fill_historical_candles", new_callable=AsyncMock) as mock_fill:
@@ -756,7 +778,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_initialize_candles_no_data(self):
         """Test candle initialization with no data"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = []
 
             await self.data_feed._initialize_candles()
@@ -766,7 +790,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_initialize_candles_exception(self):
         """Test exception handling during initialization"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.side_effect = Exception("Init error")
 
             await self.data_feed._initialize_candles()
@@ -775,7 +801,11 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_start_and_stop_network(self):
         """Test that we can start and stop the polling gracefully"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        # The polling mock starts the real historical-fill task as well.
+        # Keep that task's HTTP boundary inside this existing unit fixture.
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = [self.get_fetch_candles_data_mock()[0]]
 
             await self.data_feed.start_network()
@@ -790,7 +820,11 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_stop_network_timeout(self):
         """Test stop_network with timeout scenario"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        # The polling mock starts the real historical-fill task as well.
+        # Keep that task's HTTP boundary inside this existing unit fixture.
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             # Make fetch hang to simulate timeout
             async def hanging_fetch(*args, **kwargs):
                 await asyncio.sleep(20)  # Longer than timeout
@@ -810,7 +844,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_listen_for_subscriptions_starts_network(self):
         """Test that listen_for_subscriptions starts network if not running"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = [self.get_fetch_candles_data_mock()[0]]
 
             # Create a task but cancel it quickly
@@ -826,7 +862,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_listen_for_subscriptions_cancellation(self):
         """Test that listen_for_subscriptions can be cancelled"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = [self.get_fetch_candles_data_mock()[0]]
 
             listen_task = asyncio.create_task(self.data_feed.listen_for_subscriptions())
@@ -838,7 +876,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_listen_for_subscriptions_raises_cancel_exception(self):
         """Test that listen_for_subscriptions raises CancelledError when cancelled"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = [self.get_fetch_candles_data_mock()[0]]
 
             listen_task = asyncio.create_task(self.data_feed.listen_for_subscriptions())
@@ -850,7 +890,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_polling_loop_with_timeout(self):
         """Test polling loop runs for a specific duration"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = [self.get_fetch_candles_data_mock()[0]]
 
             polling_task = asyncio.create_task(self.data_feed._polling_loop())
@@ -862,7 +904,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_polling_loop_handles_errors(self):
         """Test error handling in the polling loop"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             # Make it fail once, then succeed
             mock_fetch.side_effect = [
                 Exception("Network error"),
@@ -877,7 +921,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_polling_loop_graceful_shutdown(self):
         """Test that polling loop shuts down gracefully when shutdown event is set"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.return_value = [self.get_fetch_candles_data_mock()[0]]
 
             self.data_feed._is_running = True
@@ -981,7 +1027,9 @@ class TestBtcMarketsSpotCandles(TestCandlesBase):
 
     async def test_listen_for_subscriptions_logs_exception_details(self):
         """Test error logging during polling"""
-        with patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
+        with patch.object(self.data_feed, "fetch_candles", new_callable=AsyncMock,
+                          return_value=self.get_fetch_candles_data_mock()), \
+                patch.object(self.data_feed, "fetch_recent_candles", new_callable=AsyncMock) as mock_fetch:
             mock_fetch.side_effect = Exception("TEST ERROR.")
 
             await self.data_feed._poll_and_update_candles()

@@ -39,7 +39,6 @@ class TestTradingPairFetcher(unittest.TestCase):
 
     def tearDown(self) -> None:
         super().tearDown()
-        self.async_loop.stop()
         self.async_loop.close()
         asyncio.set_event_loop(self._original_async_loop)
 

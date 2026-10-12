@@ -12,7 +12,7 @@ from hummingbot.strategy.spot_perpetual_arbitrage.spot_perpetual_arbitrage_confi
 )
 
 
-class SpotPerpetualArbitrageStartTest(unittest.TestCase):
+class SpotPerpetualArbitrageStartTest(unittest.IsolatedAsyncioTestCase):
 
     def setUp(self) -> None:
         super().setUp()

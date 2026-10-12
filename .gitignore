@@ -32,8 +32,11 @@ __pycache__
 /**/*.so
 /**/*.pyd
 /hummingbot/**/*.c
+/src/hummingbot/**/*.c
 /hummingbot/**/*.cpp
+/src/hummingbot/**/*.cpp
 !/hummingbot/core/cpp/*.cpp
+!/src/hummingbot/core/cpp/*.cpp
 /hummingbot/wallet/*.c
 /hummingbot/wallet/*.cpp
 /hummingbot/wallet/ethereum/*.c
@@ -52,8 +55,7 @@ debug.log
 # Distribution files
 /build
 /dist
-/src
-/*.egg-info
+*.egg-info
 *.whl
 
 

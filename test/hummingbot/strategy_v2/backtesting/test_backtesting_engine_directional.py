@@ -106,8 +106,7 @@ class TestBacktestingEngineDirectional(unittest.IsolatedAsyncioTestCase):
         # session leaked by an earlier test points at a closed loop. Drop it so a fresh session
         # is created on this loop and intercepted cleanly by aioresponses.
         factory = ConnectionsFactory()
-        factory._shared_client = None
-        factory._ws_independent_session = None
+        await factory.close()
 
     async def asyncTearDown(self):
         await ConnectionsFactory().close()
