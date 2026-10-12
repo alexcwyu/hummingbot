@@ -30,10 +30,10 @@ uv build --python 3.15.0
 
 ```bash
 # Interactive CLI mode
-python -m hummingbot
+uv run --frozen --all-extras python bin/hummingbot.py
 
 # Headless mode (for programmatic/MQTT control)
-python -m hummingbot --headless
+uv run --frozen --all-extras hummingbot_quickstart --headless
 ```
 
 ### Running Tests
@@ -781,3 +781,16 @@ The Apache-2.0 [Injective SDK compatibility source](../vendor/injective-py/PROVE
 The shared [asynchronous TTL cache](../src/hummingbot/core/utils/__init__.py) keeps real, hashable argument objects in its cache key. This preserves connector identity when Python reuses a freed object's memory address; a string representation of arguments cannot provide that guarantee. Existing rate-source, Gateway and TTL-expiration cases exercise the same cache.
 
 The [test resource fixture](../test/conftest.py) observes both explicit `asyncio.new_event_loop` calls and the `asyncio.events.new_event_loop` entry point used by `asyncio.Runner`. It drains only newly allocated tasks and closes loops it actually observed being created, preserving tasks already present on external loops. Existing BTC Markets lifecycle cases mock both their recent-candle and historical-candle HTTP boundaries using their original candle data, while retaining every start/stop assertion.
+
+
+### Packaged and source launchers
+
+The installed `hbot` command uses [the packaged CLI](../src/hummingbot/cli/main.py). `hummingbot_quickstart` uses [the packaged legacy quickstart](../src/hummingbot/client/quickstart.py), preserving its `-f`, `-p`, `--v2`, `--headless`, permission option and Docker environment variables. The [interactive implementation](../src/hummingbot/client/interactive.py) owns the original UI listener and login flow. Existing `bin/hummingbot.py` and `bin/hummingbot_quickstart.py` remain compatibility launchers for source/Docker commands; only those wrappers perform source-path bootstrapping.
+
+```sh
+uv run --frozen --all-extras hbot --help
+uv run --frozen --all-extras hummingbot_quickstart --help
+uv run --frozen --all-extras python bin/hummingbot_quickstart.py --help
+```
+
+`python -m hummingbot` is not a supported launcher because the package has no `__main__.py`. The CLI module can also be invoked with `python -m hummingbot.cli.main`. Help verification starts no strategy and needs no credentials.

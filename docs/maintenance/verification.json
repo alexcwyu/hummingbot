@@ -260,6 +260,55 @@
   {
     "command": [
       "uv",
+      "run",
+      "--frozen",
+      "--all-extras",
+      "hummingbot_quickstart",
+      "--help"
+    ],
+    "cwd": "<workspace>/hummingbot",
+    "exit_code": 0,
+    "seconds": 2.52,
+    "check": "corrected-quickstart-console-help",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "e5244f987480c44e30bd18da7756dd933392b912474802c7dab5c161372cf73c",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-corrected-quickstart-console-help.json",
+    "original_log": "hummingbot-corrected-quickstart-console-help.log",
+    "log_sha256": "821836451b20b55275d379a60b6f3a2a888a91d59910dff2b3967b19cbb5c494",
+    "log_bytes": 1132,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "run",
+      "--frozen",
+      "--all-extras",
+      "python",
+      "bin/hummingbot_quickstart.py",
+      "--help"
+    ],
+    "cwd": "<workspace>/hummingbot",
+    "exit_code": 0,
+    "seconds": 2.51,
+    "check": "corrected-source-wrapper-help",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "e5244f987480c44e30bd18da7756dd933392b912474802c7dab5c161372cf73c",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-corrected-source-wrapper-help.json",
+    "original_log": "hummingbot-corrected-source-wrapper-help.log",
+    "log_sha256": "53600a0efaad87e43c9c70b40f2e8cdbd531bd7fb58eace71318a75503db5a21",
+    "log_bytes": 1164,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
       "sync",
       "--all-extras",
       "--python",
@@ -535,6 +584,116 @@
   },
   {
     "command": [
+      "/tmp/trading-humming-final-wheel315/bin/hummingbot_quickstart",
+      "--help"
+    ],
+    "cwd": "<workspace>/hummingbot/../../../../../tmp",
+    "exit_code": 0,
+    "seconds": 5.18,
+    "check": "final-installed-wheel-console-help",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "e5244f987480c44e30bd18da7756dd933392b912474802c7dab5c161372cf73c",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-installed-wheel-console-help.log",
+    "log_sha256": "b23601e6cf4cc8d65b6deee0dacf1a3a761cfa61eb3a99807c2f77d001db5443",
+    "log_bytes": 1150,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "/tmp/trading-humming-final-wheel315/bin/hbot",
+      "--help"
+    ],
+    "cwd": "/tmp",
+    "exit_code": 0,
+    "seconds": 0.45,
+    "check": "final-installed-wheel-hbot-help",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "e5244f987480c44e30bd18da7756dd933392b912474802c7dab5c161372cf73c",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-installed-wheel-hbot-help.log",
+    "log_sha256": "e5484e241498fce90db5afa83a91c2602d1e630de3e49b23acdba6845311ec27",
+    "log_bytes": 3027,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "/tmp/trading-humming-final-wheel315/bin/python",
+      "-I",
+      "-c",
+      "import hummingbot, hummingbot.client.interactive, hummingbot.client.quickstart, sys; from pathlib import Path; p=Path(hummingbot.__file__).resolve(); assert str(p).startswith(\"/tmp/trading-humming-final-wheel315/\"); assert \"<workspace>/hummingbot/src\" not in sys.path; print(p); print(sys.version)"
+    ],
+    "cwd": "/tmp",
+    "exit_code": 1,
+    "seconds": 1.54,
+    "check": "final-installed-wheel-isolated-import",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "e5244f987480c44e30bd18da7756dd933392b912474802c7dab5c161372cf73c",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-final-installed-wheel-isolated-import.json",
+    "original_log": "hummingbot-final-installed-wheel-isolated-import.log",
+    "log_sha256": "26725395dabfed61f5131960f1a7a4ee96449db80849da8b28ffdee67dce1089",
+    "log_bytes": 1035,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "/tmp/trading-humming-final-wheel315/bin/python",
+      "-I",
+      "-c",
+      "import hummingbot, hummingbot.client.interactive, hummingbot.client.quickstart, sys; from pathlib import Path; p=Path(hummingbot.__file__).resolve(); expected=Path(\"/tmp/trading-humming-final-wheel315\").resolve(); assert p.is_relative_to(expected), (p, expected); assert \"<workspace>/hummingbot/src\" not in sys.path; print(p); print(sys.version)"
+    ],
+    "cwd": "/tmp",
+    "exit_code": 0,
+    "seconds": 1.68,
+    "check": "final-installed-wheel-isolated-realpath-import",
+    "source_snapshot": {
+      "head": "a5f86d4953c6b93c472cbda80a4c74ed0c06ba7a",
+      "tracked_source_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-installed-wheel-isolated-realpath-import.log",
+    "log_sha256": "7d6445373299bd541e5fe193c9f8b86fdd118669a506f62be30a0cf2c3e8c92b",
+    "log_bytes": 603,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "pip",
+      "install",
+      "--python",
+      "/tmp/trading-humming-final-wheel315/bin/python",
+      "--no-deps",
+      "--reinstall",
+      "<workspace>/hummingbot/dist/hummingbot-2.17.0-cp315-cp315-macosx_11_0_arm64.whl"
+    ],
+    "cwd": "<workspace>/hummingbot",
+    "exit_code": 0,
+    "seconds": 0.19,
+    "check": "final-isolated-wheel-install",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "e5244f987480c44e30bd18da7756dd933392b912474802c7dab5c161372cf73c",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-final-isolated-wheel-install.json",
+    "original_log": "hummingbot-final-isolated-wheel-install.log",
+    "log_sha256": "1b4752e5f002338577bec30296e2788a47cd115162a0fa3f6683619f0a7c09c6",
+    "log_bytes": 668,
+    "outcome_lines": []
+  },
+  {
+    "command": [
       "uv",
       "lock",
       "--upgrade"
@@ -652,6 +811,91 @@
     "outcome_lines": [
       "8 failed, 8794 passed, 1 skipped, 2 subtests passed in 914.17s (0:15:14)"
     ]
+  },
+  {
+    "command": [
+      "uv",
+      "run",
+      "--frozen",
+      "--all-extras",
+      "python",
+      "-m",
+      "pytest",
+      "test",
+      "--tb=short"
+    ],
+    "cwd": "<workspace>/hummingbot",
+    "exit_code": 0,
+    "seconds": 878.45,
+    "check": "final-packaged-launcher-complete-existing-suite",
+    "source_snapshot": {
+      "head": "a5f86d4953c6b93c472cbda80a4c74ed0c06ba7a",
+      "tracked_source_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-packaged-launcher-complete-existing-suite.log",
+    "log_sha256": "1063cb1e310783f4aec108aa36e62a7b3a8ee1e547b24751481769928219f345",
+    "log_bytes": 10313,
+    "outcome_lines": [
+      "8802 passed, 1 skipped, 2 subtests passed in 870.52s (0:14:30)"
+    ]
+  },
+  {
+    "command": [
+      "uv",
+      "run",
+      "--frozen",
+      "--all-extras",
+      "python",
+      "-W",
+      "error",
+      "-m",
+      "compileall",
+      "-q",
+      "src",
+      "controllers",
+      "scripts",
+      "vendor",
+      "bin",
+      "test/conftest.py"
+    ],
+    "cwd": "<workspace>/hummingbot",
+    "exit_code": 0,
+    "seconds": 0.49,
+    "check": "final-packaged-launcher-strict-source-compile",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "e5244f987480c44e30bd18da7756dd933392b912474802c7dab5c161372cf73c",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-packaged-launcher-strict-source-compile.log",
+    "log_sha256": "f17cf8598e76962fe682a599ab968daa09a1cb9744a895b4982f635f53d7599b",
+    "log_bytes": 219,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "build",
+      "--python",
+      "3.15"
+    ],
+    "cwd": "<workspace>/hummingbot",
+    "exit_code": 0,
+    "seconds": 81.51,
+    "check": "final-packaged-launcher-wheel-and-sdist-build",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "e5244f987480c44e30bd18da7756dd933392b912474802c7dab5c161372cf73c",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-result.json",
+    "original_log": "hummingbot-final-packaged-launcher-wheel-and-sdist-build.log",
+    "log_sha256": "d89da628bb8e611564b816521279026a4319ec41e5f5995892fc8b6fc7d4ce5c",
+    "log_bytes": 782831,
+    "outcome_lines": []
   },
   {
     "command": [
@@ -885,6 +1129,32 @@
   },
   {
     "command": [
+      "env",
+      "UV_PROJECT_ENVIRONMENT=/tmp/trading-humming-final-wheel315",
+      "uv",
+      "sync",
+      "--frozen",
+      "--all-extras",
+      "--python",
+      "3.15"
+    ],
+    "cwd": "<workspace>/hummingbot",
+    "exit_code": 0,
+    "seconds": 1.31,
+    "check": "final-wheel-isolated-runtime-sync",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "e5244f987480c44e30bd18da7756dd933392b912474802c7dab5c161372cf73c",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-final-wheel-isolated-runtime-sync.json",
+    "original_log": "hummingbot-final-wheel-isolated-runtime-sync.log",
+    "log_sha256": "07d10c8779ad42d264ae0e289eb2bf83bf946cd0788ba6c62a2fae4a80302bd3",
+    "log_bytes": 3795,
+    "outcome_lines": []
+  },
+  {
+    "command": [
       ".venv/bin/python",
       "-m",
       "pytest",
@@ -969,6 +1239,30 @@
     "original_log": "hummingbot-imported-source-whitespace.log",
     "log_sha256": "925066a425f980efa8f84f3ffdd3d830826d2e4a97eaa059e4b941db79e7cc59",
     "log_bytes": 140,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "run",
+      "--frozen",
+      "--all-extras",
+      "hummingbot_quickstart",
+      "--help"
+    ],
+    "cwd": "<workspace>/hummingbot",
+    "exit_code": 1,
+    "seconds": 0.25,
+    "check": "installed-legacy-console-help",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-installed-legacy-console-help.json",
+    "original_log": "hummingbot-installed-legacy-console-help.log",
+    "log_sha256": "f8a1948401331d225e83aa4a0d26de289d30c05607879bdc954dd492747913ab",
+    "log_bytes": 362,
     "outcome_lines": []
   },
   {
@@ -1258,6 +1552,32 @@
   },
   {
     "command": [
+      "uv",
+      "run",
+      "--frozen",
+      "--all-extras",
+      "python",
+      "-m",
+      "hummingbot.cli.main",
+      "--help"
+    ],
+    "cwd": "<workspace>/hummingbot",
+    "exit_code": 0,
+    "seconds": 0.84,
+    "check": "packaged-cli-help",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-packaged-cli-help.json",
+    "original_log": "hummingbot-packaged-cli-help.log",
+    "log_sha256": "b5e996449bfe10126003dcbe54a4a5227c1ac527eee4823bbe2e2b8ccda12d7d",
+    "log_bytes": 3096,
+    "outcome_lines": []
+  },
+  {
+    "command": [
       ".venv/bin/python",
       "-m",
       "pytest",
@@ -1290,6 +1610,19 @@
     "log_sha256": "774f9729749af77fca2480401ee1d080f4186fa67410736d9b868892e064320e",
     "log_bytes": 424,
     "outcome_lines": []
+  },
+  {
+    "command": [
+      "/tmp/hummingbot-cli-wheel-audit315/bin/python",
+      "-I",
+      "-c",
+      "import sys,hummingbot,importlib.metadata as m; print(hummingbot.__file__); print(sys.path); print([(x.name,x.value) for x in m.distribution(\"hummingbot\").entry_points]); print({n:m.version(n) for n in [\"typer\",\"pandas\",\"numpy\"]})"
+    ],
+    "cwd": "/tmp",
+    "exit_code": 0,
+    "evidence_record": "hummingbot-published-wheel-cli-audit.json",
+    "original_log": "hummingbot-published-wheel-cli-audit.log",
+    "log_available": false
   },
   {
     "command": [
@@ -1505,6 +1838,36 @@
   {
     "command": [
       "uv",
+      "run",
+      "--frozen",
+      "--all-extras",
+      "python",
+      "-m",
+      "pytest",
+      "test/hummingbot/cli",
+      "test/hummingbot/client/test_runner.py",
+      "--tb=short"
+    ],
+    "cwd": "<workspace>/hummingbot",
+    "exit_code": 0,
+    "seconds": 2.91,
+    "check": "repaired-existing-cli-and-runner-tests",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "1804925e007cfc7d000d7d596664c00df59018eb7cc1a38aed8aa6c90b6dfcd7",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-repaired-existing-cli-and-runner-tests.json",
+    "original_log": "hummingbot-repaired-existing-cli-and-runner-tests.log",
+    "log_sha256": "f04d61405db4b15844b4f6cc222884798c3c9023f4a3c03586af98ca25fdc867",
+    "log_bytes": 702,
+    "outcome_lines": [
+      "380 passed in 1.96s"
+    ]
+  },
+  {
+    "command": [
+      "uv",
       "build",
       "--python",
       "3.15"
@@ -1683,6 +2046,79 @@
   },
   {
     "command": [
+      "uv",
+      "run",
+      "--frozen",
+      "--all-extras",
+      "hbot",
+      "--help"
+    ],
+    "cwd": "<workspace>/hummingbot",
+    "exit_code": 0,
+    "seconds": 0.61,
+    "check": "repaired-hbot-console-help",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "1804925e007cfc7d000d7d596664c00df59018eb7cc1a38aed8aa6c90b6dfcd7",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-repaired-hbot-console-help.json",
+    "original_log": "hummingbot-repaired-hbot-console-help.log",
+    "log_sha256": "85c96c7f11b3fcc8f6715f0a0c327708d9c0e789ecdbbeedb6367dd0d6dbf666",
+    "log_bytes": 3065,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "run",
+      "--frozen",
+      "--all-extras",
+      "python",
+      "bin/hummingbot_quickstart.py",
+      "--help"
+    ],
+    "cwd": "<workspace>/hummingbot",
+    "exit_code": 1,
+    "seconds": 0.14,
+    "check": "repaired-legacy-source-help",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "1804925e007cfc7d000d7d596664c00df59018eb7cc1a38aed8aa6c90b6dfcd7",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-repaired-legacy-source-help.json",
+    "original_log": "hummingbot-repaired-legacy-source-help.log",
+    "log_sha256": "e185eacb3f51d86911c4e731e431c777ca4ab53345174bde6a819b1c7237e107",
+    "log_bytes": 597,
+    "outcome_lines": []
+  },
+  {
+    "command": [
+      "uv",
+      "run",
+      "--frozen",
+      "--all-extras",
+      "hummingbot_quickstart",
+      "--help"
+    ],
+    "cwd": "<workspace>/hummingbot",
+    "exit_code": 1,
+    "seconds": 2.91,
+    "check": "repaired-quickstart-console-help",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "1804925e007cfc7d000d7d596664c00df59018eb7cc1a38aed8aa6c90b6dfcd7",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-repaired-quickstart-console-help.json",
+    "original_log": "hummingbot-repaired-quickstart-console-help.log",
+    "log_sha256": "5f27022965f3beff68f67063f1087272ee6471860c1b12ee448fa051a6fc13b9",
+    "log_bytes": 706,
+    "outcome_lines": []
+  },
+  {
+    "command": [
       ".venv/bin/python",
       "-m",
       "pytest",
@@ -1702,6 +2138,31 @@
     "outcome_lines": [
       "1 failed, 51 passed, 1 error in 13.27s"
     ]
+  },
+  {
+    "command": [
+      "uv",
+      "run",
+      "--frozen",
+      "--all-extras",
+      "python",
+      "bin/hummingbot_quickstart.py",
+      "--help"
+    ],
+    "cwd": "<workspace>/hummingbot",
+    "exit_code": 1,
+    "seconds": 2.35,
+    "check": "repaired-src-bootstrap-legacy-help",
+    "source_snapshot": {
+      "head": "8dadb3658ed535a6c33dc6bbd8161392447e02e1",
+      "tracked_source_diff_sha256": "ab2c6b7bc0be23d672c1c3dda815051d2505c26fecebd97ff57066740d20d57c",
+      "note": "Tracked source snapshot at command start; untracked additions and later edits are not covered by this hash."
+    },
+    "evidence_record": "hummingbot-repaired-src-bootstrap-legacy-help.json",
+    "original_log": "hummingbot-repaired-src-bootstrap-legacy-help.log",
+    "log_sha256": "db468067c051412ea389b2cd858e3db97677bfe00fb663551cbf7c9284887b40",
+    "log_bytes": 783,
+    "outcome_lines": []
   },
   {
     "command": [
@@ -1856,41 +2317,6 @@
     "outcome_lines": [
       "8802 passed, 1 skipped, 2 subtests passed in 901.32s (0:15:01)"
     ]
-  },
-  {
-    "command": [
-      ".venv/bin/python",
-      "-W",
-      "error",
-      "-m",
-      "compileall",
-      "-q",
-      "src",
-      "controllers",
-      "scripts",
-      "vendor",
-      "test/conftest.py"
-    ],
-    "exit_code": 0,
-    "label": "resumed-final-strict-compile",
-    "evidence_record": "hummingbot-result.json",
-    "original_log": "hummingbot-resumed-final-strict-compile.log",
-    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "log_bytes": 0,
-    "outcome_lines": []
-  },
-  {
-    "command": [
-      "uv",
-      "build"
-    ],
-    "exit_code": 0,
-    "label": "resumed-final-wheel-build",
-    "evidence_record": "hummingbot-result.json",
-    "original_log": "hummingbot-resumed-final-wheel-build.log",
-    "log_sha256": "efea520ae57598463927fcca5427d8266d891d26b968593c07e8d9058b6375f6",
-    "log_bytes": 781991,
-    "outcome_lines": []
   },
   {
     "command": [

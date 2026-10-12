@@ -92,6 +92,18 @@
 <td><code>env PYTHONTRACEMALLOC=15 .venv/bin/python -m pytest test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_exchange.py::CoinbaseAdvancedTradeExchangeTests::test_lost_order_included_in_order_fills_update_and_not_in_order_status_update test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_exchange.py::CoinbaseAdvancedTradeExchangeTests::test_update_order_status_when_canceled test/hummingbot/connector/derivative/grvt_perpetual/test_grvt_perpetual_derivative.py --tb=short</code></td>
 </tr>
 <tr>
+<td>corrected-quickstart-console-help</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.52s</td>
+<td><code>uv run --frozen --all-extras hummingbot_quickstart --help</code></td>
+</tr>
+<tr>
+<td>corrected-source-wrapper-help</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.51s</td>
+<td><code>uv run --frozen --all-extras python bin/hummingbot_quickstart.py --help</code></td>
+</tr>
+<tr>
 <td>corrected-sync</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">2.25s</td>
@@ -176,6 +188,36 @@
 <td><code>uv sync --all-extras --frozen --python 3.14.8</code></td>
 </tr>
 <tr>
+<td>final-installed-wheel-console-help</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5.18s</td>
+<td><code>/tmp/trading-humming-final-wheel315/bin/hummingbot_quickstart --help</code></td>
+</tr>
+<tr>
+<td>final-installed-wheel-hbot-help</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.45s</td>
+<td><code>/tmp/trading-humming-final-wheel315/bin/hbot --help</code></td>
+</tr>
+<tr>
+<td>final-installed-wheel-isolated-import</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.54s</td>
+<td><code>/tmp/trading-humming-final-wheel315/bin/python -I -c import hummingbot, hummingbot.client.interactive, hummingbot.client.quickstart, sys; from pathlib import Path; p=Path(hummingbot.__file__).resolve(); assert str(p).startswith("/tmp/trading-humming-final-wheel315/"); assert "&lt;workspace&gt;/hummingbot/src" not in sys.path; print(p); print(sys.version)</code></td>
+</tr>
+<tr>
+<td>final-installed-wheel-isolated-realpath-import</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.68s</td>
+<td><code>/tmp/trading-humming-final-wheel315/bin/python -I -c import hummingbot, hummingbot.client.interactive, hummingbot.client.quickstart, sys; from pathlib import Path; p=Path(hummingbot.__file__).resolve(); expected=Path("/tmp/trading-humming-final-wheel315").resolve(); assert p.is_relative_to(expected), (p, expected); assert "&lt;workspace&gt;/hummingbot/src" not in sys.path; print(p); print(sys.version)</code></td>
+</tr>
+<tr>
+<td>final-isolated-wheel-install</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.19s</td>
+<td><code>uv pip install --python /tmp/trading-humming-final-wheel315/bin/python --no-deps --reinstall &lt;workspace&gt;/hummingbot/dist/hummingbot-2.17.0-cp315-cp315-macosx_11_0_arm64.whl</code></td>
+</tr>
+<tr>
 <td>final-lock</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">1.95s</td>
@@ -216,6 +258,24 @@
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">926.86s</td>
 <td><code>env BOTS_REPO=hummingbot .venv/bin/python -c import sys,pytest;sys.path.insert(0,'/tmp');raise SystemExit(pytest.main(['test','--continue-on-collection-errors','--tb=short','-p','bots_test_observer','-o','faulthandler_timeout=60']))</code></td>
+</tr>
+<tr>
+<td>final-packaged-launcher-complete-existing-suite</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">878.45s</td>
+<td><code>uv run --frozen --all-extras python -m pytest test --tb=short</code></td>
+</tr>
+<tr>
+<td>final-packaged-launcher-strict-source-compile</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.49s</td>
+<td><code>uv run --frozen --all-extras python -W error -m compileall -q src controllers scripts vendor bin test/conftest.py</code></td>
+</tr>
+<tr>
+<td>final-packaged-launcher-wheel-and-sdist-build</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">81.51s</td>
+<td><code>uv build --python 3.15</code></td>
 </tr>
 <tr>
 <td>final-resource-contract-tests</td>
@@ -284,6 +344,12 @@
 <td><code>.venv/bin/python -c from pathlib import Path;import zipfile;w=max(Path('dist').glob('*.whl'),key=lambda p:p.stat().st_mtime);z=zipfile.ZipFile(w);names=z.namelist();native=[n for n in names if n.endswith('.so')];python=[n for n in names if n.endswith('.py')];assert len(native)==61;assert len(python)==902;assert 'hummingbot/VERSION' in names;assert not any('/__pycache__/' in n for n in names);print(w.name,'native modules',len(native),'Python modules',len(python),'size',w.stat().st_size)</code></td>
 </tr>
 <tr>
+<td>final-wheel-isolated-runtime-sync</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.31s</td>
+<td><code>env UV_PROJECT_ENVIRONMENT=/tmp/trading-humming-final-wheel315 uv sync --frozen --all-extras --python 3.15</code></td>
+</tr>
+<tr>
 <td>formatted-config-focused-tests</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">5.35s</td>
@@ -312,6 +378,12 @@
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0.85s</td>
 <td><code>.venv/bin/python /tmp/bots-normalize-import-whitespace.py</code></td>
+</tr>
+<tr>
+<td>installed-legacy-console-help</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.25s</td>
+<td><code>uv run --frozen --all-extras hummingbot_quickstart --help</code></td>
 </tr>
 <tr>
 <td>latest-pandas-sync</td>
@@ -404,6 +476,12 @@
 <td><code>uv sync --all-extras --python 3.14</code></td>
 </tr>
 <tr>
+<td>packaged-cli-help</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.84s</td>
+<td><code>uv run --frozen --all-extras python -m hummingbot.cli.main --help</code></td>
+</tr>
+<tr>
 <td>pandas315-tests</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">2.78s</td>
@@ -414,6 +492,12 @@
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">73.16s</td>
 <td><code>uv sync --all-extras --python 3.15.0</code></td>
+</tr>
+<tr>
+<td>hummingbot-published-wheel-cli-audit.log</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">unknowns</td>
+<td><code>/tmp/hummingbot-cli-wheel-audit315/bin/python -I -c import sys,hummingbot,importlib.metadata as m; print(hummingbot.__file__); print(sys.path); print([(x.name,x.value) for x in m.distribution("hummingbot").entry_points]); print({n:m.version(n) for n in ["typer","pandas","numpy"]})</code></td>
 </tr>
 <tr>
 <td>python315-build</td>
@@ -482,6 +566,12 @@
 <td><code>uv sync --all-extras --frozen --python 3.15.0</code></td>
 </tr>
 <tr>
+<td>repaired-existing-cli-and-runner-tests</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.91s</td>
+<td><code>uv run --frozen --all-extras python -m pytest test/hummingbot/cli test/hummingbot/client/test_runner.py --tb=short</code></td>
+</tr>
+<tr>
 <td>repaired-final-build</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">270.27s</td>
@@ -536,10 +626,34 @@
 <td><code>.venv/bin/python -m pytest test</code></td>
 </tr>
 <tr>
+<td>repaired-hbot-console-help</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.61s</td>
+<td><code>uv run --frozen --all-extras hbot --help</code></td>
+</tr>
+<tr>
+<td>repaired-legacy-source-help</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.14s</td>
+<td><code>uv run --frozen --all-extras python bin/hummingbot_quickstart.py --help</code></td>
+</tr>
+<tr>
+<td>repaired-quickstart-console-help</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.91s</td>
+<td><code>uv run --frozen --all-extras hummingbot_quickstart --help</code></td>
+</tr>
+<tr>
 <td>repaired-source-tests</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">18.87s</td>
 <td><code>.venv/bin/python -m pytest test/hummingbot/cli/test_update.py test/hummingbot/strategy/test_strategy_v2_base.py test/hummingbot/strategy/utils/trailing_indicators/test_historical_volatility.py test/hummingbot/connector/exchange/coinbase_advanced_trade/test_coinbase_advanced_trade_auth.py test/hummingbot/strategy_v2/backtesting/test_backtesting_engine_directional.py</code></td>
+</tr>
+<tr>
+<td>repaired-src-bootstrap-legacy-help</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.35s</td>
+<td><code>uv run --frozen --all-extras python bin/hummingbot_quickstart.py --help</code></td>
 </tr>
 <tr>
 <td>repaired-sync-2</td>
@@ -588,18 +702,6 @@
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">901.32s</td>
 <td><code>.venv/bin/python -m pytest test --continue-on-collection-errors --tb=short</code></td>
-</tr>
-<tr>
-<td>resumed-final-strict-compile</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">unknowns</td>
-<td><code>.venv/bin/python -W error -m compileall -q src controllers scripts vendor test/conftest.py</code></td>
-</tr>
-<tr>
-<td>resumed-final-wheel-build</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">unknowns</td>
-<td><code>uv build</code></td>
 </tr>
 <tr>
 <td>scoped-protobuf-focused-tests-2</td>
