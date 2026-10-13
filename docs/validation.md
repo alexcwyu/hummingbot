@@ -1,5 +1,11 @@
 # Hummingbot maintenance verification
 
+<!-- current-documentation-provenance -->
+Documentation reviewed: 2026-10-13 / Git source base: `da0a8b367b74a6bf576ecffa61a3299de3374c6e` / [Current architecture and feature guide](ayu-develop.md).
+Historical execution commands/results below retain their original dates and scope; this metadata update is not a new application test run.
+<!-- /current-documentation-provenance -->
+
+
 ## Final launcher repair and verification
 
 Source commit `a5f86d495` fixes wheel-installed quickstart ownership and declares its interactive runtime dependencies. The final Python 3.15 wheel contains **61 native extensions and 904 Python modules**. Both installed console help commands passed from `/tmp` in a separate frozen environment, and all original launcher function/class bodies are unchanged. The source compatibility wrapper, strict compilation, wheel and sdist build also passed. The 380 existing CLI/client-runner cases passed during the repair. An independent read-only agent review found no actionable defects in the launcher commit and confirmed wheel modules match source, correct package entrypoints and unchanged tests. The fresh complete existing suite on source `a5f86d4953c6b93c472cbda80a4c74ed0c06ba7a` passed: **8,802 passed, one unchanged skip and two subtests passed**, in 870.52 seconds pytest time (878.45 seconds command wall time), exit 0. The source snapshot was clean at command start. No test cases or assertions changed in this launcher follow-up. The earlier complete-suite result below remains historical evidence.

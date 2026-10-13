@@ -1,138 +1,267 @@
-# hummingbot: architecture and development
+# hummingbot: workflow, design and architecture
 
-Hummingbot provides market-making/arbitrage connectors and strategy execution, with a native Cython/C++ market-data/order core and a Python strategy/controller layer.
+Updated: **2026-10-13**
+Reviewed Git hash: `da0a8b367b74a6bf576ecffa61a3299de3374c6e`
+Branch: `feature/ayu_develop`
+Source diff SHA256: `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`
+Scope: **Event-driven crypto execution / market-making framework** / Maintenance: **active**
+Languages: Python, Cython, C++
 
-## Components and boundaries
+[HTML edition](ayu-develop.html) / [Development](development.md) / [Historical validation](validation.md) / [Full system comparison](../../docs/index.html)
 
-ConnectorBase defines exchange operations; ExchangePyBase adds common asynchronous REST/websocket behavior. OrderBook and Clock are compiled core types. Strategy V2 ControllerBase processes market data and produces executor actions; ExecutorBase owns an execution lifecycle, with position, grid, arbitrage, DCA and order variants. ExecutorOrchestrator manages executor actions and reporting. The CLI/client assembles connectors, configuration, and scripts.
+## Purpose and scope
 
+Drive connector-backed trading strategies with clock/event lifecycle, compose controller/executor actions and simulate supported V2 executors over historical candles.
+
+## Features and support boundaries
+
+Native = implemented here. Integration = supplied through a named host/API. Limited = material restriction. Not provided = evidenced scope exclusion. Unverified = support/absence not established. Not applicable = outside this artifact type.
+
+| Capability | Status | Implementation and limits | Source |
+|---|---|---|---|
+| Backtesting | Native | V2 backtesting loads historical candles, iterates controller actions and returns executor/position/PnL summaries. Support is controller/executor-specific. | [BacktestingEngineBase.run_backtesting](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L221](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L221)) / [BacktestingEngineBase.simulate_execution](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L269](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L269)) |
+| Live execution | Native | Clock/executors/connectors/tracker/paper budget/order validation and recorder implement native framework behavior; exchange availability remains an external requirement. | [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88)) / [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312)) / [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232)) / [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) / [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267)) / [MarketsRecorder._did_fill_order](../src/hummingbot/connector/markets_recorder.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/markets_recorder.py#L400)) / [main](../src/hummingbot/client/interactive.py) ([L80](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/client/interactive.py#L80)) |
+| Paper trading | Native | PaperTradeExchange implements balances, delayed market order queue and orderbook-driven simulated lifecycle. | [PaperTradeExchange](../src/hummingbot/connector/exchange/paper_trade/paper_trade_exchange.pyx) ([L143](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange/paper_trade/paper_trade_exchange.pyx#L143)) / [c_process_market_orders](../src/hummingbot/connector/exchange/paper_trade/paper_trade_exchange.pyx) ([L609](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange/paper_trade/paper_trade_exchange.pyx#L609)) |
+| Event driven | Native | Clock/executors/connectors/tracker/paper budget/order validation and recorder implement native framework behavior; exchange availability remains an external requirement. | [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88)) / [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312)) / [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232)) / [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) / [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267)) / [MarketsRecorder._did_fill_order](../src/hummingbot/connector/markets_recorder.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/markets_recorder.py#L400)) / [main](../src/hummingbot/client/interactive.py) ([L80](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/client/interactive.py#L80)) |
+| Vectorized | Limited | Historical feature DataFrames prepare market data but simulation iterates rows and stateful executor actions. | [BacktestingEngineBase.simulate_execution](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L269](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L269)) |
+| Order management | Native | Clock/executors/connectors/tracker/paper budget/order validation and recorder implement native framework behavior; exchange availability remains an external requirement. | [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88)) / [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312)) / [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232)) / [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) / [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267)) / [MarketsRecorder._did_fill_order](../src/hummingbot/connector/markets_recorder.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/markets_recorder.py#L400)) / [main](../src/hummingbot/client/interactive.py) ([L80](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/client/interactive.py#L80)) |
+| Order types | Native | Clock/executors/connectors/tracker/paper budget/order validation and recorder implement native framework behavior; exchange availability remains an external requirement. | [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88)) / [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312)) / [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232)) / [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) / [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267)) / [MarketsRecorder._did_fill_order](../src/hummingbot/connector/markets_recorder.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/markets_recorder.py#L400)) / [main](../src/hummingbot/client/interactive.py) ([L80](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/client/interactive.py#L80)) |
+| Multi venue | Integration | Strategies accept multiple connector instances; actual spot/perpetual/venue feeds/auth/rules depend on concrete exchange connectors. | [StrategyV2Base.__init__](../src/hummingbot/strategy/strategy_v2_base.py) ([L256](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L256)) / [BinancePerpetualDerivative](../src/hummingbot/connector/derivative/binance_perpetual/binance_perpetual_derivative.py) ([L38](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/derivative/binance_perpetual/binance_perpetual_derivative.py#L38)) / [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) |
+| Crypto | Integration | Strategies accept multiple connector instances; actual spot/perpetual/venue feeds/auth/rules depend on concrete exchange connectors. | [StrategyV2Base.__init__](../src/hummingbot/strategy/strategy_v2_base.py) ([L256](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L256)) / [BinancePerpetualDerivative](../src/hummingbot/connector/derivative/binance_perpetual/binance_perpetual_derivative.py) ([L38](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/derivative/binance_perpetual/binance_perpetual_derivative.py#L38)) / [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) |
+| Equities | Unverified | Representative source review did not establish this capability; no claim of absence. | Not applicable to this repository scope. |
+| Futures | Integration | Strategies accept multiple connector instances; actual spot/perpetual/venue feeds/auth/rules depend on concrete exchange connectors. | [StrategyV2Base.__init__](../src/hummingbot/strategy/strategy_v2_base.py) ([L256](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L256)) / [BinancePerpetualDerivative](../src/hummingbot/connector/derivative/binance_perpetual/binance_perpetual_derivative.py) ([L38](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/derivative/binance_perpetual/binance_perpetual_derivative.py#L38)) / [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) |
+| Options | Unverified | Representative source review did not establish this capability; no claim of absence. | Not applicable to this repository scope. |
+| Forex | Unverified | Representative source review did not establish this capability; no claim of absence. | Not applicable to this repository scope. |
+| Strategy api | Native | Clock/executors/connectors/tracker/paper budget/order validation and recorder implement native framework behavior; exchange availability remains an external requirement. | [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88)) / [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312)) / [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232)) / [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) / [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267)) / [MarketsRecorder._did_fill_order](../src/hummingbot/connector/markets_recorder.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/markets_recorder.py#L400)) / [main](../src/hummingbot/client/interactive.py) ([L80](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/client/interactive.py#L80)) |
+| Optimization | Unverified | Representative source review did not establish this capability; no claim of absence. | Not applicable to this repository scope. |
+| Machine learning | Unverified | Representative source review did not establish this capability; no claim of absence. | Not applicable to this repository scope. |
+| Reinforcement learning | Unverified | Representative source review did not establish this capability; no claim of absence. | Not applicable to this repository scope. |
+| Portfolio | Native | Clock/executors/connectors/tracker/paper budget/order validation and recorder implement native framework behavior; exchange availability remains an external requirement. | [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88)) / [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312)) / [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232)) / [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) / [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267)) / [MarketsRecorder._did_fill_order](../src/hummingbot/connector/markets_recorder.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/markets_recorder.py#L400)) / [main](../src/hummingbot/client/interactive.py) ([L80](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/client/interactive.py#L80)) |
+| Risk management | Native | Clock/executors/connectors/tracker/paper budget/order validation and recorder implement native framework behavior; exchange availability remains an external requirement. | [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88)) / [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312)) / [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232)) / [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) / [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267)) / [MarketsRecorder._did_fill_order](../src/hummingbot/connector/markets_recorder.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/markets_recorder.py#L400)) / [main](../src/hummingbot/client/interactive.py) ([L80](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/client/interactive.py#L80)) |
+| Performance analytics | Native | V2 backtesting loads historical candles, iterates controller actions and returns executor/position/PnL summaries. Support is controller/executor-specific. | [BacktestingEngineBase.run_backtesting](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L221](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L221)) / [BacktestingEngineBase.simulate_execution](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L269](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L269)) |
+| Historical data | Native | V2 backtesting loads historical candles, iterates controller actions and returns executor/position/PnL summaries. Support is controller/executor-specific. | [BacktestingEngineBase.run_backtesting](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L221](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L221)) / [BacktestingEngineBase.simulate_execution](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L269](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L269)) |
+| Streaming data | Integration | Strategies accept multiple connector instances; actual spot/perpetual/venue feeds/auth/rules depend on concrete exchange connectors. | [StrategyV2Base.__init__](../src/hummingbot/strategy/strategy_v2_base.py) ([L256](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L256)) / [BinancePerpetualDerivative](../src/hummingbot/connector/derivative/binance_perpetual/binance_perpetual_derivative.py) ([L38](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/derivative/binance_perpetual/binance_perpetual_derivative.py#L38)) / [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) |
+| Persistence | Native | Clock/executors/connectors/tracker/paper budget/order validation and recorder implement native framework behavior; exchange availability remains an external requirement. | [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88)) / [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312)) / [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232)) / [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) / [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267)) / [MarketsRecorder._did_fill_order](../src/hummingbot/connector/markets_recorder.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/markets_recorder.py#L400)) / [main](../src/hummingbot/client/interactive.py) ([L80](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/client/interactive.py#L80)) |
+| Data pipeline | Native | V2 backtesting loads historical candles, iterates controller actions and returns executor/position/PnL summaries. Support is controller/executor-specific. | [BacktestingEngineBase.run_backtesting](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L221](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L221)) / [BacktestingEngineBase.simulate_execution](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L269](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L269)) |
+| Web ui | Unverified | Interactive CLI is inspected; any separately distributed web dashboard is not established by this repository source subset. | [main](../src/hummingbot/client/interactive.py) ([L80](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/client/interactive.py#L80)) |
+| Cli | Native | Clock/executors/connectors/tracker/paper budget/order validation and recorder implement native framework behavior; exchange availability remains an external requirement. | [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88)) / [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312)) / [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232)) / [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) / [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267)) / [MarketsRecorder._did_fill_order](../src/hummingbot/connector/markets_recorder.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/markets_recorder.py#L400)) / [main](../src/hummingbot/client/interactive.py) ([L80](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/client/interactive.py#L80)) |
+| Monitoring | Native | Order lifecycle emits events; executor/backtest accounting provides reports and diagnostics. | [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267)) / [BacktestingEngineBase.run_backtesting](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L221](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L221)) |
+| Extension api | Native | Clock/executors/connectors/tracker/paper budget/order validation and recorder implement native framework behavior; exchange availability remains an external requirement. | [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88)) / [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312)) / [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232)) / [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) / [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267)) / [MarketsRecorder._did_fill_order](../src/hummingbot/connector/markets_recorder.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/markets_recorder.py#L400)) / [main](../src/hummingbot/client/interactive.py) ([L80](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/client/interactive.py#L80)) |
+| Native acceleration | Native | Cython clock and paper exchange integrate native iterator/orderbook behavior; source declares C++ support components. No performance ranking inferred. | [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88)) / [PaperTradeExchange](../src/hummingbot/connector/exchange/paper_trade/paper_trade_exchange.pyx) ([L143](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange/paper_trade/paper_trade_exchange.pyx#L143)) / [c_process_market_orders](../src/hummingbot/connector/exchange/paper_trade/paper_trade_exchange.pyx) ([L609](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange/paper_trade/paper_trade_exchange.pyx#L609)) |
+| Distributed execution | Unverified | Representative source review did not establish this capability; no claim of absence. | Not applicable to this repository scope. |
+
+## System components
+
+| Component | Responsibility | Source |
+|---|---|---|
+| Clock runtime | Tick registered strategies/connectors. | [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88)) |
+| Strategy/controllers | Manage readiness and propose execution actions. | [StrategyV2Base.__init__](../src/hummingbot/strategy/strategy_v2_base.py) ([L256](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L256)) / [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312)) |
+| Executor orchestration | Construct/state-manage modular order executors. | [ExecutorOrchestrator.execute_action](../src/hummingbot/strategy_v2/executors/executor_orchestrator.py) ([L515](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/executor_orchestrator.py#L515)) / [ExecutorOrchestrator.create_executor](../src/hummingbot/strategy_v2/executors/executor_orchestrator.py) ([L543](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/executor_orchestrator.py#L543)) / [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232)) |
+| Connector network boundary | Quantize/validate/send exchange order requests. | [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) / [BinancePerpetualDerivative](../src/hummingbot/connector/derivative/binance_perpetual/binance_perpetual_derivative.py) ([L38](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/derivative/binance_perpetual/binance_perpetual_derivative.py#L38)) |
+| Order lifecycle | Reconcile fills/state and publish lifecycle events. | [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267)) / [ExecutorBase.__init__](../src/hummingbot/strategy_v2/executors/executor_base.py) ([L35](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/executor_base.py#L35)) |
+| Historical and paper simulation | V2 historical executor replay and paper order-book exchange. | [BacktestingEngineBase.run_backtesting](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L221](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L221)) / [BacktestingEngineBase.simulate_execution](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L269](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L269)) / [c_process_market_orders](../src/hummingbot/connector/exchange/paper_trade/paper_trade_exchange.pyx) ([L609](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange/paper_trade/paper_trade_exchange.pyx#L609)) |
+| Event recorder | Persist fills/market states via SQL. | [MarketsRecorder._did_fill_order](../src/hummingbot/connector/markets_recorder.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/markets_recorder.py#L400)) |
+
+## Architecture and component boundaries
+
+The component view summarizes inspected responsibility boundaries. Arrows identify the documented API/data dependencies; this is not a deployment-readiness claim.
 
 ```mermaid
 flowchart LR
-  A0["Client and controller config"]
-  A1["Market data and connectors"]
-  A2["Controller actions"]
-  A3["Executor lifecycle"]
-  A4["Orders and performance"]
-  A0 --> A1
-  A1 --> A2
-  A2 --> A3
-  A3 --> A4
+  N0["Clock runtime"]
+  N1["Strategy/controllers"]
+  N2["Executor orchestration"]
+  N3["Connector network boundary"]
+  N4["Order lifecycle"]
+  N5["Historical and paper simulation"]
+  N6["Event recorder"]
+  N0 -->|"Registered TimeIterator receives ticks, strategy gates readiness."| N1
+  N1 -->|"Dispatches determine_executor_actions output."| N2
+  N2 -->|"Executor places normal connector order or Gateway swap."| N3
+  N3 -->|"Tracks order before sending network request."| N4
+  N4 -->|"Recorder subscribes lifecycle fill events."| N6
+  N5 -->|"Historical controller proposes same action variants."| N1
 ```
 
-The following class view names implementation classes. Cross-package types are supplied by the host ecosystem; arrows describe inheritance or usage, not copied ownership.
+- Registered TimeIterator receives ticks; strategy gates readiness.: [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88)) / [StrategyV2Base.tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L295](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L295))
+- Dispatches determine_executor_actions output.: [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312))
+- Executor places normal connector order or Gateway swap.: [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232))
+- Tracks order before sending network request.: [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400))
+- Recorder subscribes lifecycle fill events.: [MarketsRecorder._did_fill_order](../src/hummingbot/connector/markets_recorder.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/markets_recorder.py#L400))
+- Historical controller proposes same action variants.: [BacktestingEngineBase.simulate_execution](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L269](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L269))
+
+## Design decisions
+
+| Decision | Rationale | Tradeoff | Evidence |
+|---|---|---|---|
+| Separate controllers from lifecycle-owning executors. | Controller actions reuse modular execution, accounting and shutdown behavior. | Mapping/configuration must match supported executor type; not all controllers/executors share simulation semantics. | [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312)) / [ExecutorOrchestrator.create_executor](../src/hummingbot/strategy_v2/executors/executor_orchestrator.py) ([L543](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/executor_orchestrator.py#L543)) / [BacktestingEngineBase.simulate_execution](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L269](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L269)) |
+| Track orders before network submission. | Failure/status reconciliation can identify client-owned in-flight orders consistently. | Asynchronous fills may arrive after completion status; tracker uses bounded waiting before warning/processing incomplete information. | [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) / [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267)) |
+
+## Class and interface relationships
 
 ```mermaid
 classDiagram
-  class ControllerBase
-  class ExecutorBase
-  class ExecutorOrchestrator
-  class ExchangePyBase
-  class ConnectorBase
-  ExchangePyBase --|> ConnectorBase
-  ExecutorOrchestrator --> ExecutorBase : owns executors
-  ControllerBase ..> ExecutorOrchestrator : executor actions
-  ExecutorBase --> ExchangePyBase : orders
+  class N0["StrategyV2Base"] {
+    <<class>>
+    +tick()
+    +on_tick()
+    +on_stop()
+  }
+  class N1["ExecutorOrchestrator"] {
+    <<class>>
+    +execute_action()
+    +create_executor()
+    +stop_executor()
+  }
+  class N2["ExecutorBase"] {
+    <<class>>
+    +place_order()
+    +process_order_filled_event()
+  }
+  class N3["OrderExecutor"] {
+    <<class>>
+    +place_open_order()
+    +control_task()
+  }
+  class N4["ExchangePyBase"] {
+    <<class>>
+    +buy()
+    +sell()
+    +_create_order()
+  }
+  class N5["ClientOrderTracker"] {
+    <<class>>
+    +process_order_update()
+    +_process_order_update()
+  }
+  class N6["BacktestingEngineBase"] {
+    <<class>>
+    +run_backtesting()
+    +simulate_execution()
+    +summarize_results()
+  }
+  class N7["Clock"] {
+    <<class>>
+    +run()
+    +run_til()
+    +add_iterator()
+  }
+  N0 *-- N1 : Creates executor_orchestrator with self strategy.
+  N1 ..> N3 : Creates mapped executor class based on action config type.
+  N3 --|> N2 : OrderExecutor subclasses ExecutorBase.
+  N2 ..> N0 : Executor retains strategy and connector references.
+  N4 ..> N5 : Owns order tracker and tracked order lifecycle.
 ```
 
-## Runtime workflow
+Each node is a reviewed source symbol. Function/module nodes are explicitly labeled; they do not imply Python classes. Only reviewed relationships are drawn.
 
-Load client/controller configuration, create connectors and market data, advance the clock, let controllers compute executor actions, create or update executors, place/reconcile orders through connectors, and record performance. REST/websocket events update order-book and in-flight-order state. Shutdown cancels owned tasks and closes connectors.
+- **StrategyV2Base** (class): [StrategyV2Base.tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L295](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L295))
+- **ExecutorOrchestrator** (class): [ExecutorOrchestrator.execute_action](../src/hummingbot/strategy_v2/executors/executor_orchestrator.py) ([L515](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/executor_orchestrator.py#L515))
+- **ExecutorBase** (class): [ExecutorBase.__init__](../src/hummingbot/strategy_v2/executors/executor_base.py) ([L35](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/executor_base.py#L35))
+- **OrderExecutor** (class): [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232))
+- **ExchangePyBase** (class): [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400))
+- **ClientOrderTracker** (class): [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267))
+- **BacktestingEngineBase** (class): [BacktestingEngineBase.run_backtesting](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L221](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L221))
+- **Clock** (class): [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88))
 
+## Workflow
 
-```mermaid
-sequenceDiagram
-  participant Caller
-  participant P1 as Market data and connectors
-  participant P2 as Controller actions
-  participant P3 as Executor lifecycle
-  Caller->>P1: Configure context and inputs
-  P1->>P2: Initialize owned components
-  P2->>P3: Process observation or command
-  P3-->>P2: Result and state update
-  P2-->>Caller: Report or event
-  Caller->>P1: Stop and release resources
-```
+### V2 controller-to-order execution
 
-This sequence is an architectural view of responsibility and resource ownership. Individual plugin, connector, and strategy implementations can add asynchronous events and error branches. The lifecycle below is a conceptual operating workflow, rather than a claim that every component has one shared state enum.
-
-```mermaid
-stateDiagram-v2
-  [*] --> Configured
-  Configured --> Initialized: validate inputs
-  Initialized --> Processing: start
-  Processing --> Processing: next data or event
-  Processing --> Stopping: finish or cancel
-  Initialized --> Stopping: initialization error
-  Stopping --> Closed: release owned resources
-  Closed --> [*]
-```
-
-## Features and extension points
-
-CEX and Gateway connectors; compiled order books and clocks; Strategy V2 controllers/executors; legacy strategies; order tracking; market-making and arbitrage scripts; client configuration and command UI.
-
-Extend the owning component behind its existing public interface. Keep metadata and configuration alongside plugin/strategy resources. Exchange-specific behavior belongs in an adapter; strategy decisions belong in the strategy/evaluator layer; persistence schema and migrations belong with the storage implementation. Review the source map below before changing a boundary, and exercise the existing tests associated with that boundary.
-
-## Packaging and dependency design
-
-The src migration was incomplete before maintenance; 862 missing upstream source/resource files were restored. The final native build contains 61 shared modules and 902 Python modules. Setuptools/Cython remains the native build backend. The licensed ft-pandas-ta compatibility source supplies the pandas_ta namespace with current NumPy support and two Python 3.15 compiler repairs; an exact upstream coincurve Git revision includes its current CFFI license-layout build correction. Python 3.15 builds after installing native TA-Lib headers and replacing removed PyWeakref_GetObject calls with standard weak-reference calls. Final verification details are recorded in validation.md.
-
-The lock records exact package versions, hashes, platform markers, and local source mappings. Path sources deliberately bind related repositories in this workspace; clone sibling repositories at the documented names before synchronization. Published packaging metadata describes public dependencies, while uv source settings select this development workspace. Resolve dependency changes with uv lock --upgrade and retain the generated lock, then verify the same locked environment.
-
-```mermaid
-flowchart LR
-  Source["src/hummingbot"] --> Backend["PEP 517 build backend"]
-  Metadata["pyproject.toml"] --> Backend
-  Lock["uv.lock"] --> Env["Managed Python environment"]
-  Backend --> Wheel["Wheel and sdist"]
-  Env --> Existing["Existing tests"]
-  Source --> Existing
-  Wheel --> Inspect["Inspect modules and resources"]
-```
-
-## Maintenance workflow
-
-All upstream branches and tags are fetched. Fork updates use nonforce pushes; a divergent branch is merged without erasing fork history. The default branch is merged into feature/ayu_develop with package/resource conflicts reconciled in their installed locations. Build and test evidence is recorded before a local maintenance commit. Feature branch publication is a separate root-level action.
+Clock uses inherited TimeIterator tick mechanism; venue network API and event arrival order are external. No live connector session was exercised.
 
 ```mermaid
 flowchart TD
-  F["Fetch upstream branches and tags"] --> C["Compare fork refs"]
-  C --> M["Nonforce ref sync and default merge"]
-  M --> L["uv lock --upgrade"]
-  L --> P["Try managed Python 3.15"]
-  P --> Q{"All required dependencies build?"}
-  Q -->|yes| S["Sync complete environment"]
-  Q -->|no| B["Record evidence and select supported fallback"]
-  B --> S
-  S --> W["Build wheel and sdist"]
-  W --> T["Run existing tests and compile"]
-  T --> R["Record failures, fixes, and exact results"]
-  R --> D["Render MD and HTML documentation"]
-  D --> G["Commit locally on feature/ayu_develop"]
+  W0["Advance registered strategy clock tick."]
+  W1["Check connector readiness, update controller state and determine actions."]
+  W0 --> W1
+  W2["Dispatch action, construct/start mapped executor."]
+  W1 --> W2
+  W3["Place remaining amount as order or Gateway swap."]
+  W2 --> W3
+  W4["Track/quantize/validate order then place through venue API."]
+  W3 --> W4
+  W5["Reconcile asynchronous fill/status events and trigger callbacks."]
+  W4 --> W5
+  W6["Record fill and market state."]
+  W5 --> W6
 ```
 
-No existing test assertions are removed and no new test cases are introduced in this maintenance pass. Corrected fixtures preserve coverage while making paths, corruption inputs, and resource cleanup compatible with the selected interpreter. A failed test or unsupported dependency is reported explicitly in [validation](validation.md); package build success does not imply strategy correctness, profitability, or successful live connectivity.
+1. Advance registered strategy clock tick.. [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88))
+2. Check connector readiness; update controller state and determine actions.. [StrategyV2Base.tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L295](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L295)) / [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312))
+3. Dispatch action, construct/start mapped executor.. [ExecutorOrchestrator.execute_action](../src/hummingbot/strategy_v2/executors/executor_orchestrator.py) ([L515](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/executor_orchestrator.py#L515)) / [ExecutorOrchestrator.create_executor](../src/hummingbot/strategy_v2/executors/executor_orchestrator.py) ([L543](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/executor_orchestrator.py#L543))
+4. Place remaining amount as order or Gateway swap.. [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232))
+5. Track/quantize/validate order then place through venue API.. [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400))
+6. Reconcile asynchronous fill/status events and trigger callbacks.. [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267)) / [ExecutorBase.__init__](../src/hummingbot/strategy_v2/executors/executor_base.py) ([L35](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/executor_base.py#L35))
+7. Record fill and market state.. [MarketsRecorder._did_fill_order](../src/hummingbot/connector/markets_recorder.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/markets_recorder.py#L400))
+
+## Sequence
+
+Create executor/order
+
+Normal exchange path shown; Gateway executor path separately invokes connector.place_order for pool swap.
+
+```mermaid
+sequenceDiagram
+  participant N0 as StrategyV2Base
+  participant N1 as ExecutorOrchestrator
+  participant N2 as OrderExecutor
+  participant N3 as ExchangePyBase
+  N0->>N1: execute_action(CreateExecutorAction)
+  N1->>N2: Construct mapped executor and start
+  N2->>N3: place order via executor/strategy connector path
+  N3->>N3: Track/validate then await _place_order_and_process_update
+```
+
+- execute_action(CreateExecutorAction): [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312)) / [ExecutorOrchestrator.execute_action](../src/hummingbot/strategy_v2/executors/executor_orchestrator.py) ([L515](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/executor_orchestrator.py#L515))
+- Construct mapped executor and start: [ExecutorOrchestrator.create_executor](../src/hummingbot/strategy_v2/executors/executor_orchestrator.py) ([L543](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/executor_orchestrator.py#L543))
+- place order via executor/strategy connector path: [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232))
+- Track/validate then await _place_order_and_process_update: [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400))
+
+## Strengths and limits
+
+### Strengths
+
+- Order executor retries/renewals compute remaining amount, while tracker distinguishes creation/fill/completion events. [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232)) / [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267))
+
+### Limitations
+
+- Backtest simulation is controller/executor-specific and follows historical feature rows; it does not establish identical venue orderbook/network behavior. [BacktestingEngineBase.simulate_execution](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L269](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L269)) / [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400))
+
+## Validation scope
+
+The linked validation and command records preserve actual historical runs and user-authorized exclusions. This source/document review does not rerun application tests, establish live trading readiness or rank benchmark performance. Current data, credential and runtime prerequisites remain material.
+
+[Repository validation](validation.md) / [Executed checks](maintenance/index.md)
 
 ## Source map
 
-| Source | Responsibility and location |
-| --- | --- |
-| [connector_base.pyx](../src/hummingbot/connector/connector_base.pyx) | src/hummingbot/connector/connector_base.pyx |
-| [exchange_py_base.py](../src/hummingbot/connector/exchange_py_base.py) | src/hummingbot/connector/exchange_py_base.py |
-| [order_book.pyx](../src/hummingbot/core/data_type/order_book.pyx) | src/hummingbot/core/data_type/order_book.pyx |
-| [clock.pyx](../src/hummingbot/core/clock.pyx) | src/hummingbot/core/clock.pyx |
-| [in_flight_order.py](../src/hummingbot/core/data_type/in_flight_order.py) | src/hummingbot/core/data_type/in_flight_order.py |
-| [controller_base.py](../src/hummingbot/strategy_v2/controllers/controller_base.py) | src/hummingbot/strategy_v2/controllers/controller_base.py |
-| [executor_base.py](../src/hummingbot/strategy_v2/executors/executor_base.py) | src/hummingbot/strategy_v2/executors/executor_base.py |
-| [executor_orchestrator.py](../src/hummingbot/strategy_v2/executors/executor_orchestrator.py) | src/hummingbot/strategy_v2/executors/executor_orchestrator.py |
-| [hummingbot_application.py](../src/hummingbot/client/hummingbot_application.py) | src/hummingbot/client/hummingbot_application.py |
-| [market_data_provider.py](../src/hummingbot/data_feed/market_data_provider.py) | src/hummingbot/data_feed/market_data_provider.py |
-| [pyproject.toml](../pyproject.toml) | pyproject.toml |
-| [uv.lock](../uv.lock) | uv.lock |
-| [README.md](../README.md) | README.md |
-| [setup.py](../setup.py) | setup.py |
+| Reviewed symbol/path | Inspected responsibility | Actual file SHA256 |
+|---|---|---|
+| [StrategyV2Base.__init__](../src/hummingbot/strategy/strategy_v2_base.py) ([L256](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L256)) | Owns connectors, creates MarketDataProvider/actions queue/controllers and ExecutorOrchestrator. | `76d46602f9cb5bc2c1e829663641d90e37dfd29284bdb8a0f668e10db0c0eb21` |
+| [StrategyV2Base.tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L295](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L295)) | Waits until all connectors ready, initializes positions then invokes on_tick. | `76d46602f9cb5bc2c1e829663641d90e37dfd29284bdb8a0f668e10db0c0eb21` |
+| [StrategyV2Base.on_tick](../src/hummingbot/strategy/strategy_v2_base.py) ([L312](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy/strategy_v2_base.py#L312)) | Updates executor/controller info, requests actions from ready data/controllers, dispatches to orchestrator. | `76d46602f9cb5bc2c1e829663641d90e37dfd29284bdb8a0f668e10db0c0eb21` |
+| [ExecutorOrchestrator.execute_action](../src/hummingbot/strategy_v2/executors/executor_orchestrator.py) ([L515](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/executor_orchestrator.py#L515)) | Dispatches Create/Stop/Store action variants by controller identity. | `c59eb274550df1a15a69d2cb7f95a3fd801c9159105aa01ce5e98f1d340c90c2` |
+| [ExecutorOrchestrator.create_executor](../src/hummingbot/strategy_v2/executors/executor_orchestrator.py) ([L543](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/executor_orchestrator.py#L543)) | Looks up executor type, constructs with strategy/config/interval/retries, starts and registers active executor. | `c59eb274550df1a15a69d2cb7f95a3fd801c9159105aa01ce5e98f1d340c90c2` |
+| [ExecutorBase.__init__](../src/hummingbot/strategy_v2/executors/executor_base.py) ([L35](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/executor_base.py#L35)) | Selects connector references from strategy; creates order event forwarders and event tag/callback pairs. | `9e2482dec46a68c7ea37e8377a0a95a1275a61f54df3691daff36ea505f9465d` |
+| [OrderExecutor.place_open_order](../src/hummingbot/strategy_v2/executors/order_executor/order_executor.py) ([L232](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/executors/order_executor/order_executor.py#L232)) | Computes remaining unfilled quantity; routes Gateway swap specially or places normal connector order, tracks returned order ID. | `7ba680564d3b68edf78f8d80a885d599598035c7c6748abd9a37c89c293a4b09` |
+| [ExchangePyBase._create_order](../src/hummingbot/connector/exchange_py_base.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange_py_base.py#L400)) | Quantizes/tracks order, validates supported type/minimum size/notional, asynchronously places and processes update or failure. | `a9b7ec39c628493a48c0775475dbda221dab5bf6c7e4955bf5ce8838da25c35b` |
+| [ClientOrderTracker._process_order_update](../src/hummingbot/connector/client_order_tracker.py) ([L267](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/client_order_tracker.py#L267)) | Matches tracked/lost orders, waits for fill evidence before completion when possible, updates state and emits lifecycle events. | `555c82d35f965e930302fe711369d6327bad34588cb4f89313024eee1ef5c6d7` |
+| [BacktestingEngineBase.run_backtesting](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L221](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L221)) | Builds configured controller and historical data provider, runs simulation, summarizes executor/position-hold/PnL outputs. | `850265b79f666c0df3e66ed4677b7156d81c413813b4559c8b526260abcfa308` |
+| [BacktestingEngineBase.simulate_execution](../src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py) ([L269](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py#L269)) | Iterates historical feature rows, updates state, handles controller actions and final flush/position-hold accounting. | `850265b79f666c0df3e66ed4677b7156d81c413813b4559c8b526260abcfa308` |
+| [Clock.run_til](../src/hummingbot/core/clock.pyx) ([L88](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/core/clock.pyx#L88)) | Cython Clock sleeps to ticks, starts registered TimeIterator children and calls c_tick each tick. | `8ea477425a344dcc2f5d8d85ddcaf8ea86b2f90d84a7c0c87e91b0bd5a3faac4` |
+| [PaperTradeExchange](../src/hummingbot/connector/exchange/paper_trade/paper_trade_exchange.pyx) ([L143](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange/paper_trade/paper_trade_exchange.pyx#L143)) | Native simulated exchange uses orderbook tracker, balances, queues, fill listeners and budget checker. | `774ffba96bcd8b33793339bc12ae59414bf275105c92c7479d4dceecb3846bad` |
+| [c_process_market_orders](../src/hummingbot/connector/exchange/paper_trade/paper_trade_exchange.pyx) ([L609](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/exchange/paper_trade/paper_trade_exchange.pyx#L609)) | Processes queued simulated market orders after configured execution delay. | `774ffba96bcd8b33793339bc12ae59414bf275105c92c7479d4dceecb3846bad` |
+| [MarketsRecorder._did_fill_order](../src/hummingbot/connector/markets_recorder.py) ([L400](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/markets_recorder.py#L400)) | Uses SQL session to persist fill/order events and connector market state. | `9fddbdd80964a0314603f49aabcb434ededc74efdb5c2448d36765a6a6218e5f` |
+| [BinancePerpetualDerivative](../src/hummingbot/connector/derivative/binance_perpetual/binance_perpetual_derivative.py) ([L38](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/connector/derivative/binance_perpetual/binance_perpetual_derivative.py#L38)) | Concrete perpetual connector owns venue auth/rate limits/position mode and configured pairs. | `38aa4dd903f184c1cfeeb2c43114964494975d45cd77b383a7bab9b391876edd` |
+| [main](../src/hummingbot/client/interactive.py) ([L80](https://github.com/alexcwyu/hummingbot/blob/da0a8b367b74a6bf576ecffa61a3299de3374c6e/src/hummingbot/client/interactive.py#L80)) | Bootstraps interactive Hummingbot application. | `2c1a21637007b6cdd4deac29c926704818e46c91b09d840169633e12c7c4536c` |
 
-## Further reading
+## Documentation provenance
 
-Use [development.md](development.md) for reproducible commands and [validation.md](validation.md) for exact interpreter, dependency, build, test, and blocker evidence. The equivalent [HTML architecture document](ayu-develop.html) supports browsing and rendered diagrams.
+Review date: 2026-10-13. Full committed source HEAD: `da0a8b367b74a6bf576ecffa61a3299de3374c6e`. Template version: 2. 12 source files were independently hashed for this guide.
+
+[Evidence catalog](../../docs/systems-2026-10-13/catalog.json) / [Standard template](../../docs/guidelines/APP_TEMPLATE.md)
+
+- Read-only source audit of inventory HEAD da0a8b367b74a6bf576ecffa61a3299de3374c6e; no runtime execution, credential check or live-production assertion. Existing validation records remain separate historical evidence.
+- Inspected implementation/configuration coverage: src/hummingbot/strategy/strategy_v2_base.py, src/hummingbot/strategy_v2/executors/executor_orchestrator.py, src/hummingbot/strategy_v2/executors/executor_base.py, src/hummingbot/strategy_v2/executors/order_executor/order_executor.py, src/hummingbot/connector/exchange_py_base.py, src/hummingbot/connector/client_order_tracker.py, src/hummingbot/strategy_v2/backtesting/backtesting_engine_base.py, src/hummingbot/core/clock.pyx, src/hummingbot/connector/exchange/paper_trade/paper_trade_exchange.pyx, src/hummingbot/connector/markets_recorder.py, src/hummingbot/connector/derivative/binance_perpetual/binance_perpetual_derivative.py, src/hummingbot/client/interactive.py
+- Source symbols and call chains are representative coverage, not exhaustive connector, strategy or product certification. Integration statuses identify dependencies that supply the runtime behavior.

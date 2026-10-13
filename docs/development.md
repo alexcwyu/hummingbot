@@ -1,5 +1,11 @@
 # Hummingbot Development Guide
 
+<!-- current-documentation-provenance -->
+Documentation reviewed: 2026-10-13 / Git source base: `da0a8b367b74a6bf576ecffa61a3299de3374c6e` / [Current architecture and feature guide](ayu-develop.md).
+Historical execution commands/results below retain their original dates and scope; this metadata update is not a new application test run.
+<!-- /current-documentation-provenance -->
+
+
 ## Development Setup
 
 ### Prerequisites
